@@ -10,4 +10,8 @@ export default function Button({ children, onClick }) {
   return <StyledButton onClick={onClick}>{children}</StyledButton>
 }
 
-const StyledButton = styled.button``
+const StyledButton = styled.button`
+  border: none;
+  padding: 3px 8px;
+  border-radius: 3px;
+`
