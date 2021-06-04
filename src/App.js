@@ -6,7 +6,7 @@ import PlayPage from './pages/PlayPage'
 function App() {
   const url =
     'https://audio-ssl.itunes.apple.com/itunes-assets/Music/12/f7/c9/mzm.hyfizvmg.aac.p.m4a'
-  const [songUrl, toggle, stop] = useAudio(url)
+  const [songUrl, toggle, stop, playing] = useAudio(url)
   const [answers, setAnswers] = useState([
     { title: 'Bulls on Parade', right: true },
     { title: 'Bomb Track', wrong: true },
@@ -19,7 +19,7 @@ function App() {
       <PlayPage
         showAnswer={showAnswer}
         answers={answers}
-        toggle={toggle}
+        onPlay={handlePlay}
         onClick={handleAnswer}
         url={url}
       />
@@ -29,6 +29,12 @@ function App() {
   function handleAnswer() {
     stop()
     setShowAnswer(true)
+  }
+
+  function handlePlay() {
+    playing ? stop() : toggle()
+    songUrl(url)
+    setShowAnswer(false)
   }
 }
 

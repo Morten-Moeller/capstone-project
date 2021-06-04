@@ -2,11 +2,11 @@ import styled from 'styled-components/macro'
 import Button from '../components/Button'
 import PlayButton from '../components/PlayButton'
 
-export default function PlayPage({ toggle, onClick, answers, showAnswer }) {
+export default function PlayPage({ onPlay, onClick, answers, showAnswer }) {
   console.log(showAnswer)
   return (
     <Container>
-      <PlayButton onClick={toggle}>&gt;</PlayButton>
+      <PlayButton onClick={onPlay}>&gt;</PlayButton>
       {answers.map(answer => (
         <Button
           key={answer.title}
