@@ -27,14 +27,19 @@ function App() {
   )
 
   function handleAnswer() {
-    stop()
-    setShowAnswer(true)
+    if (playing) {
+      stop()
+      setShowAnswer(true)
+    }
+    return
   }
 
   function handlePlay() {
-    playing ? stop() : toggle()
-    songUrl(url)
-    setShowAnswer(false)
+    toggle()
+    if (showAnswer) {
+      songUrl(url)
+      setShowAnswer(false)
+    }
   }
 }
 
