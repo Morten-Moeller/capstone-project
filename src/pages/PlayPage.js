@@ -2,13 +2,21 @@ import styled from 'styled-components/macro'
 import Button from '../components/Button'
 import PlayButton from '../components/PlayButton'
 
-export default function PlayPage({ url }) {
+export default function PlayPage({ toggle, onClick, answers, showAnswer }) {
+  console.log(showAnswer)
   return (
     <Container>
-      <PlayButton url={url}>&gt;</PlayButton>
-      <Button>Bulls on Parade</Button>
-      <Button>Last Resort</Button>
-      <Button>People of the Sun</Button>
+      <PlayButton onClick={toggle}>&gt;</PlayButton>
+      {answers.map(answer => (
+        <Button
+          key={answer.title}
+          right={showAnswer ? answer.right : false}
+          wrong={showAnswer ? answer.wrong : false}
+          onClick={onClick}
+        >
+          {answer.title}
+        </Button>
+      ))}
     </Container>
   )
 }

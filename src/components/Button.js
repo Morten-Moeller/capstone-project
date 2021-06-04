@@ -7,6 +7,7 @@ Button.propTypes = {
 }
 
 export default function Button({ children, onClick, ...props }) {
+  console.log(props)
   return (
     <StyledButton onClick={onClick} {...props}>
       {children}
@@ -18,4 +19,7 @@ const StyledButton = styled.button`
   border: none;
   padding: 3px 8px;
   border-radius: 3px;
+
+  background-color: ${props =>
+    props.wrong ? 'tomato' : props.right ? 'green' : 'lightgrey'};
 `

@@ -18,5 +18,9 @@ export default function useAudio(url) {
     setPlaying(!playing)
   }
 
-  return [playing, toggle]
+  function stop() {
+    setPlaying(false)
+  }
+
+  return [playing, toggle, stop]
 }
