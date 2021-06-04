@@ -6,8 +6,12 @@ Button.propTypes = {
   onClick: PropTypes.func,
 }
 
-export default function Button({ children, onClick }) {
-  return <StyledButton onClick={onClick}>{children}</StyledButton>
+export default function Button({ children, onClick, ...props }) {
+  return (
+    <StyledButton onClick={onClick} {...props}>
+      {children}
+    </StyledButton>
+  )
 }
 
 const StyledButton = styled.button`

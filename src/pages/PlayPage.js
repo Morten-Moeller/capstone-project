@@ -1,10 +1,11 @@
 import styled from 'styled-components/macro'
 import Button from '../components/Button'
+import PlayButton from '../components/PlayButton'
 
-export default function PlayPage() {
+export default function PlayPage({ url }) {
   return (
     <Container>
-      <Button>&gt;</Button>
+      <PlayButton url={url}>&gt;</PlayButton>
       <Button>Bulls on Parade</Button>
       <Button>Last Resort</Button>
       <Button>People of the Sun</Button>
@@ -25,13 +26,5 @@ const Container = styled.main`
   }
 
   button:first-child {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    justify-self: center;
-    font-size: 3rem;
-    width: 72px;
-    height: 72px;
-    padding-bottom: 7px;
   }
 `
