@@ -3,7 +3,6 @@ import Button from '../components/Button'
 import PlayButton from '../components/PlayButton'
 
 export default function PlayPage({ onPlay, onClick, answers, showAnswer }) {
-  console.log(showAnswer)
   return (
     <Container>
       <PlayButton onClick={onPlay}>&gt;</PlayButton>

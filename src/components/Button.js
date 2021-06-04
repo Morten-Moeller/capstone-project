@@ -7,7 +7,6 @@ Button.propTypes = {
 }
 
 export default function Button({ children, onClick, ...props }) {
-  console.log(props)
   return (
     <StyledButton onClick={onClick} {...props}>
       {children}
