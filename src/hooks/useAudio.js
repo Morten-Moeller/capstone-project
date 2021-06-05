@@ -15,6 +15,9 @@ export default function useAudio(url) {
   }, [song])
 
   function toggle() {
+    // workaround for iOS becouse it need a dedicated play action.
+    song.play()
+    song.pause()
     setPlaying(!playing)
   }
 
