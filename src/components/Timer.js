@@ -2,8 +2,7 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import styled from 'styled-components/macro'
 
-export default function Timer({ duration }) {
-  console.log(duration)
+export default function Timer({ duration = 30 }) {
   const [timeLeft, setTimeLeft] = useState(duration)
 
   useEffect(() => {
