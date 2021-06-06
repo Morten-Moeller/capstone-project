@@ -9,10 +9,15 @@ export default function PlayPage({
   answers,
   showAnswer,
   playing,
+  duration,
 }) {
   return (
     <Container>
-      {playing ? <Timer /> : <PlayButton onClick={onPlay}>&gt;</PlayButton>}
+      {playing ? (
+        <Timer duration={duration} />
+      ) : (
+        <PlayButton onClick={onPlay}>&gt;</PlayButton>
+      )}
       {answers.map(answer => (
         <Button
           key={answer.title}
