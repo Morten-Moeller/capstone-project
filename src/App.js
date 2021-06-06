@@ -21,7 +21,7 @@ function App() {
         answers={answers}
         onPlay={handlePlay}
         onClick={handleAnswer}
-        url={url}
+        playing={playing}
       />
     </Container>
   )

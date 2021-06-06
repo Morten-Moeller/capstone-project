@@ -3,7 +3,7 @@ import { useState } from 'react'
 import styled from 'styled-components/macro'
 
 export default function Timer() {
-  const [timeLeft, setTimeLeft] = useState(5)
+  const [timeLeft, setTimeLeft] = useState(30)
 
   useEffect(() => {
     let timer
@@ -21,4 +21,5 @@ export default function Timer() {
 
 const StyledTimer = styled.div`
   font-size: 2.5rem;
+  justify-self: center;
 `
