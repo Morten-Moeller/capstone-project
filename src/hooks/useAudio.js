@@ -5,6 +5,12 @@ export default function useAudio(url) {
   const [song, setSong] = useState(new Audio(url))
   const [playing, setPlaying] = useState(false)
 
+  const [duration, setDuration] = useState(null)
+
+  useEffect(() => {
+    song.duration && setDuration(Math.round(song.duration))
+  }, [song.duration])
+
   useEffect(() => {
     playing ? song.play() : song.pause()
   }, [playing, song])
@@ -29,5 +35,5 @@ export default function useAudio(url) {
     setSong(new Audio(url))
   }
 
-  return [() => songUrl(url), toggle, stop, playing]
+  return { songUrl: () => songUrl(url), toggle, stop, playing, duration }
 }

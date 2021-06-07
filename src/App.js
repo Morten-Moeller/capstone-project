@@ -6,7 +6,10 @@ import PlayPage from './pages/PlayPage'
 function App() {
   const url =
     'https://audio-ssl.itunes.apple.com/itunes-assets/Music/12/f7/c9/mzm.hyfizvmg.aac.p.m4a'
-  const [songUrl, toggle, stop, playing] = useAudio(url)
+
+  const urlLong =
+    'https://api.freeplaymusic.com/media/downloadable/files/link_samples/media/volume/edits/Soundtrack_Rock_Volume_5/e/a/eastbound_60.mp3'
+  const { songUrl, toggle, stop, playing, duration } = useAudio(urlLong)
   const [answers, setAnswers] = useState([
     { title: 'Bulls on Parade', right: true },
     { title: 'Bomb Track', wrong: true },
@@ -20,8 +23,9 @@ function App() {
         showAnswer={showAnswer}
         answers={answers}
         onPlay={handlePlay}
-        onClick={handleAnswer}
-        url={url}
+        onAnswer={handleAnswer}
+        playing={playing}
+        duration={duration}
       />
     </Container>
   )

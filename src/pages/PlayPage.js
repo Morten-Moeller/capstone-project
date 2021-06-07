@@ -1,17 +1,29 @@
 import styled from 'styled-components/macro'
 import Button from '../components/Button'
 import PlayButton from '../components/PlayButton'
+import Timer from '../components/Timer'
 
-export default function PlayPage({ onPlay, onClick, answers, showAnswer }) {
+export default function PlayPage({
+  onPlay,
+  onAnswer,
+  answers,
+  showAnswer,
+  playing,
+  duration,
+}) {
   return (
     <Container>
-      <PlayButton onClick={onPlay}>&gt;</PlayButton>
+      {playing ? (
+        duration && <Timer duration={duration} />
+      ) : (
+        <PlayButton onClick={onPlay}>&gt;</PlayButton>
+      )}
       {answers.map(answer => (
         <Button
           key={answer.title}
           right={showAnswer ? answer.right : false}
           wrong={showAnswer ? answer.wrong : false}
-          onClick={onClick}
+          onClick={onAnswer}
         >
           {answer.title}
         </Button>
