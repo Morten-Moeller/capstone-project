@@ -5,7 +5,7 @@ import Timer from '../components/Timer'
 
 export default function PlayPage({
   onPlay,
-  onClick,
+  onAnswer,
   answers,
   showAnswer,
   playing,
@@ -23,7 +23,7 @@ export default function PlayPage({
           key={answer.title}
           right={showAnswer ? answer.right : false}
           wrong={showAnswer ? answer.wrong : false}
-          onClick={onClick}
+          onClick={onAnswer}
         >
           {answer.title}
         </Button>

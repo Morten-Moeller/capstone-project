@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Button from './Button'
-import { DefaultButton } from './Button.stories'
 
 describe('Button', () => {
   it('has its children name as text and get rendered', () => {

@@ -1,8 +1,13 @@
 import { useEffect } from 'react'
 import { useState } from 'react'
 import styled from 'styled-components/macro'
+import PropTypes from 'prop-types'
 
-export default function Timer({ duration = 30 }) {
+Timer.propTypes = {
+  duration: PropTypes.number.isRequired,
+}
+
+export default function Timer({ duration }) {
   const [timeLeft, setTimeLeft] = useState(duration)
 
   useEffect(() => {
@@ -11,7 +16,6 @@ export default function Timer({ duration = 30 }) {
       timer = setTimeout(() => {
         setTimeLeft(timeLeft - 1)
       }, 1000)
-      timeLeft < 0 ?? clearTimeout(timer)
     }
     return () => clearTimeout(timer)
   }, [timeLeft])

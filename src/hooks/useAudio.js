@@ -4,10 +4,11 @@ import { useState } from 'react'
 export default function useAudio(url) {
   const [song, setSong] = useState(new Audio(url))
   const [playing, setPlaying] = useState(false)
+
   const [duration, setDuration] = useState(30)
 
   useEffect(() => {
-    song.duration ?? setDuration(Math.round(song.duration))
+    song.duration && setDuration(Math.round(song.duration))
   }, [song])
 
   useEffect(() => {
@@ -34,5 +35,5 @@ export default function useAudio(url) {
     setSong(new Audio(url))
   }
 
-  return [() => songUrl(url), toggle, stop, playing, duration]
+  return { songUrl: () => songUrl(url), toggle, stop, playing, duration }
 }
