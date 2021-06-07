@@ -18,7 +18,7 @@ export default function Timer({ duration }) {
       }, 1000)
     }
     return () => clearTimeout(timer)
-  }, [timeLeft])
+  }, [timeLeft, duration])
 
   return <StyledTimer>{timeLeft}</StyledTimer>
 }

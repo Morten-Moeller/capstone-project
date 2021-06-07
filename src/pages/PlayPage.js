@@ -14,7 +14,7 @@ export default function PlayPage({
   return (
     <Container>
       {playing ? (
-        <Timer duration={duration} />
+        duration && <Timer duration={duration} />
       ) : (
         <PlayButton onClick={onPlay}>&gt;</PlayButton>
       )}
