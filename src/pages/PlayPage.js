@@ -56,8 +56,6 @@ const Container = styled.main`
   grid-template-rows: 3fr 1fr 3fr;
   padding: 16px;
 
-  button:first-child {
-  }
 
   nav {
     display: grid;
