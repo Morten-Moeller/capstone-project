@@ -76,23 +76,16 @@ const useShortcut = (shortcutKeys, callback) => {
   }, [callback, keys])
 
   useEffect(() => {
-    shortcutKeys.forEach(k =>
+    shortcutKeys.forEach(k => {
       window.addEventListener('keydown', keydownListener(k))
-    )
-    return () =>
-      shortcutKeys.forEach(k =>
-        window.removeEventListener('keydown', keydownListener(k))
-      )
-  }, [])
-
-  useEffect(() => {
-    shortcutKeys.forEach(k =>
       window.addEventListener('keyup', keyupListener(k))
-    )
-    return () =>
-      shortcutKeys.forEach(k =>
+    })
+    return () => {
+      shortcutKeys.forEach(k => {
+        window.removeEventListener('keydown', keydownListener(k))
         window.removeEventListener('keyup', keyupListener(k))
-      )
+      })
+    }
   }, [])
 }
 
