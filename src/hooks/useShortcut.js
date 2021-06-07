@@ -67,7 +67,7 @@ const useShortcut = (shortcutKeys, callback) => {
   )
 
   useEffect(() => {
-    if (!Object.values(keys).filter(value => !value).length) {
+    if (!Object.values(keys).some(value => !value)) {
       callback(keys)
       setKeys({ type: 'reset-keys', data: initalKeyMapping })
     } else {
