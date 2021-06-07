@@ -29,9 +29,9 @@ export default function PlayPage({
       )}
       <Hint tabIndex="0" aria-label="You can use this game by shortcuts">
         <li>Use 's' to start the Song</li>
-        <li>Use first button with 'a' or '1'</li>
-        <li>Use second button with 'b' or '2'</li>
-        <li>Use third button with 'c' or '3'</li>
+        <li>Use first answer with 'a' or '1'</li>
+        <li>Use second answer with 'b' or '2'</li>
+        <li>Use third answer with 'c' or '3'</li>
       </Hint>
       <nav tabIndex="1">
         {answers.map(answer => (
@@ -55,7 +55,6 @@ const Container = styled.main`
   align-items: center;
   grid-template-rows: 3fr 1fr 3fr;
   padding: 16px;
-
 
   nav {
     display: grid;
