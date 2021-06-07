@@ -3,8 +3,8 @@ import { useEffect, useCallback, useReducer } from 'react'
 const keysReducer = (state, action) => {
   switch (action.type) {
     case 'SET_KEY_DOWN':
-      const keydownState = { ...state, [action.key]: true }
-      return keydownState
+      const keyDownState = { ...state, [action.key]: true }
+      return keyDownState
     case 'SET_KEY_UP':
       const keyUpState = { ...state, [action.key]: false }
       return keyUpState
@@ -39,25 +39,24 @@ const useShortcut = (shortcutKeys, callback) => {
 
   const [keys, setKeys] = useReducer(keysReducer, initalKeyMapping)
 
-  const keydownListener = useCallback(
-    assignedKey => keydownEvent => {
+  const keyDownListener = useCallback(
+    assignedKey => keyDownEvent => {
       const loweredKey = assignedKey.toLowerCase()
 
-      if (keydownEvent.repeat) return
-      if (loweredKey !== keydownEvent.key.toLowerCase()) return
+      if (keyDownEvent.repeat) return
+      if (loweredKey !== keyDownEvent.key.toLowerCase()) return
       if (keys[loweredKey] === undefined) return
 
       setKeys({ type: 'SET_KEY_DOWN', key: loweredKey })
-      return false
     },
     [keys]
   )
 
-  const keyupListener = useCallback(
-    assignedKey => keyupEvent => {
+  const keyUpListener = useCallback(
+    assignedKey => keyUpEvent => {
       const raisedKey = assignedKey.toLowerCase()
 
-      if (keyupEvent.key.toLowerCase() !== raisedKey) return
+      if (keyUpEvent.key.toLowerCase() !== raisedKey) return
       if (keys[raisedKey] === undefined) return
 
       setKeys({ type: 'SET_KEY_UP', key: raisedKey })
@@ -77,13 +76,13 @@ const useShortcut = (shortcutKeys, callback) => {
 
   useEffect(() => {
     shortcutKeys.forEach(k => {
-      window.addEventListener('keydown', keydownListener(k))
-      window.addEventListener('keyup', keyupListener(k))
+      window.addEventListener('keydown', keyDownListener(k))
+      window.addEventListener('keyup', keyUpListener(k))
     })
     return () => {
       shortcutKeys.forEach(k => {
-        window.removeEventListener('keydown', keydownListener(k))
-        window.removeEventListener('keyup', keyupListener(k))
+        window.removeEventListener('keydown', keyDownListener(k))
+        window.removeEventListener('keyup', keyUpListener(k))
       })
     }
   }, [])
