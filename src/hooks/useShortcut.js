@@ -2,13 +2,13 @@ import { useEffect, useCallback, useReducer } from 'react'
 
 const keysReducer = (state, action) => {
   switch (action.type) {
-    case 'set-key-down':
+    case 'SET_KEY_DOWN':
       const keydownState = { ...state, [action.key]: true }
       return keydownState
-    case 'set-key-up':
+    case 'SET_KEY_UP':
       const keyUpState = { ...state, [action.key]: false }
       return keyUpState
-    case 'reset-keys':
+    case 'RESET_KEY':
       const resetState = { ...action.data }
       return resetState
     default:
@@ -47,7 +47,7 @@ const useShortcut = (shortcutKeys, callback) => {
       if (loweredKey !== keydownEvent.key.toLowerCase()) return
       if (keys[loweredKey] === undefined) return
 
-      setKeys({ type: 'set-key-down', key: loweredKey })
+      setKeys({ type: 'SET_KEY_DOWN', key: loweredKey })
       return false
     },
     [keys]
@@ -60,7 +60,7 @@ const useShortcut = (shortcutKeys, callback) => {
       if (keyupEvent.key.toLowerCase() !== raisedKey) return
       if (keys[raisedKey] === undefined) return
 
-      setKeys({ type: 'set-key-up', key: raisedKey })
+      setKeys({ type: 'SET_KEY_UP', key: raisedKey })
       return false
     },
     [keys]
@@ -69,7 +69,7 @@ const useShortcut = (shortcutKeys, callback) => {
   useEffect(() => {
     if (!Object.values(keys).some(value => !value)) {
       callback(keys)
-      setKeys({ type: 'reset-keys', data: initalKeyMapping })
+      setKeys({ type: 'RESET_KEY', data: initalKeyMapping })
     } else {
       setKeys({ type: null })
     }
