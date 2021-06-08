@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useReducer } from 'react'
+import { useEffect, useReducer } from 'react'
 
 const keysReducer = (state, action) => {
   switch (action.type) {
@@ -17,21 +17,6 @@ const keysReducer = (state, action) => {
 }
 
 const useShortcut = (shortcutKeys, callback) => {
-  if (!Array.isArray(shortcutKeys))
-    throw new Error(
-      'The first parameter to `useKeyboardShortcut` must be an ordered array of `KeyboardEvent.key` strings.'
-    )
-
-  if (!shortcutKeys.length)
-    throw new Error(
-      'The first parameter to `useKeyboardShortcut` must contain atleast one `KeyboardEvent.key` string.'
-    )
-
-  if (typeof callback !== 'function')
-    throw new Error(
-      'The second parameter to `useKeyboardShortcut` must be a function that will be envoked when the keys are pressed.'
-    )
-
   const initalKeyMapping = shortcutKeys.reduce((currentKeys, key) => {
     currentKeys[key.toLowerCase()] = false
     return currentKeys
@@ -39,31 +24,23 @@ const useShortcut = (shortcutKeys, callback) => {
 
   const [keys, setKeys] = useReducer(keysReducer, initalKeyMapping)
 
-  const keyDownListener = useCallback(
-    assignedKey => keyDownEvent => {
-      const loweredKey = assignedKey.toLowerCase()
+  const keyDownListener = assignedKey => keyDownEvent => {
+    const loweredKey = assignedKey.toLowerCase()
 
-      if (keyDownEvent.repeat) return
-      if (loweredKey !== keyDownEvent.key.toLowerCase()) return
-      if (keys[loweredKey] === undefined) return
+    if (keyDownEvent.repeat) return
+    if (loweredKey !== keyDownEvent.key.toLowerCase()) return
 
-      setKeys({ type: 'SET_KEY_DOWN', key: loweredKey })
-    },
-    [keys]
-  )
+    setKeys({ type: 'SET_KEY_DOWN', key: loweredKey })
+  }
 
-  const keyUpListener = useCallback(
-    assignedKey => keyUpEvent => {
-      const raisedKey = assignedKey.toLowerCase()
+  const keyUpListener = assignedKey => keyUpEvent => {
+    const raisedKey = assignedKey.toLowerCase()
 
-      if (keyUpEvent.key.toLowerCase() !== raisedKey) return
-      if (keys[raisedKey] === undefined) return
+    if (keyUpEvent.key.toLowerCase() !== raisedKey) return
 
-      setKeys({ type: 'SET_KEY_UP', key: raisedKey })
-      return false
-    },
-    [keys]
-  )
+    setKeys({ type: 'SET_KEY_UP', key: raisedKey })
+    return false
+  }
 
   useEffect(() => {
     if (!Object.values(keys).some(value => !value)) {

@@ -37,8 +37,8 @@ export default function PlayPage({
         {answers.map(answer => (
           <Button
             key={answer.title}
-            right={showAnswer ? answer.right : false}
-            wrong={showAnswer ? answer.wrong : false}
+            right={showAnswer && answer.right}
+            wrong={showAnswer && answer.wrong}
             onClick={onAnswer}
           >
             {answer.title}
