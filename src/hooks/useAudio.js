@@ -35,5 +35,5 @@ export default function useAudio(url) {
     setSong(new Audio(url))
   }
 
-  return { songUrl: () => songUrl(url), toggle, stop, playing, duration }
+  return { songUrl, toggle, stop, playing, duration }
 }
