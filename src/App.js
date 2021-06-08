@@ -39,7 +39,7 @@ function App() {
   }
 
   function handlePlay() {
-    toggle()
+    !playing && toggle()
     if (showAnswer) {
       songUrl(url)
       setShowAnswer(false)

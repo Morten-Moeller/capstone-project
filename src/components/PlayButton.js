@@ -2,7 +2,11 @@ import styled from 'styled-components/macro'
 import Button from './Button'
 
 export default function PlayButton({ children, onClick }) {
-  return <StyledButton onClick={onClick}>{children}</StyledButton>
+  return (
+    <StyledButton aria-label="Play button" onClick={onClick}>
+      {children}
+    </StyledButton>
+  )
 }
 
 const StyledButton = styled(Button)`
