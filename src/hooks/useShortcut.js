@@ -22,7 +22,7 @@ const useShortcut = (shortcutKeys, callback) => {
     return currentKeys
   }, {})
 
-  const [keys, setKeys] = useReducer(keysReducer, initalKeyMapping)
+  const [keys, dispatch] = useReducer(keysReducer, initalKeyMapping)
 
   const keyDownListener = assignedKey => keyDownEvent => {
     const loweredKey = assignedKey.toLowerCase()
@@ -30,7 +30,7 @@ const useShortcut = (shortcutKeys, callback) => {
     if (keyDownEvent.repeat) return
     if (loweredKey !== keyDownEvent.key.toLowerCase()) return
 
-    setKeys({ type: 'SET_KEY_DOWN', key: loweredKey })
+    dispatch({ type: 'SET_KEY_DOWN', key: loweredKey })
   }
 
   const keyUpListener = assignedKey => keyUpEvent => {
@@ -38,16 +38,16 @@ const useShortcut = (shortcutKeys, callback) => {
 
     if (keyUpEvent.key.toLowerCase() !== raisedKey) return
 
-    setKeys({ type: 'SET_KEY_UP', key: raisedKey })
+    dispatch({ type: 'SET_KEY_UP', key: raisedKey })
     return false
   }
 
   useEffect(() => {
     if (!Object.values(keys).some(value => !value)) {
       callback(keys)
-      setKeys({ type: 'RESET_KEY', data: initalKeyMapping })
+      dispatch({ type: 'RESET_KEY', data: initalKeyMapping })
     } else {
-      setKeys({ type: null })
+      dispatch({ type: null })
     }
   }, [callback, keys])
 
