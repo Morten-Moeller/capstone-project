@@ -19,6 +19,7 @@ function App() {
   ])
 
   useEffect(() => {
+    setScript()
     const baseUrl = 'https://itunes.apple.com/lookup?id='
     fetch(baseUrl + songId)
       .then(res => res.json())
@@ -84,6 +85,16 @@ function App() {
       ;[array[i], array[j]] = [array[j], array[i]]
     }
     return array
+  }
+  function setScript() {
+    const my_awesome_script = document.createElement('script')
+
+    my_awesome_script.setAttribute(
+      'src',
+      `https://itunes.apple.com/lookup?id=${songId}&callback="index.js`
+    )
+
+    document.head.appendChild(my_awesome_script)
   }
 }
 
