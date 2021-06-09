@@ -5,6 +5,7 @@ import PlayPage from './pages/PlayPage'
 import playlist from './data/playlist.json'
 
 function App() {
+  const [songList, setSongList] = useState(shuffle([...playlist]))
   const [newUrl, setNewUrl] = useState(null)
   const [songId, setSongId] = useState('1449299027')
   const [rightAnswer, setRightAnswer] = useState()
@@ -18,6 +19,19 @@ function App() {
     { title: 'Button C', wrong: true },
   ])
 
+  //set next song
+  useEffect(() => {
+    console.log(songList)
+    const index = songList.findIndex(({ id }) => id === songId)
+    const removedSong = songList.splice(index, 1)
+    console.log(songList.length)
+    console.log(playlist)
+    songList.length > '0'
+      ? setSongList(songList)
+      : setSongList(shuffle([...playlist]))
+  }, [songId])
+
+  //get the wrong answers
   useEffect(() => {
     if (rightAnswer) {
       const interpret = rightAnswer.interpret
@@ -25,22 +39,32 @@ function App() {
       fetch(baseUrl)
         .then(res => res.json())
         .then(data => {
-          setWrongAnswers([
-            {
+          let answer1
+          let answer2
+          do {
+            answer1 = {
               title:
                 data.results[Math.floor(Math.random() * data.results.length)]
                   .trackName,
-            },
-            {
+            }
+            answer2 = {
               title:
                 data.results[Math.floor(Math.random() * data.results.length)]
                   .trackName,
-            },
-          ])
+            }
+          } while (
+            answer1.title === answer2.title ||
+            answer1.title === rightAnswer.title ||
+            answer2.title === rightAnswer.title ||
+            answer1.title === rightAnswer.interpret ||
+            answer2.title === rightAnswer.interpret
+          )
+          setWrongAnswers([answer1, answer2])
         })
     }
   }, [rightAnswer])
 
+  //Get right song and artistName
   useEffect(() => {
     const baseUrl = 'https://itunes.apple.com/lookup?id='
     fetch(baseUrl + songId)
@@ -56,12 +80,14 @@ function App() {
       .catch(error => console.error(error))
   }, [songId])
 
+  //set a new song
   useEffect(() => {
     songUrl(newUrl)
   }, [newUrl])
 
   const [showAnswer, setShowAnswer] = useState(false)
 
+  // set the answer object in shuffled order for the buttons
   useEffect(() => {
     if (rightAnswer && !showAnswer) {
       const answer = [
@@ -92,8 +118,10 @@ function App() {
     if (playing) {
       stop()
       setShowAnswer(true)
+      console.log(songList)
+      setSongId(songList[0].id)
     }
-    setSongId(playlist[Math.floor(Math.random() * playlist.length)].id)
+
     return
   }
 
