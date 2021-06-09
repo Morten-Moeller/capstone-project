@@ -7,25 +7,46 @@ import playlist from './data/playlist.json'
 function App() {
   const [newUrl, setNewUrl] = useState(null)
   const [songId, setSongId] = useState('1449299027')
-  const baseUrl = 'https://itunes.apple.com/lookup?id='
+  const [rightAnswer, setRightAnswer] = useState()
+  const [wrongAnswers, setWrongAnswers] = useState([
+    { title: 'Angel Eyes' },
+    { title: 'Backstreets' },
+  ])
+  const [answers, setAnswers] = useState([
+    { title: 'Button A', right: true },
+    { title: 'Button B', wrong: true },
+    { title: 'Button C', wrong: true },
+  ])
 
   useEffect(() => {
+    const baseUrl = 'https://itunes.apple.com/lookup?id='
     fetch(baseUrl + songId)
       .then(res => res.json())
-      .then(data => setNewUrl(data.results[0].previewUrl))
+      .then(data => {
+        setNewUrl(data.results[0].previewUrl)
+        setRightAnswer({ title: data.results[0].trackName, right: true })
+      })
       .catch(error => console.error(error))
   }, [songId])
 
-  const url =
-    'https://audio-ssl.itunes.apple.com/itunes-assets/Music/12/f7/c9/mzm.hyfizvmg.aac.p.m4a'
+  useEffect(() => {
+    songUrl(newUrl)
+  }, [newUrl])
 
-  const { songUrl, toggle, stop, playing, duration } = useAudio(url)
-  const [answers, setAnswers] = useState([
-    { title: 'Bulls on Parade', right: true },
-    { title: 'Bomb Track', wrong: true },
-    { title: 'People of the Sun', wrong: true },
-  ])
   const [showAnswer, setShowAnswer] = useState(false)
+
+  useEffect(() => {
+    if (rightAnswer && !showAnswer) {
+      const answer = [
+        { title: wrongAnswers[0].title, wrong: true },
+        { title: rightAnswer.title, right: true },
+        { title: wrongAnswers[1].title, wrong: true },
+      ]
+      setAnswers(shuffle(answer))
+    }
+  }, [rightAnswer, wrongAnswers, showAnswer])
+
+  const { songUrl, toggle, stop, playing, duration } = useAudio()
 
   return (
     <Container>
@@ -45,16 +66,23 @@ function App() {
       stop()
       setShowAnswer(true)
     }
+    setSongId(playlist[Math.floor(Math.random() * playlist.length)].id)
     return
   }
 
   function handlePlay() {
     !playing && toggle()
     if (showAnswer) {
-      songUrl(newUrl)
       setShowAnswer(false)
-      setSongId(playlist[Math.floor(Math.random() * playlist.length)].id)
     }
+  }
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[array[i], array[j]] = [array[j], array[i]]
+    }
+    return array
   }
 }
 
