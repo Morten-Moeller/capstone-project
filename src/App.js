@@ -19,12 +19,39 @@ function App() {
   ])
 
   useEffect(() => {
+    if (rightAnswer) {
+      const interpret = rightAnswer.interpret
+      const baseUrl = `https://itunes.apple.com/search?term=${interpret}&entity=song`
+      fetch(baseUrl)
+        .then(res => res.json())
+        .then(data => {
+          setWrongAnswers([
+            {
+              title:
+                data.results[Math.floor(Math.random() * data.results.length)]
+                  .trackName,
+            },
+            {
+              title:
+                data.results[Math.floor(Math.random() * data.results.length)]
+                  .trackName,
+            },
+          ])
+        })
+    }
+  }, [rightAnswer])
+
+  useEffect(() => {
     const baseUrl = 'https://itunes.apple.com/lookup?id='
     fetch(baseUrl + songId)
       .then(res => res.json())
       .then(data => {
         setNewUrl(data.results[0].previewUrl)
-        setRightAnswer({ title: data.results[0].trackName, right: true })
+        setRightAnswer({
+          title: data.results[0].trackName,
+          right: true,
+          interpret: data.results[0].artistName,
+        })
       })
       .catch(error => console.error(error))
   }, [songId])
