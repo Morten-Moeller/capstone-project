@@ -19,15 +19,19 @@ function App() {
     { title: 'Button C', wrong: true },
   ])
 
-  //set next song
+  //check songId for valid song
   useEffect(() => {
-    console.log(songList)
-    const index = songList.findIndex(({ id }) => id === songId)
-    const removedSong = songList.splice(index, 1)
-    console.log(songList.length)
-    console.log(playlist)
+    const baseUrl = `https://itunes.apple.com/lookup?id=${songList[0].id}`
+    songList[0].id &&
+      fetch(baseUrl)
+        .then(res => res.json())
+        .then(data => data.results.length === 0 && removeSong(songList[0].id))
+        .catch(error => console.error(error))
+  })
+  // set next song
+  useEffect(() => {
     songList.length > '0'
-      ? setSongList(songList)
+      ? setSongList(removeSong(songId))
       : setSongList(shuffle([...playlist]))
   }, [songId])
 
@@ -61,6 +65,7 @@ function App() {
           )
           setWrongAnswers([answer1, answer2])
         })
+        .catch(error => console.error(error))
     }
   }, [rightAnswer])
 
@@ -118,7 +123,6 @@ function App() {
     if (playing) {
       stop()
       setShowAnswer(true)
-      console.log(songList)
       setSongId(songList[0].id)
     }
 
@@ -139,6 +143,13 @@ function App() {
       ;[array[i], array[j]] = [array[j], array[i]]
     }
     return array
+  }
+
+  function removeSong(removeId) {
+    const index = songList.findIndex(({ id }) => id === removeId)
+    const newSongList = songList
+    const removedSong = newSongList.splice(index, 1)
+    return newSongList
   }
 }
 
