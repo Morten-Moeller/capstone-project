@@ -1,110 +1,83 @@
 import { useEffect, useState } from 'react'
 
-export default function usePlayList(playList) {
-  const playListCopy = [...playList]
-  const [songList, setSongList] = useState(shuffle([...playList]))
+export default function usePlayList(playlist) {
+  const newPlaylist = shuffle(playlist)
+  const [playlistData, setPlaylistData] = useState(null)
   const [newUrl, setNewUrl] = useState(null)
-  const [songId, setSongId] = useState(
-    playList[Math.floor(Math.random() * playList.length)].id
-  )
-  const [rightAnswer, setRightAnswer] = useState()
-  const [wrongAnswers, setWrongAnswers] = useState([
-    { title: 'Angel Eyes' },
-    { title: 'Backstreets' },
-  ])
   const [answers, setAnswers] = useState(null)
+  const [counter, setCounter] = useState(null)
+  const [wrongAnswers, setWrongAnswers] = useState(null)
 
-  //check songId for valid song
+  //get playlist data
   useEffect(() => {
-    const baseUrl = `https://itunes.apple.com/lookup?id=${songList[0].id}`
-    songList[0].id &&
-      fetch(baseUrl)
-        .then(res => res.json())
-        .then(data => data.results.length === 0 && removeSong(songList[0].id))
-        .catch(error => console.error(error))
-  }, [songId])
-
-  // set next song
-  useEffect(() => {
-    console.log(songList)
-    console.log(playListCopy)
-    songList.length > '1'
-      ? setSongList(removeSong(songId))
-      : setSongList(shuffle(playListCopy))
-  }, [songId])
+    const baseUrl = 'https://itunes.apple.com/lookup?id='
+    Promise.all(
+      newPlaylist.map(({ id }) => fetch(baseUrl + id).then(res => res.json()))
+    ).then(data => {
+      const newPlaylistData = data.map(({ results }) => results[0])
+      const cleanPlaylistData = newPlaylistData.filter(el => {
+        if (el) return el
+      })
+      !playlistData && setPlaylistData(cleanPlaylistData)
+      setCounter(cleanPlaylistData.length - 1)
+    })
+  }, [])
 
   //get the wrong answers
   useEffect(() => {
-    if (rightAnswer) {
-      const interpret = rightAnswer.interpret
+    if (counter) {
+      const interpret = playlistData[counter].artistName
       const baseUrl = `https://itunes.apple.com/search?term=${interpret}&entity=song`
       fetch(baseUrl)
         .then(res => res.json())
         .then(data => {
-          let answer1
-          let answer2
-          do {
-            answer1 = {
-              title:
-                data.results[Math.floor(Math.random() * data.results.length)]
-                  .trackName,
+          const wrongSongTitle = data.results.filter(
+            ({ trackName, artistName }) => {
+              if (trackName === 'Undefined' || trackName === '(Un)Defined') {
+                return ''
+              } else if (playlistData[counter].artistName !== artistName) {
+                return ''
+              }
+              return trackName
             }
-            answer2 = {
-              title:
-                data.results[Math.floor(Math.random() * data.results.length)]
-                  .trackName,
-            }
-          } while (
-            answer1.title === answer2.title ||
-            answer1.title === rightAnswer.title ||
-            answer2.title === rightAnswer.title ||
-            answer1.title === rightAnswer.interpret ||
-            answer2.title === rightAnswer.interpret
           )
-          setWrongAnswers([answer1, answer2])
+          const wrongsongTitleSet = new Set(
+            wrongSongTitle.map(({ trackName }) => trackName)
+          )
+          setWrongAnswers([...wrongsongTitleSet])
         })
         .catch(error => console.error(error))
     }
-  }, [rightAnswer])
+  }, [playlistData, counter])
 
-  //Get right song and artistName
+  //set all answers and shuffel
   useEffect(() => {
-    const baseUrl = 'https://itunes.apple.com/lookup?id='
-    fetch(baseUrl + songId)
-      .then(res => res.json())
-      .then(data => {
-        setNewUrl(data.results[0].previewUrl)
-        setRightAnswer({
-          title: data.results[0].trackName,
-          right: true,
-          interpret: data.results[0].artistName,
-        })
-      })
-      .catch(error => console.error(error))
-  }, [songId])
-
-  // shuffle and set answers
-  useEffect(() => {
-    if (rightAnswer) {
-      const answer = [
-        { title: wrongAnswers[0].title, wrong: true },
-        { title: wrongAnswers[1].title, wrong: true },
-        { title: rightAnswer.title, right: true },
+    if (wrongAnswers) {
+      const rightAnswer = playlistData[counter].trackName
+      const selectWrongAnswers = shuffle(
+        wrongAnswers.filter(answer => answer !== rightAnswer)
+      )
+      const answerObj = [
+        { title: rightAnswer, right: true, id: 1 },
+        { title: selectWrongAnswers[0], wrong: true, id: 2 },
+        { title: selectWrongAnswers[1], wrong: true, id: 3 },
       ]
-      setAnswers(shuffle(answer))
+
+      setAnswers(shuffle(answerObj))
     }
-  }, [rightAnswer, wrongAnswers])
+  }, [wrongAnswers])
 
-  function removeSong(removeId) {
-    const index = songList.findIndex(({ id }) => id === removeId)
-    const newSongList = songList
-    const removedSong = newSongList.splice(index, 1)
-    return newSongList
-  }
+  //set new song url
+  useEffect(() => {
+    if (playlistData && counter) {
+      setNewUrl(playlistData[counter].previewUrl)
+    }
+  }, [playlistData, counter])
 
-  function nextSong() {
-    setSongId(songList[0].id)
-  }
+  //handle counter 0
+  useEffect(() => {
+    if (counter === 0) setCounter(playlistData.length - 1)
+  }, [counter])
 
   //Fisher–Yates shuffle modern algorithm
   function shuffle(array) {
@@ -114,5 +87,10 @@ export default function usePlayList(playList) {
     }
     return array
   }
+
+  function nextSong() {
+    setCounter(counter - 1)
+  }
+
   return { answers, newUrl, nextSong }
 }
