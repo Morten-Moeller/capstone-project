@@ -7,11 +7,19 @@ import usePlayList from './hooks/usePlayList'
 
 function App() {
   const [showAnswer, setShowAnswer] = useState(false)
+
+  // usePlaylist takes a list of Objects including an iTunes trackId as id.
+  // it checkes if the Id response valid and then retuns a random url from the list and matching random answers
+  // with next song we can trigger to get another url
   const { newUrl, answers, nextSong } = usePlayList(playlist)
+
+  // useAudio hold and controll the audio element
   const { songUrl, toggle, stop, playing, duration } = useAudio()
+
   const [loaded, setLoaded] = useState(false)
   const [newAnswers, setNewAnswers] = useState(answers)
 
+  //Checks if necessary data are loaded
   useEffect(() => {
     answers && setLoaded(true)
   }, [answers])
@@ -21,6 +29,7 @@ function App() {
     !playing && songUrl(newUrl)
   }, [newUrl])
 
+  //set new answers fot he buttons
   useEffect(() => {
     setNewAnswers(answers)
   }, [playing])
@@ -46,7 +55,6 @@ function App() {
       setShowAnswer(true)
       nextSong()
     }
-
     return
   }
 
