@@ -12,7 +12,7 @@ export default function usePlayList(playlist) {
 
   //try with redirect
   useEffect(() => {
-    const baseUrl = '/api/playlist?id='
+    const baseUrl = '/api/lookup?id='
     Promise.all(
       newPlaylist.map(({ id }) => fetch(baseUrl + id).then(res => res.json()))
     ).then(data => {
