@@ -1,9 +1,9 @@
-var httpProxy = require('node-http-proxy')
-var proxy = httpProxy.createProxyServer({})
+import fetch from 'node-fetch'
 
 // eslint-disable-next-line
+
 export default function (req, res) {
-  proxy.web(req, res, { target: 'https://itunes.apple.com/' })
+  res.json({ foo: 'bar' })
 }
 
 // export default async function (req, res) {
