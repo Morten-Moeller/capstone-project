@@ -10,16 +10,18 @@ export default function usePlayList(playlist) {
   const [wrongAnswers, setWrongAnswers] = useState(null)
   let getNextUrl
 
+  // useEffect(()=> {
+
+  // })
+
   //get playlist data
   useEffect(() => {
-    const baseUrl = 'https://itunes.apple.com/lookup?id='
+    const baseUrl = '/api/playlist/'
     Promise.all(
       newPlaylist.map(({ id }) => fetch(baseUrl + id).then(res => res.json()))
     ).then(data => {
       const newPlaylistData = data.map(({ results }) => results[0])
-      const cleanPlaylistData = newPlaylistData.filter(el => {
-        if (el) return el
-      })
+      const cleanPlaylistData = newPlaylistData.filter(el => !!el)
       !playlistData && setPlaylistData(cleanPlaylistData)
       setCounter(cleanPlaylistData.length - 1)
     })
