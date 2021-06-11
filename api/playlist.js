@@ -1,4 +1,4 @@
-import fetch from 'node-fetch'
+// import fetch from 'node-fetch'
 
 // eslint-disable-next-line
 export default function (req, res) {
