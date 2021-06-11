@@ -16,7 +16,7 @@ const keysReducer = (state, action) => {
   }
 }
 
-const useShortcut = (shortcutKeys, callback) => {
+export default function useShortcut(shortcutKeys, callback) {
   const initalKeyMapping = shortcutKeys.reduce((currentKeys, key) => {
     currentKeys[key.toLowerCase()] = false
     return currentKeys
@@ -64,5 +64,3 @@ const useShortcut = (shortcutKeys, callback) => {
     }
   }, [])
 }
-
-export default useShortcut
