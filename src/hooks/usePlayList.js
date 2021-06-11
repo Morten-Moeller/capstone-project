@@ -31,7 +31,7 @@ export default function usePlayList(playlist) {
   useEffect(() => {
     if (!counter) return
     const interpret = playlistData[counter].artistName
-    const baseUrl = `https://itunes.apple.com/search?term=${interpret}&entity=song`
+    const baseUrl = `/api/artist/${interpret}`
     fetch(baseUrl)
       .then(res => res.json())
       .then(data => {
