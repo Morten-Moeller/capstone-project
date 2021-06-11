@@ -6,43 +6,37 @@ import playlist from './data/playlist.json'
 import usePlaylist from './hooks/usePlayList'
 
 function App() {
-  const [showAnswer, setShowAnswer] = useState(false)
+  const [isAnswerVisible, setIsAnswerVisible] = useState(false)
 
   // usePlaylist takes a list of Objects including an iTunes trackId as id.
   // it checkes if the Id response valid and then retuns a random url from the list and matching random answers
   // with next song we can trigger to get another url
-  const { newUrl, answers, nextSong } = usePlaylist(playlist)
+  const { getNextUrl, answers, innitiateNextSong } = usePlaylist(playlist)
 
   // useAudio hold and controll the audio element
-  const { songUrl, toggle, stop, playing, duration } = useAudio()
+  const { setSongUrl, toggle, stop, isPlaying, duration } = useAudio()
 
-  const [loaded, setLoaded] = useState(false)
   const [newAnswers, setNewAnswers] = useState(answers)
-
-  //Checks if necessary data are loaded
-  useEffect(() => {
-    answers && setLoaded(true)
-  }, [answers])
 
   // //set a new song
   useEffect(() => {
-    !playing && songUrl(newUrl)
-  }, [newUrl])
+    !isPlaying && setSongUrl(getNextUrl)
+  }, [getNextUrl])
 
   //set new answers for the buttons
   useEffect(() => {
     setNewAnswers(answers)
-  }, [playing])
+  }, [isPlaying])
 
   return (
     <Container>
-      {loaded && (
+      {answers && (
         <PlayPage
-          showAnswer={showAnswer}
-          answers={newAnswers ? newAnswers : answers}
+          showAnswer={isAnswerVisible}
+          answers={newAnswers || answers}
           onPlay={handlePlay}
           onAnswer={handleAnswer}
-          playing={playing}
+          playing={isPlaying}
           duration={duration}
         />
       )}
@@ -50,18 +44,18 @@ function App() {
   )
 
   function handleAnswer() {
-    if (playing) {
+    if (isPlaying) {
       stop()
-      setShowAnswer(true)
-      nextSong()
+      setIsAnswerVisible(true)
+      innitiateNextSong()
     }
     return
   }
 
   function handlePlay() {
-    !playing && toggle()
-    if (showAnswer && !playing) {
-      setShowAnswer(false)
+    !isPlaying && toggle()
+    if (isAnswerVisible && !isPlaying) {
+      setIsAnswerVisible(false)
     }
   }
 }
