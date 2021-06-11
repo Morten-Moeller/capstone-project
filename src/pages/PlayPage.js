@@ -36,7 +36,7 @@ export default function PlayPage({
       <nav tabIndex="1">
         {answers.map(answer => (
           <Button
-            key={answer.id}
+            key={answer.title}
             right={showAnswer && answer.right}
             wrong={showAnswer && answer.wrong}
             onClick={onAnswer}

@@ -1,61 +1,48 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import styled from 'styled-components'
 import useAudio from './hooks/useAudio'
 import PlayPage from './pages/PlayPage'
-import playlist from './data/playlist.json'
-import usePlaylist from './hooks/usePlayList'
 
 function App() {
-  const [isAnswerVisible, setIsAnswerVisible] = useState(false)
+  const url =
+    'https://audio-ssl.itunes.apple.com/itunes-assets/Music/12/f7/c9/mzm.hyfizvmg.aac.p.m4a'
 
-  // usePlaylist takes a list of Objects including an iTunes trackId as id.
-  // it checkes if the Id response valid and then retuns a random url from the list and matching random answers
-  // with next song we can trigger to get another url
-  const { getNextUrl, answers, innitiateNextSong } = usePlaylist(playlist)
-
-  // useAudio hold and controll the audio element
-  const { setSongUrl, toggle, stop, isPlaying, duration } = useAudio()
-
-  const [newAnswers, setNewAnswers] = useState(answers)
-
-  // //set a new song
-  useEffect(() => {
-    !isPlaying && setSongUrl(getNextUrl)
-  }, [getNextUrl])
-
-  //set new answers for the buttons
-  useEffect(() => {
-    setNewAnswers(answers)
-  }, [isPlaying])
+  const urlLong =
+    'https://api.freeplaymusic.com/media/downloadable/files/link_samples/media/volume/edits/Soundtrack_Rock_Volume_5/e/a/eastbound_60.mp3'
+  const { songUrl, toggle, stop, playing, duration } = useAudio(urlLong)
+  const [answers, setAnswers] = useState([
+    { title: 'Bulls on Parade', right: true },
+    { title: 'Bomb Track', wrong: true },
+    { title: 'People of the Sun', wrong: true },
+  ])
+  const [showAnswer, setShowAnswer] = useState(false)
 
   return (
     <Container>
-      {answers && (
-        <PlayPage
-          showAnswer={isAnswerVisible}
-          answers={newAnswers || answers}
-          onPlay={handlePlay}
-          onAnswer={handleAnswer}
-          playing={isPlaying}
-          duration={duration}
-        />
-      )}
+      <PlayPage
+        showAnswer={showAnswer}
+        answers={answers}
+        onPlay={handlePlay}
+        onAnswer={handleAnswer}
+        playing={playing}
+        duration={duration}
+      />
     </Container>
   )
 
   function handleAnswer() {
-    if (isPlaying) {
+    if (playing) {
       stop()
-      setIsAnswerVisible(true)
-      innitiateNextSong()
+      setShowAnswer(true)
     }
     return
   }
 
   function handlePlay() {
-    !isPlaying && toggle()
-    if (isAnswerVisible && !isPlaying) {
-      setIsAnswerVisible(false)
+    !playing && toggle()
+    if (showAnswer) {
+      songUrl(url)
+      setShowAnswer(false)
     }
   }
 }
