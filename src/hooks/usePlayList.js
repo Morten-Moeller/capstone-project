@@ -10,20 +10,28 @@ export default function usePlayList(playlist) {
   const [wrongAnswers, setWrongAnswers] = useState(null)
   let getNextUrl
 
-  //get playlist data
+  //try with redirect
   useEffect(() => {
-    const baseUrl = 'https://itunes.apple.com/lookup?id='
-    Promise.all(
-      newPlaylist.map(({ id }) => fetch(baseUrl + id).then(res => res.json()))
-    ).then(data => {
-      const newPlaylistData = data.map(({ results }) => results[0])
-      const cleanPlaylistData = newPlaylistData.filter(el => {
-        if (el) return el
-      })
-      !playlistData && setPlaylistData(cleanPlaylistData)
-      setCounter(cleanPlaylistData.length - 1)
-    })
+    const baseUrl = '/api/playlist'
+    const id = '?id=123'
+    fetch(baseUrl + id)
+      .then(res => console.log(res))
+      .then(res => console.log(res))
   }, [])
+  //get playlist data
+  // useEffect(() => {
+  //   const baseUrl = 'https://itunes.apple.com/lookup?id='
+  //   Promise.all(
+  //     newPlaylist.map(({ id }) => fetch(baseUrl + id).then(res => res.json()))
+  //   ).then(data => {
+  //     const newPlaylistData = data.map(({ results }) => results[0])
+  //     const cleanPlaylistData = newPlaylistData.filter(el => {
+  //       if (el) return el
+  //     })
+  //     !playlistData && setPlaylistData(cleanPlaylistData)
+  //     setCounter(cleanPlaylistData.length - 1)
+  //   })
+  // }, [])
 
   //get the wrong answers
   useEffect(() => {

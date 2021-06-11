@@ -1,3 +1,8 @@
+import reactDom from 'react-dom'
+
+const fetch = require('node-fetch')
+
 export default function (req, res) {
-  res.json({ foo: 'bar' })
+  const id = req.params
+  res.json(id)
 }
