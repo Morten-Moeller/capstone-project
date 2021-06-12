@@ -1,3 +1,4 @@
+// @ts-check
 export default async function getPlaylistData(newPlaylist) {
   const baseUrl = '/api/playlist/'
 
@@ -5,7 +6,7 @@ export default async function getPlaylistData(newPlaylist) {
     newPlaylist.map(({ id }) => fetch(baseUrl + id).then(res => res.json()))
   )
 
-  let data = await response.map(({ results }) => results[0])
+  let data = response.map(({ results }) => results[0])
   let playlistBaseData = data.filter(el => !!el)
   return playlistBaseData
 }

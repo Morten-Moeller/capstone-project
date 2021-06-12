@@ -1,3 +1,4 @@
+// @ts-check
 import { useEffect, useState } from 'react'
 import getPlaylistData from '../utils/getPlaylistData'
 import getWrongAnswers from '../utils/getWrongAnswers'

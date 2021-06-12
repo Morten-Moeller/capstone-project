@@ -1,3 +1,4 @@
+// @ts-check
 //Fisher–Yates shuffle modern algorithm
 export default function shuffle(array) {
   const arrayCopy = [...array]

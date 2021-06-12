@@ -1,3 +1,4 @@
+// @ts-check
 import { useEffect, useReducer } from 'react'
 
 const keysReducer = (state, action) => {

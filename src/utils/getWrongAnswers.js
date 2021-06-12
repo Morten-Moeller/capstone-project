@@ -1,3 +1,5 @@
+// @ts-check
+
 export default async function getWrongAnswers(interpret) {
   const baseUrl = `/api/artist/${interpret}`
   let response = await fetch(baseUrl).then(res => res.json())
@@ -13,7 +15,7 @@ export default async function getWrongAnswers(interpret) {
     return trackName
   })
 
-  let wrongsongTitleSet = await new Set(data.map(({ trackName }) => trackName))
+  let wrongsongTitleSet = new Set(data.map(({ trackName }) => trackName))
 
   return [...wrongsongTitleSet]
 }
