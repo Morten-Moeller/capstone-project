@@ -1,5 +1,5 @@
 export default async function getPlaylistData(newPlaylist) {
-  const baseUrl = 'https://itunes.apple.com/lookup?id='
+  const baseUrl = '/api/playlist/'
 
   let response = await Promise.all(
     newPlaylist.map(({ id }) => fetch(baseUrl + id).then(res => res.json()))

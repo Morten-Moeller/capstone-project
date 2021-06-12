@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import getPlaylistData from '../utils/getPlaylistData'
+import getWrongAnswers from '../utils/getWrongAnswers'
 import shuffle from '../utils/shuffleArray'
 
 export default function usePlayList(playlist) {
@@ -10,78 +11,53 @@ export default function usePlayList(playlist) {
   const [wrongAnswers, setWrongAnswers] = useState(null)
   let getNextUrl
 
-  // useEffect(()=> {
-
-  // })
-
-  //get playlist data
+  // get playlist data
   useEffect(() => {
-    const baseUrl = '/api/playlist/'
-    Promise.all(
-      newPlaylist.map(({ id }) => fetch(baseUrl + id).then(res => res.json()))
-    ).then(data => {
-      const newPlaylistData = data.map(({ results }) => results[0])
-      const cleanPlaylistData = newPlaylistData.filter(el => !!el)
-      !playlistData && setPlaylistData(cleanPlaylistData)
-      setCounter(cleanPlaylistData.length - 1)
-    })
-  }, [])
+    async function getData() {
+      const data = await getPlaylistData(newPlaylist)
+      if (data) {
+        setPlaylistData(data)
+        setCounter(data?.length - 1)
+      }
+    }
+    getData()
+  }, [newPlaylist])
 
-  //get the wrong answers
+  //get wrong answers
   useEffect(() => {
     if (!counter) return
-    const interpret = playlistData[counter].artistName
-    const baseUrl = `/api/artist/${interpret}`
-    fetch(baseUrl)
-      .then(res => res.json())
-      .then(data => {
-        const wrongSongTitle = data.results.filter(
-          ({ trackName, artistName }) => {
-            if (
-              trackName === 'Undefined' ||
-              trackName === '(Un)Defined' ||
-              playlistData[counter].artistName !== artistName
-            ) {
-              return ''
-            }
-            return trackName
-          }
-        )
-        const wrongsongTitleSet = new Set(
-          wrongSongTitle.map(({ trackName }) => trackName)
-        )
-        setWrongAnswers([...wrongsongTitleSet])
-      })
-      .catch(error => console.error(error))
-  }, [playlistData, counter])
+    async function getData() {
+      const data = await getWrongAnswers(playlistData[counter].artistName)
+      if (data) {
+        setWrongAnswers(data)
+      }
+    }
+    getData()
+  }, [counter, playlistData])
 
   //set all answers and shuffle
   useEffect(() => {
-    if (wrongAnswers) {
-      const rightAnswer = playlistData[counter].trackName
-      const selectWrongAnswers = shuffle(
-        wrongAnswers.filter(answer => answer !== rightAnswer)
-      )
-      const answerObj = [
-        { title: rightAnswer, right: true, id: 1 },
-        { title: selectWrongAnswers[0], wrong: true, id: 2 },
-        { title: selectWrongAnswers[1], wrong: true, id: 3 },
-      ]
+    if (!wrongAnswers) return
+    const rightAnswer = playlistData[counter].trackName
+    const selectWrongAnswers = shuffle(
+      wrongAnswers.filter(answer => answer !== rightAnswer)
+    )
+    const answerObj = [
+      { title: rightAnswer, right: true, id: 1 },
+      { title: selectWrongAnswers[0], wrong: true, id: 2 },
+      { title: selectWrongAnswers[1], wrong: true, id: 3 },
+    ]
 
-      setAnswers(shuffle(answerObj))
-    }
-  }, [wrongAnswers])
+    setAnswers(shuffle(answerObj))
+  }, [wrongAnswers, counter, playlistData])
 
   //set new song url
-
   if (playlistData && counter) {
     getNextUrl = playlistData[counter].previewUrl
   }
 
-  //handle counter 0
-  useEffect(() => {
-    if (counter === 0) setCounter(playlistData.length - 1)
-  }, [counter])
+  //reset playlist
+  if (counter === 0) setCounter(playlistData.length - 1)
 
   function innitiateNextSong() {
     setCounter(counter - 1)
