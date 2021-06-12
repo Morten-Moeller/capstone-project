@@ -31,7 +31,7 @@ export default function PlayPage({
         )}
         <label>
           Volume:
-          <input type="range" min="0" max="100" step="5" onChange={onChange} />
+          <input type="range" min="0" max="100" step="1" onChange={onChange} />
         </label>
       </Wrapper>
       <Hint tabIndex="0" aria-label="You can use this game by shortcuts">
