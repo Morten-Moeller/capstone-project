@@ -14,7 +14,7 @@ function App() {
   const { getNextUrl, answers, innitiateNextSong } = usePlaylist(playlist)
 
   // useAudio hold and controll the audio element
-  const { setSongUrl, toggle, stop, isPlaying, duration } = useAudio()
+  const { setSongUrl, toggle, stop, isPlaying, duration, volume } = useAudio()
 
   const [newAnswers, setNewAnswers] = useState(answers)
 
@@ -38,6 +38,7 @@ function App() {
           onAnswer={handleAnswer}
           playing={isPlaying}
           duration={duration}
+          onChange={changeVolume}
         />
       )}
     </Container>
@@ -57,6 +58,10 @@ function App() {
     if (isAnswerVisible && !isPlaying) {
       setIsAnswerVisible(false)
     }
+  }
+
+  function changeVolume(event) {
+    volume(event.target.value)
   }
 }
 
