@@ -20,7 +20,8 @@ function App() {
 
   // //set a new song
   useEffect(() => {
-    !isPlaying && setSongUrl(getNextUrl)
+    if (isPlaying) return
+    setSongUrl(getNextUrl)
   }, [getNextUrl])
 
   //set new answers for the buttons
@@ -54,7 +55,9 @@ function App() {
   }
 
   function handlePlay() {
-    !isPlaying && toggle()
+    if (!isPlaying) {
+      toggle()
+    }
     if (isAnswerVisible && !isPlaying) {
       setIsAnswerVisible(false)
     }

@@ -12,11 +12,17 @@ export default function useAudio(url) {
   }, [vol])
 
   useEffect(() => {
-    song.duration && setDuration(Math.round(song.duration))
+    if (song.duration) {
+      setDuration(Math.round(song.duration))
+    }
   }, [song.duration])
 
   useEffect(() => {
-    isPlaying ? song.play() : song.pause()
+    if (isPlaying) {
+      song.play()
+    } else {
+      song.pause()
+    }
   }, [isPlaying, song])
 
   useEffect(() => {
