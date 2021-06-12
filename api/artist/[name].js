@@ -5,9 +5,9 @@ export default async function (req, res) {
   const baseUrl = `https://itunes.apple.com/search?term=${req.query.name}&entity=song`
 
   const apiCall = await fetch(baseUrl)
-  if (apiCall.status === 200) {
+  if (apiCall.ok) {
     return res.send(await apiCall.json())
   } else {
-    return res.status(apiCall.status)
+    return res.status(apiCall.status).end
   }
 }
