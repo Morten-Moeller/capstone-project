@@ -7,6 +7,8 @@ export default function useAudio(url) {
 
   const [duration, setDuration] = useState(null)
 
+  song.volume = 0.5
+
   useEffect(() => {
     song.duration && setDuration(Math.round(song.duration))
   }, [song.duration])
@@ -35,5 +37,10 @@ export default function useAudio(url) {
     setSong(new Audio(url))
   }
 
-  return { setSongUrl, toggle, stop, isPlaying, duration }
+  function volume(number) {
+    const volume = number / 100
+    song.volume = volume
+  }
+
+  return { setSongUrl, toggle, stop, isPlaying, duration, volume }
 }
