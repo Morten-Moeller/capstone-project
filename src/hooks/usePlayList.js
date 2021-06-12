@@ -14,7 +14,7 @@ export default function usePlayList(playlist) {
   // get playlist data
   useEffect(() => {
     async function getData() {
-      const data = await getPlaylistData(newPlaylist)
+      const data = await getPlaylistData(shuffle(newPlaylist))
       if (data) {
         setPlaylistData(data)
         setCounter(data?.length - 1)
