@@ -15,14 +15,22 @@ function App() {
   const { getNextUrl, answers, innitiateNextSong } = usePlaylist(playlist)
 
   // useAudio hold and controll the audio element
-  const { setSongUrl, toggle, stop, isPlaying, duration, volume } = useAudio()
+  const {
+    setSongUrl,
+    toggle,
+    stop,
+    isPlaying,
+    duration,
+    changeVolume,
+  } = useAudio()
 
   const [newAnswers, setNewAnswers] = useState(answers)
 
   // //set a new song
   useEffect(() => {
-    if (isPlaying) return
-    setSongUrl(getNextUrl)
+    if (!isPlaying) {
+      setSongUrl(getNextUrl)
+    }
   }, [getNextUrl])
 
   //set new answers for the buttons
@@ -40,7 +48,7 @@ function App() {
           onAnswer={handleAnswer}
           playing={isPlaying}
           duration={duration}
-          onChange={changeVolume}
+          onChange={handleVolume}
         />
       )}
     </Container>
@@ -64,8 +72,9 @@ function App() {
     }
   }
 
-  function changeVolume(event) {
-    volume(event.target.value)
+  function handleVolume(event) {
+    const volume = event.target.value
+    changeVolume(volume)
   }
 }
 

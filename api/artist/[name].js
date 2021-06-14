@@ -8,6 +8,6 @@ export default async function (req, res) {
   if (apiCall.ok) {
     return res.send(await apiCall.json())
   } else {
-    return res.status(apiCall.status).end
+    return res.status(apiCall.status).end()
   }
 }

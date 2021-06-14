@@ -5,12 +5,12 @@ import { useState } from 'react'
 export default function useAudio(url) {
   const [song, setSong] = useState(new Audio(url))
   const [isPlaying, setIsPlaying] = useState(false)
-  const [vol, setVol] = useState(0.5)
+  const [volume, setVolume] = useState(0.5)
   const [duration, setDuration] = useState(null)
 
   useEffect(() => {
-    song.volume = vol
-  }, [vol])
+    song.volume = volume
+  }, [volume, song])
 
   useEffect(() => {
     if (song.duration) {
@@ -46,10 +46,10 @@ export default function useAudio(url) {
     setSong(new Audio(url))
   }
 
-  function volume(number) {
+  function changeVolume(number) {
     const volume = number / 100
-    setVol(volume)
+    setVolume(volume)
   }
 
-  return { setSongUrl, toggle, stop, isPlaying, duration, volume }
+  return { setSongUrl, toggle, stop, isPlaying, duration, changeVolume }
 }

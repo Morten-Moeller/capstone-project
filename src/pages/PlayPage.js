@@ -9,7 +9,7 @@ export default function PlayPage({
   onAnswer,
   answers,
   showAnswer,
-  playing,
+  isPlaying,
   duration,
   onChange,
 }) {
@@ -24,7 +24,7 @@ export default function PlayPage({
   return (
     <Container>
       <Wrapper>
-        {playing ? (
+        {isPlaying ? (
           duration && <Timer duration={duration} />
         ) : (
           <PlayButton onClick={onPlay}>&gt;</PlayButton>

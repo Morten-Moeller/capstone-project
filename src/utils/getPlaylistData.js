@@ -6,7 +6,7 @@ export default async function getPlaylistData(newPlaylist) {
     newPlaylist.map(({ id }) => fetch(baseUrl + id).then(res => res.json()))
   )
 
-  let data = response.map(({ results }) => results[0])
-  let playlistBaseData = data.filter(el => !!el)
-  return playlistBaseData
+  const playlistData = response.map(({ results }) => results[0])
+  const cleanPlaylistData = playlistData.filter(el => !!el)
+  return cleanPlaylistData
 }
