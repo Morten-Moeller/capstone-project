@@ -26,6 +26,7 @@ const List = styled.ul`
   flex-wrap: wrap;
   gap: 1rem;
   list-style: none;
+  padding: 0;
 
   li {
     background-color: var(--secondary-background-color);

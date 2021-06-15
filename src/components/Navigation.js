@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { NavLink, Route } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 export default function Navigation() {
   return (

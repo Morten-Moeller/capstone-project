@@ -48,8 +48,7 @@ function App() {
   }, [isPlaying])
 
   return (
-    <>
-      <Container></Container>
+    <Container>
       <Route path="/playpage">
         <Navigation />
       </Route>
@@ -71,7 +70,7 @@ function App() {
           )}
         </Route>
       </Switch>
-    </>
+    </Container>
   )
 
   function handlePlaylist(selectedPlaylistName) {
