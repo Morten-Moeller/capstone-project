@@ -26,6 +26,11 @@ const List = styled.ul`
   flex-wrap: wrap;
   gap: 1rem;
   list-style: none;
-  background-color: var(--secondary-background-color);
-  border-radius: 0.15rem;
+
+  li {
+    background-color: var(--secondary-background-color);
+    border-radius: 0.15rem;
+    padding: 0.15rem 0.2rem;
+    cursor: pointer;
+  }
 `
