@@ -43,7 +43,6 @@ export default function usePlayList(initialPlaylist) {
 
   //set all answers and shuffle
   useEffect(() => {
-    console.log(playlistData?.length)
     if (!wrongAnswers) return
     const rightAnswer = playlistData[counter]?.trackName
     const shuffledWrongAnswers = shuffle(

@@ -31,14 +31,14 @@ export default function useAudio(url) {
     return () => song.removeEventListener('ended', () => setIsPlaying(false))
   }, [song])
 
-  function toggle() {
+  function toggleAudio() {
     // workaround for iOS becouse it need a dedicated play action.
     song.play()
     song.pause()
     setIsPlaying(!isPlaying)
   }
 
-  function stop() {
+  function stopAudio() {
     setIsPlaying(false)
   }
 
@@ -51,5 +51,12 @@ export default function useAudio(url) {
     setVolume(volume)
   }
 
-  return { setSongUrl, toggle, stop, isPlaying, duration, changeVolume }
+  return {
+    setSongUrl,
+    toggleAudio,
+    stopAudio,
+    isPlaying,
+    duration,
+    changeVolume,
+  }
 }

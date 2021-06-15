@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 import Button from '../components/Button'
-import Heading from '../components/Headline'
+import Headline from '../components/Headline'
 import PropTypes from 'prop-types'
 
 StartPage.propTypes = {
@@ -18,7 +18,7 @@ export default function StartPage({
 }) {
   return (
     <Container>
-      <Heading>Juke Quest</Heading>
+      <Headline>Juke Quest</Headline>
       <List>
         {playlists.map(({ id, title, playlistName }) => (
           <ListItem

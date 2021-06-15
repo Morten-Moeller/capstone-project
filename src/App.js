@@ -34,8 +34,8 @@ function App() {
   // useAudio hold and controll the audio element
   const {
     setSongUrl,
-    toggle,
-    stop,
+    toggleAudio,
+    stopAudio,
     isPlaying,
     duration,
     changeVolume,
@@ -91,7 +91,7 @@ function App() {
 
   function handleBack() {
     setNewAnswers(defaultAnswers)
-    stop()
+    stopAudio()
   }
 
   function handleGame() {
@@ -108,7 +108,7 @@ function App() {
 
   function handleAnswer() {
     if (isPlaying) {
-      stop()
+      stopAudio()
       setIsAnswerVisible(true)
       innitiateNextSong()
     }
@@ -117,7 +117,7 @@ function App() {
 
   function handlePlay() {
     if (!isPlaying) {
-      toggle()
+      toggleAudio()
     }
     if (isAnswerVisible && !isPlaying) {
       setIsAnswerVisible(false)
