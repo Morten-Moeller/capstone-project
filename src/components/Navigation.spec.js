@@ -1,11 +1,12 @@
 import { render, screen } from '@testing-library/react'
-  import Navigation from './Navigation'
-  
-  describe('Navigation', () => {
-    it('has af Carcasonne as text', () => {
-      const { container } = render(<Navigation />)
-  
-      expect(container.firstChild).toHaveTextContent('Navigation')
-    })
+import Navigation from './Navigation'
+import { MemoryRouter } from 'react-router-dom'
+import userEvent from '@testing-library/user-event'
+
+describe('Navigation', () => {
+  it('has a back link', () => {
+    render(<Navigation />, { wrapper: MemoryRouter })
+
+    expect(screen.getByRole('link')).toBeInTheDocument()
   })
-  
+})
