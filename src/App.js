@@ -14,6 +14,12 @@ function App() {
   const playlistsCopy = [...playlists]
   const [isAnswerVisible, setIsAnswerVisible] = useState(false)
 
+  let selectedPlaylist
+  const defaultAnswers = [
+    { title: 'Button A', right: true, id: 1 },
+    { title: 'Button B', wrong: true, id: 2 },
+    { title: 'Button C', wrong: true, id: 3 },
+  ]
   // usePlaylist takes a list of Objects including an iTunes trackId as id.
   // it checkes if the Id response valid and then retuns a random url from the list and matching random answers
   // with next song we can trigger to get another url
@@ -50,11 +56,15 @@ function App() {
   return (
     <Container>
       <Route path="/playpage">
-        <Navigation />
+        <Navigation onBack={handleBack} />
       </Route>
       <Switch>
         <Route exact path="/">
-          <StartPage playlists={playlists} onClick={handlePlaylist} />
+          <StartPage
+            playlists={playlists}
+            onMark={handleMark}
+            onGame={handleGame}
+          />
         </Route>
         <Route path="/playpage">
           {answers && (
@@ -73,12 +83,20 @@ function App() {
     </Container>
   )
 
-  function handlePlaylist(selectedPlaylistName) {
+  function handleBack() {
+    setNewAnswers(defaultAnswers)
+  }
+
+  function handleGame() {
+    setPlaylist(selectedPlaylist)
+    push('/playpage')
+  }
+
+  function handleMark(selectedPlaylistName) {
     const index = playlistsCopy.findIndex(
       ({ playlistName }) => playlistName === selectedPlaylistName.playlistName
     )
-    setPlaylist(playlistsCopy[index].songs)
-    push('/playpage')
+    selectedPlaylist = playlistsCopy[index].songs
   }
 
   function handleAnswer() {

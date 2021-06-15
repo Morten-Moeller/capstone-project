@@ -1,10 +1,12 @@
 import styled from 'styled-components/macro'
-import { NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
-export default function Navigation() {
+export default function Navigation({ onBack }) {
   return (
     <Nav>
-      <NavLink to="/">&lt;-- back</NavLink>
+      <Link to="/" onClick={onBack}>
+        &lt;-- back
+      </Link>
     </Nav>
   )
 }
