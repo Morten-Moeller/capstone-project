@@ -18,7 +18,7 @@ function App() {
   // it checkes if the Id response valid and then retuns a random url from the list and matching random answers
   // with next song we can trigger to get another url
   const { getNextUrl, answers, innitiateNextSong, setPlaylist } = usePlaylist(
-    playlistsCopy[0].songs
+    null
   )
 
   // useAudio hold and controll the audio element

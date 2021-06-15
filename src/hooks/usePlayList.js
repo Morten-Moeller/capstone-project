@@ -13,13 +13,15 @@ export default function usePlayList(initialPlaylist) {
   let getNextUrl
 
   useEffect(() => {
-    ;(async () => {
-      const data = await getPlaylistData(shuffle(playlist))
-      if (data) {
-        setPlaylistData(data)
-        setCounter(data?.length - 1)
-      }
-    })()
+    if (playlist) {
+      ;(async () => {
+        const data = await getPlaylistData(shuffle(playlist))
+        if (data) {
+          setPlaylistData(data)
+          setCounter(data?.length - 1)
+        }
+      })()
+    }
   }, [playlist])
 
   //get wrong answers
