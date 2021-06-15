@@ -5,11 +5,7 @@ export default async function getWrongAnswers(interpret) {
   const response = await fetch(baseUrl).then(res => res.json())
 
   const trackList = response.results.filter(({ trackName, artistName }) => {
-    if (
-      trackName === 'Undefined' ||
-      trackName === '(Un)Defined' ||
-      interpret !== artistName
-    ) {
+    if (trackName === 'Undefined' || trackName === '(Un)Defined') {
       return ''
     }
     return trackName

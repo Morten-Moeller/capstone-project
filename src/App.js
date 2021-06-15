@@ -14,7 +14,7 @@ function App() {
   const playlistsCopy = [...playlists]
   const [isAnswerVisible, setIsAnswerVisible] = useState(false)
 
-  let selectedPlaylist
+  const [selectedPlaylist, setSelectedPlaylist] = useState(null)
   const defaultAnswers = [
     { title: 'Button A', right: true, id: 1 },
     { title: 'Button B', wrong: true, id: 2 },
@@ -37,7 +37,7 @@ function App() {
     changeVolume,
   } = useAudio()
 
-  const [newAnswers, setNewAnswers] = useState(answers)
+  const [newAnswers, setNewAnswers] = useState(null)
 
   const { push } = useHistory()
 
@@ -64,6 +64,7 @@ function App() {
             playlists={playlists}
             onMark={handleMark}
             onGame={handleGame}
+            selectedPlaylist={selectedPlaylist}
           />
         </Route>
         <Route path="/playpage">
@@ -85,10 +86,11 @@ function App() {
 
   function handleBack() {
     setNewAnswers(defaultAnswers)
+    stop()
   }
 
   function handleGame() {
-    setPlaylist(selectedPlaylist)
+    setPlaylist(selectedPlaylist.songs)
     push('/playpage')
   }
 
@@ -96,7 +98,7 @@ function App() {
     const index = playlistsCopy.findIndex(
       ({ playlistName }) => playlistName === selectedPlaylistName.playlistName
     )
-    selectedPlaylist = playlistsCopy[index].songs
+    setSelectedPlaylist(playlistsCopy[index])
   }
 
   function handleAnswer() {

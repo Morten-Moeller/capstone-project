@@ -9,6 +9,7 @@ const GlobalStyle = createGlobalStyle`
 :root {
     --primary-background-color: white;
     --secondary-background-color: hotpink;
+    --active-background-color: skyblue;
     --primary-color: black;
 
 
