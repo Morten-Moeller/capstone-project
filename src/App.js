@@ -3,20 +3,22 @@ import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import useAudio from './hooks/useAudio'
 import PlayPage from './pages/PlayPage'
-import playlist from './data/playlist.json'
+import playlists from './data/playlists.json'
 import usePlaylist from './hooks/usePlayList'
 import StartPage from './pages/StartPage'
+import { Switch, Route } from 'react-router-dom'
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 
 function App() {
-  const playlists = [
-    { id: '1', title: 'Classic Rock', playlistName: 'playlist' },
-  ]
+  const playlistsCopy = [...playlists]
   const [isAnswerVisible, setIsAnswerVisible] = useState(false)
 
   // usePlaylist takes a list of Objects including an iTunes trackId as id.
   // it checkes if the Id response valid and then retuns a random url from the list and matching random answers
   // with next song we can trigger to get another url
-  const { getNextUrl, answers, innitiateNextSong, setPlaylist } = usePlaylist()
+  const { getNextUrl, answers, innitiateNextSong, setPlaylist } = usePlaylist(
+    playlistsCopy[0].songs
+  )
 
   // useAudio hold and controll the audio element
   const {
@@ -29,6 +31,8 @@ function App() {
   } = useAudio()
 
   const [newAnswers, setNewAnswers] = useState(answers)
+
+  const { push } = useHistory()
 
   // //set a new song
   useEffect(() => {
@@ -43,24 +47,35 @@ function App() {
   }, [isPlaying])
 
   return (
-    <Container>
-      <StartPage playlists={playlists} onClick={handlePlaylist} />
-      {answers && (
-        <PlayPage
-          showAnswer={isAnswerVisible}
-          answers={newAnswers || answers}
-          onPlay={handlePlay}
-          onAnswer={handleAnswer}
-          isPlaying={isPlaying}
-          duration={duration}
-          onChange={handleVolume}
-        />
-      )}
-    </Container>
+    <>
+      <Container></Container>
+      <Switch>
+        <Route exact path="/">
+          <StartPage playlists={playlists} onClick={handlePlaylist} />
+        </Route>
+        <Route path="/playpage">
+          {answers && (
+            <PlayPage
+              showAnswer={isAnswerVisible}
+              answers={newAnswers || answers}
+              onPlay={handlePlay}
+              onAnswer={handleAnswer}
+              isPlaying={isPlaying}
+              duration={duration}
+              onChange={handleVolume}
+            />
+          )}
+        </Route>
+      </Switch>
+    </>
   )
 
-  function handlePlaylist(playlistName) {
-    setPlaylist(playlistName)
+  function handlePlaylist(selectedPlaylistName) {
+    const index = playlistsCopy.findIndex(
+      ({ playlistName }) => playlistName === selectedPlaylistName.playlistName
+    )
+    setPlaylist(playlistsCopy[index].songs)
+    push('/playpage')
   }
 
   function handleAnswer() {
