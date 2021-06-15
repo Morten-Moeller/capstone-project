@@ -12,6 +12,7 @@ export default function PlayPage({
   isPlaying,
   duration,
   onChange,
+  isLoaded,
 }) {
   useShortcut(['a'], onAnswer)
   useShortcut(['1'], onAnswer)
@@ -23,35 +24,45 @@ export default function PlayPage({
 
   return (
     <Container>
-      <Wrapper>
-        {isPlaying ? (
-          duration && <Timer duration={duration} />
-        ) : (
-          <PlayButton onClick={onPlay}>&gt;</PlayButton>
-        )}
-        <label>
-          Volume:
-          <input type="range" min="0" max="100" step="1" onChange={onChange} />
-        </label>
-      </Wrapper>
-      <Hint tabIndex="0" aria-label="You can use this game by shortcuts">
-        <li>Use 's' to start the Song</li>
-        <li>Use first answer with 'a' or '1'</li>
-        <li>Use second answer with 'b' or '2'</li>
-        <li>Use third answer with 'c' or '3'</li>
-      </Hint>
-      <nav tabIndex="1">
-        {answers.map(answer => (
-          <Button
-            key={answer.id}
-            right={showAnswer && answer.right}
-            wrong={showAnswer && answer.wrong}
-            onClick={onAnswer}
-          >
-            {answer.title}
-          </Button>
-        ))}
-      </nav>
+      {isLoaded && (
+        <>
+          <Wrapper>
+            {isPlaying ? (
+              duration && <Timer duration={duration} />
+            ) : (
+              <PlayButton onClick={onPlay}>&gt;</PlayButton>
+            )}
+            <label>
+              Volume:
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="1"
+                onChange={onChange}
+              />
+            </label>
+          </Wrapper>
+          <Hint tabIndex="0" aria-label="You can use this game by shortcuts">
+            <li>Use 's' to start the Song</li>
+            <li>Use first answer with 'a' or '1'</li>
+            <li>Use second answer with 'b' or '2'</li>
+            <li>Use third answer with 'c' or '3'</li>
+          </Hint>
+          <nav tabIndex="1">
+            {answers.map(answer => (
+              <Button
+                key={answer.id}
+                right={showAnswer && answer.right}
+                wrong={showAnswer && answer.wrong}
+                onClick={onAnswer}
+              >
+                {answer.title}
+              </Button>
+            ))}
+          </nav>{' '}
+        </>
+      )}
     </Container>
   )
 }

@@ -23,9 +23,13 @@ function App() {
   // usePlaylist takes a list of Objects including an iTunes trackId as id.
   // it checkes if the Id response valid and then retuns a random url from the list and matching random answers
   // with next song we can trigger to get another url
-  const { getNextUrl, answers, innitiateNextSong, setPlaylist } = usePlaylist(
-    null
-  )
+  const {
+    getNextUrl,
+    answers,
+    innitiateNextSong,
+    setPlaylist,
+    isLoaded,
+  } = usePlaylist(null)
 
   // useAudio hold and controll the audio element
   const {
@@ -77,6 +81,7 @@ function App() {
               isPlaying={isPlaying}
               duration={duration}
               onChange={handleVolume}
+              isLoaded={isLoaded}
             />
           )}
         </Route>

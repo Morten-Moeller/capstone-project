@@ -10,15 +10,18 @@ export default function usePlayList(initialPlaylist) {
   const [answers, setAnswers] = useState(null)
   const [counter, setCounter] = useState(null)
   const [wrongAnswers, setWrongAnswers] = useState(null)
+  const [isLoaded, setIsLoaded] = useState(false)
   let getNextUrl
 
   useEffect(() => {
     if (playlist) {
+      setIsLoaded(false)
       ;(async () => {
         const data = await getPlaylistData(shuffle(playlist))
         if (data) {
           setPlaylistData(data)
           setCounter(data?.length - 1)
+          console.log(data?.length - 1)
         }
       })()
     }
@@ -26,19 +29,23 @@ export default function usePlayList(initialPlaylist) {
 
   //get wrong answers
   useEffect(() => {
-    if (!counter) return
-    ;(async () => {
-      const data = await getWrongAnswers(playlistData[counter].artistName)
-      if (data) {
-        setWrongAnswers(data)
-      }
-    })()
-  }, [counter, playlistData])
+    if (counter && playlistData) {
+      setIsLoaded(true)
+      console.log(playlistData[counter].artistName)
+      ;(async () => {
+        const data = await getWrongAnswers(playlistData[counter].artistName)
+        if (data) {
+          setWrongAnswers(data)
+        }
+      })()
+    }
+  }, [counter])
 
   //set all answers and shuffle
   useEffect(() => {
+    console.log(playlistData?.length)
     if (!wrongAnswers) return
-    const rightAnswer = playlistData[counter].trackName
+    const rightAnswer = playlistData[counter]?.trackName
     const shuffledWrongAnswers = shuffle(
       wrongAnswers.filter(answer => answer !== rightAnswer)
     )
@@ -53,7 +60,7 @@ export default function usePlayList(initialPlaylist) {
 
   //set new song url
   if (playlistData && counter) {
-    getNextUrl = playlistData[counter].previewUrl
+    getNextUrl = playlistData[counter]?.previewUrl
   }
 
   resetPlaylist()
@@ -66,5 +73,5 @@ export default function usePlayList(initialPlaylist) {
     setCounter(counter - 1)
   }
 
-  return { answers, getNextUrl, innitiateNextSong, setPlaylist }
+  return { answers, getNextUrl, innitiateNextSong, setPlaylist, isLoaded }
 }
