@@ -68,20 +68,20 @@ export default function PlayPage({
 }
 
 const Container = styled.main`
-  height: 100vh;
+  height: calc(100vh - 2rem);
   display: grid;
   align-items: center;
   grid-template-rows: 3fr 1fr 3fr;
-  padding: 16px;
+  padding: 1rem;
 
   nav {
     display: grid;
-    gap: 10px;
+    gap: 0.5rem;
   }
 
   nav,
   button {
-    height: 48px;
+    height: 3rem;
     font-size: 1.25rem;
   }
 `
@@ -90,11 +90,11 @@ const Hint = styled.ul`
   flex-direction: column;
   align-items: center;
   list-style: none;
-  padding: 10px 0;
+  padding: 0.5rem 0;
   font-size: 0.8rem;
   color: #555;
-  background-color: #f1f1f1;
-  width: 250px;
+  background-color: var(--primary-background-color);
+  width: 35ch;
   justify-self: center;
   line-height: 1.5;
 `
@@ -105,7 +105,7 @@ const Wrapper = styled.div`
   align-items: center;
 
   label {
-    margin-top: 10px;
+    margin-top: 0.5rem;
     align-self: flex-start;
     display: grid;
     width: 70%;
