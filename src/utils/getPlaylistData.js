@@ -2,7 +2,7 @@
 export default async function getPlaylistData(newPlaylist) {
   const baseUrl = '/api/playlist/'
 
-  let response = await Promise.all(
+  const response = await Promise.all(
     newPlaylist.map(({ id }) => fetch(baseUrl + id).then(res => res.json()))
   )
 

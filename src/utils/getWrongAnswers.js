@@ -2,7 +2,7 @@
 
 export default async function getWrongAnswers(interpret) {
   const baseUrl = `/api/artist/${interpret}`
-  let response = await fetch(baseUrl).then(res => res.json())
+  const response = await fetch(baseUrl).then(res => res.json())
 
   const trackList = response.results.filter(({ trackName, artistName }) => {
     if (
