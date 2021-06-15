@@ -1,3 +1,4 @@
+// @ts-check
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import useAudio from './hooks/useAudio'
@@ -14,13 +15,22 @@ function App() {
   const { getNextUrl, answers, innitiateNextSong } = usePlaylist(playlist)
 
   // useAudio hold and controll the audio element
-  const { setSongUrl, toggle, stop, isPlaying, duration } = useAudio()
+  const {
+    setSongUrl,
+    toggle,
+    stop,
+    isPlaying,
+    duration,
+    changeVolume,
+  } = useAudio()
 
   const [newAnswers, setNewAnswers] = useState(answers)
 
   // //set a new song
   useEffect(() => {
-    !isPlaying && setSongUrl(getNextUrl)
+    if (!isPlaying) {
+      setSongUrl(getNextUrl)
+    }
   }, [getNextUrl])
 
   //set new answers for the buttons
@@ -38,6 +48,7 @@ function App() {
           onAnswer={handleAnswer}
           playing={isPlaying}
           duration={duration}
+          onChange={handleVolume}
         />
       )}
     </Container>
@@ -53,10 +64,17 @@ function App() {
   }
 
   function handlePlay() {
-    !isPlaying && toggle()
+    if (!isPlaying) {
+      toggle()
+    }
     if (isAnswerVisible && !isPlaying) {
       setIsAnswerVisible(false)
     }
+  }
+
+  function handleVolume(event) {
+    const volume = event.target.value
+    changeVolume(volume)
   }
 }
 

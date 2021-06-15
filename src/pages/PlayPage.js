@@ -9,8 +9,9 @@ export default function PlayPage({
   onAnswer,
   answers,
   showAnswer,
-  playing,
+  isPlaying,
   duration,
+  onChange,
 }) {
   useShortcut(['a'], onAnswer)
   useShortcut(['1'], onAnswer)
@@ -22,11 +23,17 @@ export default function PlayPage({
 
   return (
     <Container>
-      {playing ? (
-        duration && <Timer duration={duration} />
-      ) : (
-        <PlayButton onClick={onPlay}>&gt;</PlayButton>
-      )}
+      <Wrapper>
+        {isPlaying ? (
+          duration && <Timer duration={duration} />
+        ) : (
+          <PlayButton onClick={onPlay}>&gt;</PlayButton>
+        )}
+        <label>
+          Volume:
+          <input type="range" min="0" max="100" step="1" onChange={onChange} />
+        </label>
+      </Wrapper>
       <Hint tabIndex="0" aria-label="You can use this game by shortcuts">
         <li>Use 's' to start the Song</li>
         <li>Use first answer with 'a' or '1'</li>
@@ -79,4 +86,17 @@ const Hint = styled.ul`
   width: 250px;
   justify-self: center;
   line-height: 1.5;
+`
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  align-items: center;
+
+  label {
+    margin-top: 10px;
+    align-self: flex-start;
+    display: grid;
+    width: 70%;
+  }
 `
