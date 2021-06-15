@@ -8,6 +8,7 @@ import usePlaylist from './hooks/usePlayList'
 import StartPage from './pages/StartPage'
 import { Switch, Route } from 'react-router-dom'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
+import Navigation from './components/Navigation'
 
 function App() {
   const playlistsCopy = [...playlists]
@@ -49,6 +50,9 @@ function App() {
   return (
     <>
       <Container></Container>
+      <Route path="/playpage">
+        <Navigation />
+      </Route>
       <Switch>
         <Route exact path="/">
           <StartPage playlists={playlists} onClick={handlePlaylist} />

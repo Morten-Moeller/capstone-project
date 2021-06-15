@@ -1,6 +1,6 @@
 //@ts-check
 import styled from 'styled-components/macro'
-import Heading from '../components/Heading'
+import Heading from '../components/Headline'
 
 export default function StartPage({ playlists, onClick }) {
   return (

@@ -1,12 +1,12 @@
 import React from 'react'
-import Heading from './Heading'
+import Headline from './Headline'
 
 export default {
-  title: 'Heading',
-  component: Heading,
+  title: 'Headline',
+  component: Headline,
 }
 
-const Template = args => <Heading {...args} />
+const Template = args => <Headline {...args} />
 
 export const DefaultHeading = Template.bind({})
 DefaultHeading.args = { children: 'Juke Quest' }
