@@ -4,7 +4,8 @@ import getPlaylistData from '../utils/getPlaylistData'
 import getWrongAnswers from '../utils/getWrongAnswers'
 import shuffle from '../utils/shuffleArray'
 
-export default function usePlayList(playlist) {
+export default function usePlayList() {
+  const [playlist, setPlaylist] = useState(null)
   const [playlistData, setPlaylistData] = useState(null)
   const [answers, setAnswers] = useState(null)
   const [counter, setCounter] = useState(null)
@@ -63,5 +64,5 @@ export default function usePlayList(playlist) {
     setCounter(counter - 1)
   }
 
-  return { answers, getNextUrl, innitiateNextSong }
+  return { answers, getNextUrl, innitiateNextSong, setPlaylist }
 }
