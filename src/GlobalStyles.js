@@ -1,8 +1,16 @@
+//@ts-check
 import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
 * {
     box-sizing: border-box;
+}
+
+:root {
+    --primary-background-color: white;
+    --secondary-background-color: hotpink;
+    --active-background-color: skyblue;
+    --primary-color: black;
 }
 
 body {

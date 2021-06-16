@@ -1,36 +1,47 @@
 // @ts-check
 import { useEffect, useState } from 'react'
+import { Route, Switch, useHistory } from 'react-router-dom'
 import styled from 'styled-components'
+import Navigation from './components/Navigation'
+import playlists from './data/playlists.json'
 import useAudio from './hooks/useAudio'
-import PlayPage from './pages/PlayPage'
-import playlist from './data/playlist.json'
 import usePlaylist from './hooks/usePlayList'
+import PlayPage from './pages/PlayPage'
+import StartPage from './pages/StartPage'
 
 function App() {
   const [isAnswerVisible, setIsAnswerVisible] = useState(false)
 
-  // usePlaylist takes a list of Objects including an iTunes trackId as id.
-  // it checkes if the Id response valid and then retuns a random url from the list and matching random answers
-  // with next song we can trigger to get another url
-  const { getNextUrl, answers, innitiateNextSong } = usePlaylist(playlist)
+  const [selectedPlaylist, setSelectedPlaylist] = useState(null)
+  const defaultAnswers = [
+    { title: 'Button A', right: true, id: 1 },
+    { title: 'Button B', wrong: true, id: 2 },
+    { title: 'Button C', wrong: true, id: 3 },
+  ]
 
-  // useAudio hold and controll the audio element
+  const {
+    getNextUrl,
+    answers,
+    initiateNextSong,
+    setNewPlaylist,
+    isLoaded,
+  } = usePlaylist(null)
+
   const {
     setSongUrl,
-    toggle,
-    stop,
+    toggleAudio,
+    stopAudio,
     isPlaying,
     duration,
     changeVolume,
   } = useAudio()
 
-  const [newAnswers, setNewAnswers] = useState(answers)
+  const [newAnswers, setNewAnswers] = useState(null)
 
-  // //set a new song
+  const { push } = useHistory()
+
   useEffect(() => {
-    if (!isPlaying) {
-      setSongUrl(getNextUrl)
-    }
+    setNewSong(getNextUrl)
   }, [getNextUrl])
 
   //set new answers for the buttons
@@ -40,35 +51,75 @@ function App() {
 
   return (
     <Container>
-      {answers && (
-        <PlayPage
-          showAnswer={isAnswerVisible}
-          answers={newAnswers || answers}
-          onPlay={handlePlay}
-          onAnswer={handleAnswer}
-          playing={isPlaying}
-          duration={duration}
-          onChange={handleVolume}
-        />
-      )}
+      <Route path="/playpage">
+        <Navigation onBack={handleBack} />
+      </Route>
+      <Switch>
+        <Route exact path="/">
+          <StartPage
+            playlists={playlists}
+            onMark={handleMark}
+            onGame={handleGame}
+            selectedPlaylist={selectedPlaylist}
+          />
+        </Route>
+        <Route path="/playpage">
+          {answers && (
+            <PlayPage
+              showAnswer={isAnswerVisible}
+              answers={newAnswers || answers}
+              onPlay={handlePlay}
+              onAnswer={handleAnswer}
+              isPlaying={isPlaying}
+              duration={duration}
+              onChange={handleVolume}
+              isLoaded={isLoaded}
+            />
+          )}
+        </Route>
+      </Switch>
     </Container>
   )
 
+  function handleBack() {
+    setNewAnswers(defaultAnswers)
+    setIsAnswerVisible(false)
+    stopAudio()
+  }
+
+  function handleGame() {
+    setNewPlaylist(selectedPlaylist.songs)
+    push('/playpage')
+  }
+
+  function handleMark(selectedPlaylistName) {
+    const index = playlists.findIndex(
+      ({ playlistName }) => playlistName === selectedPlaylistName.playlistName
+    )
+    setSelectedPlaylist(playlists[index])
+  }
+
   function handleAnswer() {
     if (isPlaying) {
-      stop()
+      stopAudio()
       setIsAnswerVisible(true)
-      innitiateNextSong()
+      initiateNextSong()
     }
     return
   }
 
   function handlePlay() {
     if (!isPlaying) {
-      toggle()
+      toggleAudio()
     }
     if (isAnswerVisible && !isPlaying) {
       setIsAnswerVisible(false)
+    }
+  }
+
+  function setNewSong(url) {
+    if (!isPlaying) {
+      setSongUrl(url)
     }
   }
 
