@@ -14,7 +14,7 @@ describe('StartPage', () => {
     render(<StartPage playlists={playlists} />)
 
     const listItems = screen.getAllByRole('listitem')
-    expect(listItems.length).toBe(3)
+    expect(listItems.length).toBeGreaterThan(3)
   })
 
   it('has a button that can be clicked', () => {

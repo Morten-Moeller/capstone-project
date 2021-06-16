@@ -38,10 +38,12 @@ export default function StartPage({
 const Container = styled.main`
   display: grid;
   justify-items: center;
+  padding: 20px;
 `
 const List = styled.ul`
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 1rem;
   list-style: none;
   padding: 0;

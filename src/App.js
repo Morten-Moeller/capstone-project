@@ -1,17 +1,15 @@
 // @ts-check
 import { useEffect, useState } from 'react'
+import { Route, Switch, useHistory } from 'react-router-dom'
 import styled from 'styled-components'
-import useAudio from './hooks/useAudio'
-import PlayPage from './pages/PlayPage'
-import playlists from './data/playlists.json'
-import usePlaylist from './hooks/usePlayList'
-import StartPage from './pages/StartPage'
-import { Switch, Route } from 'react-router-dom'
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import Navigation from './components/Navigation'
+import playlists from './data/playlists.json'
+import useAudio from './hooks/useAudio'
+import usePlaylist from './hooks/usePlayList'
+import PlayPage from './pages/PlayPage'
+import StartPage from './pages/StartPage'
 
 function App() {
-  const playlistsCopy = [...playlists]
   const [isAnswerVisible, setIsAnswerVisible] = useState(false)
 
   const [selectedPlaylist, setSelectedPlaylist] = useState(null)
@@ -20,18 +18,15 @@ function App() {
     { title: 'Button B', wrong: true, id: 2 },
     { title: 'Button C', wrong: true, id: 3 },
   ]
-  // usePlaylist takes a list of Objects including an iTunes trackId as id.
-  // it checkes if the Id response valid and then retuns a random url from the list and matching random answers
-  // with next song we can trigger to get another url
+
   const {
     getNextUrl,
     answers,
-    innitiateNextSong,
-    setPlaylist,
+    initiateNextSong,
+    setNewPlaylist,
     isLoaded,
   } = usePlaylist(null)
 
-  // useAudio hold and controll the audio element
   const {
     setSongUrl,
     toggleAudio,
@@ -45,11 +40,8 @@ function App() {
 
   const { push } = useHistory()
 
-  // //set a new song
   useEffect(() => {
-    if (!isPlaying) {
-      setSongUrl(getNextUrl)
-    }
+    setNewSong(getNextUrl)
   }, [getNextUrl])
 
   //set new answers for the buttons
@@ -96,22 +88,22 @@ function App() {
   }
 
   function handleGame() {
-    setPlaylist(selectedPlaylist.songs)
+    setNewPlaylist(selectedPlaylist.songs)
     push('/playpage')
   }
 
   function handleMark(selectedPlaylistName) {
-    const index = playlistsCopy.findIndex(
+    const index = playlists.findIndex(
       ({ playlistName }) => playlistName === selectedPlaylistName.playlistName
     )
-    setSelectedPlaylist(playlistsCopy[index])
+    setSelectedPlaylist(playlists[index])
   }
 
   function handleAnswer() {
     if (isPlaying) {
       stopAudio()
       setIsAnswerVisible(true)
-      innitiateNextSong()
+      initiateNextSong()
     }
     return
   }
@@ -122,6 +114,12 @@ function App() {
     }
     if (isAnswerVisible && !isPlaying) {
       setIsAnswerVisible(false)
+    }
+  }
+
+  function setNewSong(url) {
+    if (!isPlaying) {
+      setSongUrl(url)
     }
   }
 

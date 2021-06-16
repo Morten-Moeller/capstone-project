@@ -11,8 +11,6 @@ const GlobalStyle = createGlobalStyle`
     --secondary-background-color: hotpink;
     --active-background-color: skyblue;
     --primary-color: black;
-
-
 }
 
 body {

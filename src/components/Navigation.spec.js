@@ -9,4 +9,12 @@ describe('Navigation', () => {
 
     expect(screen.getByRole('link')).toBeInTheDocument()
   })
+
+  it('can be clicked', () => {
+    const onBack = jest.fn()
+    render(<Navigation onBack={onBack} />, { wrapper: MemoryRouter })
+    userEvent.click(screen.getByRole('link'))
+
+    expect(onBack).toHaveBeenCalled()
+  })
 })
