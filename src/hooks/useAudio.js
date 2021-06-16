@@ -52,7 +52,6 @@ export default function useAudio(url) {
   }
 
   function getCurrentTime() {
-    console.log(song.currentTime)
     return song.currentTime
   }
 

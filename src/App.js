@@ -47,7 +47,9 @@ function App() {
 
   //set new answers for the buttons
   useEffect(() => {
-    setNewAnswers(answers)
+    if (isPlaying) {
+      setNewAnswers(answers)
+    }
   }, [isPlaying])
 
   return (
