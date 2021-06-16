@@ -91,6 +91,7 @@ function App() {
 
   function handleBack() {
     setNewAnswers(defaultAnswers)
+    setIsAnswerVisible(false)
     stopAudio()
   }
 
