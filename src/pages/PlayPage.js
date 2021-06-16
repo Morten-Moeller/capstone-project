@@ -72,7 +72,7 @@ export default function PlayPage({
   )
 
   function handleAnswer(isRight) {
-    if (isRight) {
+    if (isRight && !showAnswer) {
       const points = calcPoints(getCurrentTime())
       setScore(score + points)
     }
