@@ -37,7 +37,7 @@ export default function usePlayList(initialPlaylist) {
       // setIsLoaded(true)
 
       ;(async () => {
-        const data = await getWrongAnswers(playlistData[counter].artistName)
+        const data = await getWrongAnswers(playlistData[counter].artistId)
         if (data) {
           setWrongAnswers(data)
         }
