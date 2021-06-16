@@ -16,8 +16,8 @@ export default function PlayPage({
   onChange,
   isLoaded,
   getCurrentTime,
+  playerData,
 }) {
-  const [score, setScore] = useState(0)
   useShortcut(['a'], onAnswer)
   useShortcut(['1'], onAnswer)
   useShortcut(['b'], onAnswer)
@@ -31,7 +31,8 @@ export default function PlayPage({
       {isLoaded && (
         <>
           <Wrapper>
-            score: {score}
+            <span>{playerData.playerName}</span>
+            score: {playerData.score}
             {isPlaying ? (
               duration && <Timer duration={duration} />
             ) : (
@@ -60,7 +61,7 @@ export default function PlayPage({
                 key={answer.id}
                 right={showAnswer && answer.right}
                 wrong={showAnswer && answer.wrong}
-                onClick={() => handleAnswer(answer.right)}
+                onClick={() => onAnswer(answer.right)}
               >
                 {answer.title}
               </Button>
@@ -70,14 +71,6 @@ export default function PlayPage({
       )}
     </Container>
   )
-
-  function handleAnswer(isRight) {
-    if (isRight && !showAnswer) {
-      const points = calcPoints(getCurrentTime())
-      setScore(score + points)
-    }
-    onAnswer()
-  }
 }
 
 const Container = styled.main`

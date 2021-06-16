@@ -8,6 +8,7 @@ import useAudio from './hooks/useAudio'
 import usePlaylist from './hooks/usePlayList'
 import PlayPage from './pages/PlayPage'
 import StartPage from './pages/StartPage'
+import calcPoints from './utils/calcPoints'
 
 function App() {
   const [isAnswerVisible, setIsAnswerVisible] = useState(false)
@@ -38,6 +39,7 @@ function App() {
   } = useAudio()
 
   const [newAnswers, setNewAnswers] = useState(null)
+  const [playerData, setPlayerData] = useState({ score: 0, playerName: '' })
 
   const { push } = useHistory()
 
@@ -64,6 +66,8 @@ function App() {
             onMark={handleMark}
             onGame={handleGame}
             selectedPlaylist={selectedPlaylist}
+            onInputChange={handleNameInput}
+            playerData={playerData}
           />
         </Route>
         <Route path="/playpage">
@@ -78,6 +82,7 @@ function App() {
               onChange={handleVolume}
               isLoaded={isLoaded}
               getCurrentTime={getCurrentTime}
+              playerData={playerData}
             />
           )}
         </Route>
@@ -85,10 +90,17 @@ function App() {
     </Container>
   )
 
+  function handleNameInput(event) {
+    const input = event.target
+    setPlayerData({ ...playerData, playerName: input.value })
+  }
+
   function handleBack() {
     setNewAnswers(defaultAnswers)
     setIsAnswerVisible(false)
     stopAudio()
+    setPlayerData({ ...playerData, score: 0 })
+    setNewPlaylist(null)
   }
 
   function handleGame() {
@@ -103,7 +115,11 @@ function App() {
     setSelectedPlaylist(playlists[index])
   }
 
-  function handleAnswer() {
+  function handleAnswer(isRight) {
+    if (isRight && !isAnswerVisible) {
+      const points = calcPoints(getCurrentTime())
+      setPlayerData({ ...playerData, score: playerData.score + points })
+    }
     if (isPlaying) {
       stopAudio()
       setIsAnswerVisible(true)

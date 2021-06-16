@@ -15,10 +15,20 @@ export default function StartPage({
   onGame,
   onMark,
   selectedPlaylist,
+  onInputChange,
+  playerData,
 }) {
   return (
     <Container>
       <Headline>Juke Quest</Headline>
+      <Label>
+        Name:
+        <input
+          type="text"
+          onChange={onInputChange}
+          value={playerData.playerName}
+        />
+      </Label>
       <List>
         {playlists.map(({ id, title, playlistName }) => (
           <ListItem
@@ -57,4 +67,7 @@ const ListItem = styled.li`
   border-radius: 0.15rem;
   padding: 0.15rem 0.2rem;
   cursor: pointer;
+`
+const Label = styled.label`
+  display: grid;
 `
