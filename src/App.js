@@ -34,6 +34,7 @@ function App() {
     isPlaying,
     duration,
     changeVolume,
+    getCurrentTime,
   } = useAudio()
 
   const [newAnswers, setNewAnswers] = useState(null)
@@ -74,6 +75,7 @@ function App() {
               duration={duration}
               onChange={handleVolume}
               isLoaded={isLoaded}
+              getCurrentTime={getCurrentTime}
             />
           )}
         </Route>

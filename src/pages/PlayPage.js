@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import styled from 'styled-components/macro'
 import Button from '../components/Button'
 import PlayButton from '../components/PlayButton'
 import Timer from '../components/Timer'
 import useShortcut from '../hooks/useShortcut'
+import calcPoints from '../utils/calcPoints'
 
 export default function PlayPage({
   onPlay,
@@ -13,7 +15,9 @@ export default function PlayPage({
   duration,
   onChange,
   isLoaded,
+  getCurrentTime,
 }) {
+  const [score, setScore] = useState(0)
   useShortcut(['a'], onAnswer)
   useShortcut(['1'], onAnswer)
   useShortcut(['b'], onAnswer)
@@ -27,6 +31,7 @@ export default function PlayPage({
       {isLoaded && (
         <>
           <Wrapper>
+            score: {score}
             {isPlaying ? (
               duration && <Timer duration={duration} />
             ) : (
@@ -55,7 +60,7 @@ export default function PlayPage({
                 key={answer.id}
                 right={showAnswer && answer.right}
                 wrong={showAnswer && answer.wrong}
-                onClick={onAnswer}
+                onClick={() => handleAnswer(answer.right)}
               >
                 {answer.title}
               </Button>
@@ -65,6 +70,14 @@ export default function PlayPage({
       )}
     </Container>
   )
+
+  function handleAnswer(isRight) {
+    if (isRight) {
+      const points = calcPoints(getCurrentTime())
+      setScore(score + points)
+    }
+    onAnswer()
+  }
 }
 
 const Container = styled.main`
