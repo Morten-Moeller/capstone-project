@@ -1,10 +1,8 @@
-import { useState } from 'react'
 import styled from 'styled-components/macro'
 import Button from '../components/Button'
 import PlayButton from '../components/PlayButton'
 import Timer from '../components/Timer'
 import useShortcut from '../hooks/useShortcut'
-import calcPoints from '../utils/calcPoints'
 
 export default function PlayPage({
   onPlay,

@@ -1,7 +1,7 @@
 // @ts-check
 import { useEffect, useState } from 'react'
-import getPlaylistData from '../utils/getPlaylistData'
-import getWrongAnswers from '../utils/getWrongAnswers'
+import getPlaylistData from '../services/getPlaylistData'
+import getWrongAnswers from '../services/getWrongAnswers'
 import shuffle from '../utils/shuffleArray'
 /**
  *

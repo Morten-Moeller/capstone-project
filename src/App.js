@@ -8,7 +8,7 @@ import useAudio from './hooks/useAudio'
 import usePlaylist from './hooks/usePlayList'
 import PlayPage from './pages/PlayPage'
 import StartPage from './pages/StartPage'
-import calcPoints from './utils/calcPoints'
+import calcPoints from './services/calcPoints'
 
 function App() {
   const [isAnswerVisible, setIsAnswerVisible] = useState(false)
@@ -45,13 +45,14 @@ function App() {
 
   useEffect(() => {
     setNewSong(getNextUrl)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getNextUrl])
 
-  //set new answers for the buttons
   useEffect(() => {
     if (isPlaying) {
       setNewAnswers(answers)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying])
 
   return (
