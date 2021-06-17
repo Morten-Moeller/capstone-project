@@ -1,6 +1,7 @@
 // @ts-check
 import { useEffect, useState } from 'react'
 import { Route, Switch, useHistory } from 'react-router-dom'
+import { v4 as uuidv4 } from 'uuid'
 import styled from 'styled-components'
 import Navigation from './components/Navigation'
 import playlists from './data/playlists.json'
@@ -27,6 +28,7 @@ function App() {
     initiateNextSong,
     setNewPlaylist,
     isLoaded,
+    counter,
   } = usePlaylist(null)
 
   const {
@@ -40,23 +42,9 @@ function App() {
   } = useAudio()
 
   const [newAnswers, setNewAnswers] = useState(null)
+  let playlistName
   const [playerData, setPlayerData] = useState({ score: 0, playerName: '' })
-  const [historyEntrys, setHistoryEntrys] = useState([
-    {
-      id: '01',
-      playerName: 'John Doe',
-      date: '17. Juni 2021',
-      playlistName: 'Italo Disco 80s',
-      score: 1123,
-    },
-    {
-      id: '02',
-      playerName: 'Jane Doe',
-      date: '17. Juni 2021',
-      playlistName: 'Italo Disco 80s',
-      score: 1312,
-    },
-  ])
+  const [historyEntrys, setHistoryEntrys] = useState([])
 
   const { push } = useHistory()
 
@@ -101,6 +89,8 @@ function App() {
               isLoaded={isLoaded}
               getCurrentTime={getCurrentTime}
               playerData={playerData}
+              counter={counter}
+              onEndGame={handleEndGame}
             />
           )}
         </Route>
@@ -111,6 +101,24 @@ function App() {
       </Switch>
     </Container>
   )
+
+  function handleEndGame() {
+    const date = Date.now()
+    const dateFormat = new Intl.DateTimeFormat('de-DE', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    })
+    const newHistoryEntry = {
+      id: uuidv4(),
+      playerName: playerData.playerName,
+      date: dateFormat.format(date),
+      playlistName: selectedPlaylist.title,
+      score: playerData.score,
+    }
+    setHistoryEntrys([...historyEntrys, newHistoryEntry])
+    push('/history')
+  }
 
   function handleNameInput(event) {
     const input = event.target
@@ -126,6 +134,7 @@ function App() {
   }
 
   function handleGame() {
+    playlistName = selectedPlaylist.title
     setNewPlaylist(selectedPlaylist.songs)
     push('/playpage')
   }
@@ -138,7 +147,7 @@ function App() {
   }
 
   function handleAnswer(isRight) {
-    if (isRight && !isAnswerVisible) {
+    if (isRight && !isAnswerVisible && isPlaying) {
       const points = calcPoints(getCurrentTime())
       setPlayerData({ ...playerData, score: playerData.score + points })
     }

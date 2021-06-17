@@ -67,12 +67,6 @@ export default function usePlayList(initialPlaylist) {
     getNextUrl = playlistData[counter]?.previewUrl
   }
 
-  resetPlaylist()
-
-  function resetPlaylist() {
-    if (counter === 0) setCounter(playlistData.length - 1)
-  }
-
   function initiateNextSong() {
     setCounter(counter - 1)
   }
@@ -83,5 +77,12 @@ export default function usePlayList(initialPlaylist) {
     setCounter(null)
   }
 
-  return { answers, getNextUrl, initiateNextSong, setNewPlaylist, isLoaded }
+  return {
+    answers,
+    getNextUrl,
+    initiateNextSong,
+    setNewPlaylist,
+    isLoaded,
+    counter,
+  }
 }
