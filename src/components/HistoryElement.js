@@ -12,7 +12,10 @@ HistoryElement.propTypes = {
 }
 
 export default function HistoryElement({
-  history: { playerName, score, date, playlistName },
+  playerName,
+  score,
+  date,
+  playlistName,
 }) {
   return (
     <ListItem>
