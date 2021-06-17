@@ -11,7 +11,7 @@ import PlayPage from './pages/PlayPage'
 import StartPage from './pages/StartPage'
 import calcPoints from './services/calcPoints'
 import HistoryPage from './pages/HistoryPage'
-import useLocalStorage from './utils/useLocalStorage'
+import useLocalStorage from './hooks/useLocalStorage'
 
 function App() {
   const [localStorage, setLocalStorage] = useLocalStorage('history', [])
@@ -54,6 +54,7 @@ function App() {
   const { push } = useHistory()
 
   useEffect(() => {
+    console.log(getNextUrl)
     setNewSong(getNextUrl)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getNextUrl])
@@ -92,7 +93,6 @@ function App() {
               duration={duration}
               onChange={handleVolume}
               isLoaded={isLoaded}
-              getCurrentTime={getCurrentTime}
               playerData={playerData}
               counter={counter}
               onEndGame={handleEndGame}

@@ -13,7 +13,6 @@ export default function PlayPage({
   duration,
   onChange,
   isLoaded,
-  getCurrentTime,
   playerData,
   counter,
   onEndGame,
@@ -25,10 +24,10 @@ export default function PlayPage({
   useShortcut(['c'], onAnswer)
   useShortcut(['3'], onAnswer)
   useShortcut(['s'], onPlay)
-  console.log(counter)
+  const isCounter = Boolean(counter > 0)
   return (
     <Container>
-      {isLoaded && counter > 0 && (
+      {Boolean(isLoaded) && isCounter && (
         <>
           <Wrapper>
             <span>{playerData.playerName}</span>
@@ -66,10 +65,10 @@ export default function PlayPage({
                 {answer.title}
               </Button>
             ))}
-          </nav>{' '}
+          </nav>
         </>
       )}
-      {counter === 0 && (
+      {!isCounter && (
         <Wrapper>
           Game ended! You got {playerData.score} points.
           <Button onClick={onEndGame}>End game</Button>
