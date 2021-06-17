@@ -11,8 +11,10 @@ import PlayPage from './pages/PlayPage'
 import StartPage from './pages/StartPage'
 import calcPoints from './services/calcPoints'
 import HistoryPage from './pages/HistoryPage'
+import useLocalStorage from './utils/useLocalStorage'
 
 function App() {
+  const [localStorage, setLocalStorage] = useLocalStorage('history', [])
   const [isAnswerVisible, setIsAnswerVisible] = useState(false)
 
   const [selectedPlaylist, setSelectedPlaylist] = useState(null)
@@ -42,9 +44,12 @@ function App() {
   } = useAudio()
 
   const [newAnswers, setNewAnswers] = useState(null)
-  let playlistName
   const [playerData, setPlayerData] = useState({ score: 0, playerName: '' })
-  const [historyEntrys, setHistoryEntrys] = useState([])
+  const [historyEntrys, setHistoryEntrys] = useState(localStorage)
+
+  useEffect(() => {
+    setLocalStorage(historyEntrys)
+  }, [historyEntrys, setLocalStorage])
 
   const { push } = useHistory()
 
@@ -134,7 +139,6 @@ function App() {
   }
 
   function handleGame() {
-    playlistName = selectedPlaylist.title
     setNewPlaylist(selectedPlaylist.songs)
     push('/playpage')
   }
