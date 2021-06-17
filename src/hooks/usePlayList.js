@@ -43,6 +43,7 @@ export default function usePlayList(initialPlaylist) {
         }
       })()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [counter])
 
   //set all answers and shuffle

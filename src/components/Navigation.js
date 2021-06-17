@@ -1,5 +1,10 @@
 import styled from 'styled-components/macro'
 import { Link } from 'react-router-dom'
+import PropType from 'prop-types'
+
+Navigation.propTypes = {
+  onBack: PropType.func,
+}
 
 export default function Navigation({ onBack }) {
   return (
