@@ -1,7 +1,7 @@
+import PropTypes from 'prop-types'
 import styled from 'styled-components/macro'
 import Button from '../components/Button'
 import Headline from '../components/Headline'
-import PropTypes from 'prop-types'
 
 StartPage.propTypes = {
   playlist: PropTypes.array,

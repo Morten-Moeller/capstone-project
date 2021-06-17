@@ -1,17 +1,17 @@
 // @ts-check
 import { useEffect, useState } from 'react'
 import { Route, Switch, useHistory } from 'react-router-dom'
-import { v4 as uuidv4 } from 'uuid'
 import styled from 'styled-components'
+import { v4 as uuidv4 } from 'uuid'
 import Navigation from './components/Navigation'
 import playlists from './data/playlists.json'
 import useAudio from './hooks/useAudio'
+import useLocalStorage from './hooks/useLocalStorage'
 import usePlaylist from './hooks/usePlayList'
+import HistoryPage from './pages/HistoryPage'
 import PlayPage from './pages/PlayPage'
 import StartPage from './pages/StartPage'
 import calcPoints from './services/calcPoints'
-import HistoryPage from './pages/HistoryPage'
-import useLocalStorage from './hooks/useLocalStorage'
 
 function App() {
   const [localStorage, setLocalStorage] = useLocalStorage('history', [])
