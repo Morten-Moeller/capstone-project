@@ -9,6 +9,7 @@ import usePlaylist from './hooks/usePlayList'
 import PlayPage from './pages/PlayPage'
 import StartPage from './pages/StartPage'
 import calcPoints from './services/calcPoints'
+import HistoryPage from './pages/HistoryPage'
 
 function App() {
   const [isAnswerVisible, setIsAnswerVisible] = useState(false)
@@ -40,6 +41,22 @@ function App() {
 
   const [newAnswers, setNewAnswers] = useState(null)
   const [playerData, setPlayerData] = useState({ score: 0, playerName: '' })
+  const [historyEntrys, setHistoryEntrys] = useState([
+    {
+      id: '01',
+      playerName: 'John Doe',
+      date: '17. Juni 2021',
+      playlistName: 'Italo Disco 80s',
+      score: 1123,
+    },
+    {
+      id: '02',
+      playerName: 'Jane Doe',
+      date: '17. Juni 2021',
+      playlistName: 'Italo Disco 80s',
+      score: 1312,
+    },
+  ])
 
   const { push } = useHistory()
 
@@ -57,7 +74,7 @@ function App() {
 
   return (
     <Container>
-      <Route path="/playpage">
+      <Route path={['/playpage', '/history']}>
         <Navigation onBack={handleBack} />
       </Route>
       <Switch>
@@ -86,6 +103,9 @@ function App() {
               playerData={playerData}
             />
           )}
+        </Route>
+        <Route path="/history">
+          <HistoryPage history={historyEntrys} />
         </Route>
       </Switch>
     </Container>
