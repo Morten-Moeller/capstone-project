@@ -3,12 +3,10 @@ import styled from 'styled-components/macro'
 import PropType from 'prop-types'
 
 HistoryElement.propTypes = {
-  history: PropType.shape({
-    playerName: PropType.string,
-    score: PropType.number,
-    date: PropType.string,
-    playlistName: PropType.string,
-  }),
+  playerName: PropType.string,
+  score: PropType.number,
+  date: PropType.string,
+  playlistName: PropType.string,
 }
 
 export default function HistoryElement({

@@ -5,8 +5,9 @@ export default function HistoryPage({ history }) {
   return (
     <Container>
       <List>
-        {history.map(({ playlistName, playerName, date, score }) => (
+        {history.map(({ playlistName, playerName, date, score, id }) => (
           <HistoryElement
+            key={id}
             score={score}
             date={date}
             playerName={playerName}
