@@ -12,18 +12,13 @@ import HistoryPage from './pages/HistoryPage'
 import PlayPage from './pages/PlayPage'
 import StartPage from './pages/StartPage'
 import calcPoints from './services/calcPoints'
+import defaultAnswers from './services/defaultAnswers'
 
 function App() {
   const [localStorage, setLocalStorage] = useLocalStorage('history', [])
+
+  // custom hooks
   const [isAnswerVisible, setIsAnswerVisible] = useState(false)
-
-  const [selectedPlaylist, setSelectedPlaylist] = useState(null)
-  const defaultAnswers = [
-    { title: 'Button A', right: true, id: 1 },
-    { title: 'Button B', wrong: true, id: 2 },
-    { title: 'Button C', wrong: true, id: 3 },
-  ]
-
   const {
     getNextUrl,
     answers,
@@ -32,7 +27,6 @@ function App() {
     isLoaded,
     counter,
   } = usePlaylist(null)
-
   const {
     setSongUrl,
     toggleAudio,
@@ -43,10 +37,13 @@ function App() {
     getCurrentTime,
   } = useAudio()
 
+  // states
+  const [selectedPlaylist, setSelectedPlaylist] = useState(null)
   const [newAnswers, setNewAnswers] = useState(null)
   const [playerData, setPlayerData] = useState({ score: 0, playerName: '' })
   const [historyEntrys, setHistoryEntrys] = useState(localStorage)
 
+  // side effects
   useEffect(() => {
     setLocalStorage(historyEntrys)
   }, [historyEntrys, setLocalStorage])
@@ -114,6 +111,7 @@ function App() {
       month: 'long',
       year: 'numeric',
     })
+
     const newHistoryEntry = {
       id: uuidv4(),
       playerName: playerData.playerName,
