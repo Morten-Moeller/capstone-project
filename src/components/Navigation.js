@@ -6,12 +6,15 @@ Navigation.propTypes = {
   onBack: PropType.func,
 }
 
-export default function Navigation({ onBack }) {
+export default function Navigation({ onBack, page }) {
   return (
     <Nav>
-      <Link to="/" onClick={onBack}>
-        &lt;-- back
-      </Link>
+      {(page === 'playpage' || page === 'history') && (
+        <Link to="/" onClick={onBack}>
+          &lt;-- start new
+        </Link>
+      )}
+      {page === 'start' && <Link to="/history">history</Link>}
     </Nav>
   )
 }

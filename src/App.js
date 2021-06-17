@@ -74,11 +74,10 @@ function App() {
 
   return (
     <Container>
-      <Route path={['/playpage', '/history']}>
-        <Navigation onBack={handleBack} />
-      </Route>
+      <Route path={['/playpage', '/history']}></Route>
       <Switch>
         <Route exact path="/">
+          <Navigation page={'start'} />
           <StartPage
             playlists={playlists}
             onMark={handleMark}
@@ -89,6 +88,7 @@ function App() {
           />
         </Route>
         <Route path="/playpage">
+          <Navigation page={'playpage'} onBack={handleBack} />
           {answers && (
             <PlayPage
               showAnswer={isAnswerVisible}
@@ -105,6 +105,7 @@ function App() {
           )}
         </Route>
         <Route path="/history">
+          <Navigation page={'history'} onBack={handleBack} />
           <HistoryPage history={historyEntrys} />
         </Route>
       </Switch>
