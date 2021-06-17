@@ -14,18 +14,16 @@ export default function usePlayList(initialPlaylist) {
   const [answers, setAnswers] = useState(null)
   const [counter, setCounter] = useState(null)
   const [wrongAnswers, setWrongAnswers] = useState(null)
-  // const [isLoaded, setIsLoaded] = useState(false)
   const isLoaded = playlist && counter && answers
   let getNextUrl
 
   useEffect(() => {
     if (playlist) {
-      // setIsLoaded(false)
       ;(async () => {
         const data = await getPlaylistData(shuffle(playlist))
         if (data) {
           setPlaylistData(data)
-          setCounter(data?.length - 1)
+          setCounter(data?.length)
         }
       })()
     }
@@ -34,10 +32,8 @@ export default function usePlayList(initialPlaylist) {
   //get wrong answers
   useEffect(() => {
     if (counter && playlistData) {
-      // setIsLoaded(true)
-
       ;(async () => {
-        const data = await getWrongAnswers(playlistData[counter].artistId)
+        const data = await getWrongAnswers(playlistData[counter - 1].artistId)
         if (data) {
           setWrongAnswers(data)
         }
@@ -49,7 +45,7 @@ export default function usePlayList(initialPlaylist) {
   //set all answers and shuffle
   useEffect(() => {
     if (!wrongAnswers) return
-    const rightAnswer = playlistData[counter]?.trackName
+    const rightAnswer = playlistData[counter - 1]?.trackName
     const shuffledWrongAnswers = shuffle(
       wrongAnswers.filter(answer => answer !== rightAnswer)
     )
@@ -64,7 +60,7 @@ export default function usePlayList(initialPlaylist) {
 
   //set new song url
   if (playlistData && counter) {
-    getNextUrl = playlistData[counter]?.previewUrl
+    getNextUrl = playlistData[counter - 1]?.previewUrl
   }
 
   function initiateNextSong() {
