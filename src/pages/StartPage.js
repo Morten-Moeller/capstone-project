@@ -25,6 +25,7 @@ export default function StartPage({
         name:
         <input
           type="text"
+          maxlength="12"
           onChange={onInputChange}
           value={playerData.playerName}
         />
@@ -75,6 +76,7 @@ const List = styled.ul`
   padding: 1rem;
   height: 40vh;
   background-color: var(--color-opacity);
+  box-shadow: var(--effect-neon-small);
 `
 
 const ListItem = styled.li`
