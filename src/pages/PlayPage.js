@@ -135,7 +135,7 @@ const Hint = styled.ul`
   padding: 0.5rem 0;
   font-size: 1rem;
   color: var(--color-primary);
-  background-color: var(--primary-background-color);
+  background-color: var(--color-opacity);
   width: 35ch;
   justify-self: center;
   line-height: 1.5;

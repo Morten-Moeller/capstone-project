@@ -53,6 +53,7 @@ const Container = styled.main`
 
   button {
     margin-top: 2rem;
+    background-color: var(--color-opacity);
   }
   button:hover {
     background-color: var(--color-primary);
@@ -73,6 +74,7 @@ const List = styled.ul`
   border-radius: 2rem;
   padding: 1rem;
   height: 40vh;
+  background-color: var(--color-opacity);
 `
 
 const ListItem = styled.li`
@@ -98,7 +100,7 @@ const Label = styled.label`
     font-size: 1rem;
     margin-top: 0.5rem;
     margin-bottom: 1rem;
-    background: transparent;
+    background-color: var(--color-opacity);
     padding: 0.25rem 1rem;
     color: var(--color-primary);
     &:focus {

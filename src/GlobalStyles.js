@@ -43,6 +43,8 @@ const GlobalStyle = createGlobalStyle`
                     0 0 0.5rem var(--color-right),
                     0 0 0.75rem var(--color-right),
                     0 0 1rem var(--color-right);
+
+    --color-opacity: rgba(0, 0, 0, 0.4)
 }
 
 body {

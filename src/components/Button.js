@@ -10,7 +10,6 @@ const Button = styled.button`
   overflow: hidden;
   text-overflow: clip ellipsis;
   text-overflow: '…';
-
   border-radius: 2rem;
   width: 80%;
   padding: 0.5rem;
@@ -34,7 +33,7 @@ const Button = styled.button`
     `
     } else {
       return `
-    background-color: transparent;
+      background-color: var(--color-opacity);
     color: var(--color-primary);
     opacity: 0.8;
     box-shadow: var(--effect-neon-small);

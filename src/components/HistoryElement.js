@@ -36,6 +36,7 @@ const ListItem = styled.li`
   margin: 0.25rem;
   border-radius: 1.5rem;
   box-shadow: var(--effect-neon-small);
+  background-color: var(--color-opacity);
   div {
     display: flex;
     justify-content: space-between;
