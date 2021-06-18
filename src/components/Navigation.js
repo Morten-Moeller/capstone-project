@@ -28,7 +28,8 @@ const Nav = styled.nav`
   flex-direction: ${props =>
     props.page === 'start' ? 'row-reverse;' : 'row;'};
   padding: 0.25rem;
-  height: 1.5rem;
+  height: 1.6rem;
+  font-size: 1.5rem;
   position: sticky;
   top: 0;
   left: 0;
