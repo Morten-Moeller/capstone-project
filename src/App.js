@@ -51,7 +51,6 @@ function App() {
   const { push } = useHistory()
 
   useEffect(() => {
-    console.log(getNextUrl)
     setNewSong(getNextUrl)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getNextUrl])
@@ -65,7 +64,6 @@ function App() {
 
   return (
     <Container>
-      <Route path={['/playpage', '/history']}></Route>
       <Switch>
         <Route exact path="/">
           <Navigation page={'start'} />
@@ -111,7 +109,6 @@ function App() {
       month: 'long',
       year: 'numeric',
     })
-
     const newHistoryEntry = {
       id: uuidv4(),
       playerName: playerData.playerName,
