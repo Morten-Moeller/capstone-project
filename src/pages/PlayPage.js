@@ -26,6 +26,7 @@ export default function PlayPage({
   useShortcut(['3'], onAnswer)
   useShortcut(['s'], onPlay)
   const isCounter = Boolean(counter > 0)
+  document.activeElement.blur()
   return (
     <Container>
       {Boolean(isLoaded) && isCounter && (
@@ -133,7 +134,7 @@ const Hint = styled.ul`
   list-style: none;
   padding: 0.5rem 0;
   font-size: 1rem;
-  color: #555;
+  color: var(--color-primary);
   background-color: var(--primary-background-color);
   width: 35ch;
   justify-self: center;
