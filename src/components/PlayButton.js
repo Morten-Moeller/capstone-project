@@ -2,13 +2,13 @@ import styled from 'styled-components/macro'
 import Button from './Button'
 
 const PlayButton = styled(Button)`
-  display: flex;
-  justify-content: center;
+  display: felx;
   align-items: center;
-  justify-self: center;
-  font-size: 3rem;
-  width: 72px;
-  height: 72px;
-  padding-bottom: 7px;
+  justify-content: center;
+  width: 5.5rem;
+  height: 6rem;
+  border: none;
+  border-radius: none;
+  box-shadow: none;
 `
 export default PlayButton

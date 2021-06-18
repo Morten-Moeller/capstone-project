@@ -20,12 +20,14 @@ export default function HistoryPage({ history }) {
 }
 
 const Container = styled.main`
-  padding: 10px;
+  padding: 2rem;
+  height: 100vh;
+  overflow-y: auto;
 `
 
 const List = styled.ul`
   display: grid;
-  gap: 1rem;
+  gap: 1.5rem;
   list-style: none;
   padding: 0;
 `
