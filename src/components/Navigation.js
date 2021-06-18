@@ -1,12 +1,20 @@
 import styled from 'styled-components/macro'
 import { Link } from 'react-router-dom'
+import PropType from 'prop-types'
 
-export default function Navigation({ onBack }) {
+Navigation.propTypes = {
+  onBack: PropType.func,
+}
+
+export default function Navigation({ onBack, page }) {
   return (
     <Nav>
-      <Link to="/" onClick={onBack}>
-        &lt;-- back
-      </Link>
+      {(page === 'playpage' || page === 'history') && (
+        <Link to="/" onClick={onBack}>
+          &lt;-- start new
+        </Link>
+      )}
+      {page === 'start' && <Link to="/history">history</Link>}
     </Nav>
   )
 }

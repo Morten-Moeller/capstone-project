@@ -51,6 +51,10 @@ export default function useAudio(url) {
     setVolume(volume)
   }
 
+  function getCurrentTime() {
+    return song.currentTime
+  }
+
   return {
     setSongUrl,
     toggleAudio,
@@ -58,5 +62,6 @@ export default function useAudio(url) {
     isPlaying,
     duration,
     changeVolume,
+    getCurrentTime,
   }
 }

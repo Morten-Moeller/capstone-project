@@ -3,15 +3,20 @@ import StartPage from './StartPage'
 import playlists from '../data/playlists.json'
 import userEvent from '@testing-library/user-event'
 
+const playerData = {
+  playerName: 'John Doe',
+  score: '200',
+}
+
 describe('StartPage', () => {
   it('has a Headline', () => {
-    render(<StartPage playlists={playlists} />)
+    render(<StartPage playerData={playerData} playlists={playlists} />)
 
     expect(screen.getByText('Juke Quest').tagName).toEqual('H1')
   })
 
   it('has a list with items', () => {
-    render(<StartPage playlists={playlists} />)
+    render(<StartPage playerData={playerData} playlists={playlists} />)
 
     const listItems = screen.getAllByRole('listitem')
     expect(listItems.length).toBeGreaterThan(3)
@@ -19,7 +24,13 @@ describe('StartPage', () => {
 
   it('has a button that can be clicked', () => {
     const onClick = jest.fn()
-    render(<StartPage onGame={onClick} playlists={playlists} />)
+    render(
+      <StartPage
+        playerData={playerData}
+        onGame={onClick}
+        playlists={playlists}
+      />
+    )
 
     const button = screen.getByRole('button', { text: 'Play' })
     userEvent.click(button)

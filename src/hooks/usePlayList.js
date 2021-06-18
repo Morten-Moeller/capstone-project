@@ -1,7 +1,7 @@
 // @ts-check
 import { useEffect, useState } from 'react'
-import getPlaylistData from '../utils/getPlaylistData'
-import getWrongAnswers from '../utils/getWrongAnswers'
+import getPlaylistData from '../services/getPlaylistData'
+import getWrongAnswers from '../services/getWrongAnswers'
 import shuffle from '../utils/shuffleArray'
 /**
  *
@@ -14,18 +14,16 @@ export default function usePlayList(initialPlaylist) {
   const [answers, setAnswers] = useState(null)
   const [counter, setCounter] = useState(null)
   const [wrongAnswers, setWrongAnswers] = useState(null)
-  // const [isLoaded, setIsLoaded] = useState(false)
   const isLoaded = playlist && counter && answers
   let getNextUrl
 
   useEffect(() => {
     if (playlist) {
-      // setIsLoaded(false)
       ;(async () => {
         const data = await getPlaylistData(shuffle(playlist))
         if (data) {
           setPlaylistData(data)
-          setCounter(data?.length - 1)
+          setCounter(data?.length)
         }
       })()
     }
@@ -34,21 +32,20 @@ export default function usePlayList(initialPlaylist) {
   //get wrong answers
   useEffect(() => {
     if (counter && playlistData) {
-      // setIsLoaded(true)
-
       ;(async () => {
-        const data = await getWrongAnswers(playlistData[counter].artistName)
+        const data = await getWrongAnswers(playlistData[counter - 1].artistId)
         if (data) {
           setWrongAnswers(data)
         }
       })()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [counter])
 
   //set all answers and shuffle
   useEffect(() => {
     if (!wrongAnswers) return
-    const rightAnswer = playlistData[counter]?.trackName
+    const rightAnswer = playlistData[counter - 1]?.trackName
     const shuffledWrongAnswers = shuffle(
       wrongAnswers.filter(answer => answer !== rightAnswer)
     )
@@ -63,13 +60,7 @@ export default function usePlayList(initialPlaylist) {
 
   //set new song url
   if (playlistData && counter) {
-    getNextUrl = playlistData[counter]?.previewUrl
-  }
-
-  resetPlaylist()
-
-  function resetPlaylist() {
-    if (counter === 0) setCounter(playlistData.length - 1)
+    getNextUrl = playlistData[counter - 1]?.previewUrl
   }
 
   function initiateNextSong() {
@@ -82,5 +73,12 @@ export default function usePlayList(initialPlaylist) {
     setCounter(null)
   }
 
-  return { answers, getNextUrl, initiateNextSong, setNewPlaylist, isLoaded }
+  return {
+    answers,
+    getNextUrl,
+    initiateNextSong,
+    setNewPlaylist,
+    isLoaded,
+    counter,
+  }
 }

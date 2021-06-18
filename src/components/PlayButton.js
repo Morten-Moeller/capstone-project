@@ -1,15 +1,7 @@
 import styled from 'styled-components/macro'
 import Button from './Button'
 
-export default function PlayButton({ children, onClick }) {
-  return (
-    <StyledButton aria-label="Play button" onClick={onClick}>
-      {children}
-    </StyledButton>
-  )
-}
-
-const StyledButton = styled(Button)`
+const PlayButton = styled(Button)`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,3 +11,4 @@ const StyledButton = styled(Button)`
   height: 72px;
   padding-bottom: 7px;
 `
+export default PlayButton
