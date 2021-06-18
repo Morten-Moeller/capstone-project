@@ -137,8 +137,10 @@ function App() {
   }
 
   function handleGame() {
-    setNewPlaylist(selectedPlaylist.songs)
-    push('/playpage')
+    if (selectedPlaylist) {
+      setNewPlaylist(selectedPlaylist.songs)
+      push('/playpage')
+    }
   }
 
   function handleMark(selectedPlaylistName) {
