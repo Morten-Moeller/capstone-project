@@ -90,10 +90,10 @@ export default function PlayPage({
         </>
       )}
       {!isCounter && (
-        <WrapperEndGmae>
+        <WrapperEndGame>
           Game ended! You got {playerData.score} points.
           <Button onClick={onEndGame}>End game</Button>
-        </WrapperEndGmae>
+        </WrapperEndGame>
       )}
     </Container>
   )
@@ -156,7 +156,7 @@ const Wrapper = styled.div`
   }
 `
 
-const WrapperEndGmae = styled.section`
+const WrapperEndGame = styled.section`
   display: grid;
   justify-items: center;
   gap: 2rem;
