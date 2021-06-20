@@ -25,7 +25,7 @@ export default function StartPage({
         name:
         <input
           type="text"
-          maxlength="12"
+          maxLength="12"
           onChange={onInputChange}
           value={playerData.playerName}
         />

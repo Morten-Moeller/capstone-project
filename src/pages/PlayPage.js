@@ -50,9 +50,9 @@ export default function PlayPage({
                       transform="translate(0 -0.002)"
                       fill="none"
                       stroke="#ed67bf"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                     />
                   </g>
                 </svg>
@@ -136,7 +136,6 @@ const Hint = styled.ul`
   font-size: 1rem;
   color: var(--color-primary);
   background-color: var(--color-opacity);
-  box-shadow: var(--effect-neon-small);
   width: 35ch;
   justify-self: center;
   line-height: 1.5;

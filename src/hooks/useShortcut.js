@@ -49,6 +49,7 @@ export default function useShortcut(shortcutKeys, callback) {
     } else {
       dispatch({ type: null })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [callback, keys])
 
   useEffect(() => {
@@ -62,5 +63,6 @@ export default function useShortcut(shortcutKeys, callback) {
         window.removeEventListener('keyup', keyUpListener(k))
       })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 }

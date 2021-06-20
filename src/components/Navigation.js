@@ -34,8 +34,9 @@ const Nav = styled.nav`
   top: 0;
   left: 0;
   background-color: transparent;
-  text-shadow: var(--effect-neon-small);
+  text-shadow: var(--effect-neon-small-navigation);
   a {
     text-decoration: none;
+    color: var(--color-secondary);
   }
 `
