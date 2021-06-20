@@ -4,11 +4,13 @@ import PropType from 'prop-types'
 
 Navigation.propTypes = {
   onBack: PropType.func,
+  page: PropType.string,
 }
 
-export default function Navigation({ onBack, page }) {
+export default function Navigation(props) {
+  const { onBack, page } = props
   return (
-    <Nav>
+    <Nav {...props}>
       {(page === 'playpage' || page === 'history') && (
         <Link to="/" onClick={onBack}>
           &lt;-- start new
@@ -22,6 +24,19 @@ export default function Navigation({ onBack, page }) {
 const Nav = styled.nav`
   display: flex;
   justify-content: space-between;
+  flex-direction: row-reverse;
+  flex-direction: ${props =>
+    props.page === 'start' ? 'row-reverse;' : 'row;'};
   padding: 0.25rem;
-  height: 1.5rem;
+  height: 1.6rem;
+  font-size: 1.5rem;
+  position: sticky;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  text-shadow: var(--effect-neon-small-navigation);
+  a {
+    text-decoration: none;
+    color: var(--color-secondary);
+  }
 `

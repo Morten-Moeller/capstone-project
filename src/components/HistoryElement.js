@@ -30,7 +30,13 @@ export default function HistoryElement({
 
 const ListItem = styled.li`
   display: grid;
-
+  gap: 0.25rem;
+  border: 1px solid var(--color-primary);
+  padding: 0.75rem;
+  margin: 0.25rem;
+  border-radius: 1.5rem;
+  box-shadow: var(--effect-neon-small);
+  background-color: var(--color-opacity);
   div {
     display: flex;
     justify-content: space-between;

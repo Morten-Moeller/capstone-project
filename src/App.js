@@ -13,6 +13,8 @@ import PlayPage from './pages/PlayPage'
 import StartPage from './pages/StartPage'
 import calcPoints from './services/calcPoints'
 import defaultAnswers from './services/defaultAnswers'
+import GlobalFonts from './fonts/fonts'
+import bgImage from './assets/placeholder.jpg'
 
 function App() {
   const [localStorage, setLocalStorage] = useLocalStorage('history', [])
@@ -64,6 +66,7 @@ function App() {
 
   return (
     <Container>
+      <GlobalFonts />
       <Switch>
         <Route exact path="/">
           <Navigation page={'start'} />
@@ -134,8 +137,10 @@ function App() {
   }
 
   function handleGame() {
-    setNewPlaylist(selectedPlaylist.songs)
-    push('/playpage')
+    if (selectedPlaylist) {
+      setNewPlaylist(selectedPlaylist.songs)
+      push('/playpage')
+    }
   }
 
   function handleMark(selectedPlaylistName) {
@@ -180,7 +185,9 @@ function App() {
 }
 
 const Container = styled.main`
+  height: 100vh;
   display: grid;
+  background: center / cover no-repeat url(${bgImage});
 `
 
 export default App

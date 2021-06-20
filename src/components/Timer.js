@@ -25,6 +25,6 @@ export default function Timer({ duration }) {
 }
 
 const StyledTimer = styled.div`
-  font-size: 2.5rem;
+  font-size: 5rem;
   justify-self: center;
 `

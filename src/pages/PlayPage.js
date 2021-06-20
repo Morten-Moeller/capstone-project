@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro'
 import Button from '../components/Button'
 import PlayButton from '../components/PlayButton'
+import StyledSlider from '../components/StyledSlider'
 import Timer from '../components/Timer'
 import useShortcut from '../hooks/useShortcut'
 
@@ -25,6 +26,7 @@ export default function PlayPage({
   useShortcut(['3'], onAnswer)
   useShortcut(['s'], onPlay)
   const isCounter = Boolean(counter > 0)
+  document.activeElement.blur()
   return (
     <Container>
       {Boolean(isLoaded) && isCounter && (
@@ -35,11 +37,30 @@ export default function PlayPage({
             {isPlaying ? (
               duration && <Timer duration={duration} />
             ) : (
-              <PlayButton onClick={onPlay}>&gt;</PlayButton>
+              <PlayButton onClick={onPlay}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="100"
+                  height="100"
+                  viewBox="0 0 102 102.194"
+                >
+                  <g transform="translate(1 1.101)">
+                    <path
+                      d="M94.735,41.928,16.161,1.285C9.777-2.016,0,1.187,0,9.351V90.617c0,7.324,9.085,11.738,16.161,8.066L94.735,58.06c7.009-3.613,7.031-12.519,0-16.132Z"
+                      transform="translate(0 -0.002)"
+                      fill="none"
+                      stroke="#ed67bf"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                    />
+                  </g>
+                </svg>
+              </PlayButton>
             )}
             <label>
               Volume:
-              <input
+              <StyledSlider
                 type="range"
                 min="0"
                 max="100"
@@ -69,10 +90,10 @@ export default function PlayPage({
         </>
       )}
       {!isCounter && (
-        <Wrapper>
+        <WrapperEndGame>
           Game ended! You got {playerData.score} points.
           <Button onClick={onEndGame}>End game</Button>
-        </Wrapper>
+        </WrapperEndGame>
       )}
     </Container>
   )
@@ -84,16 +105,26 @@ const Container = styled.main`
   align-items: center;
   grid-template-rows: 3fr 1fr 3fr;
   padding: 1rem;
+  span {
+    font-size: 2rem;
+  }
 
   nav {
     display: grid;
-    gap: 0.5rem;
+    gap: 1.5rem;
+    justify-items: center;
   }
 
-  nav,
-  button {
-    height: 3rem;
-    font-size: 1.25rem;
+  svg {
+    height: 5rem;
+    width: 5rem;
+  }
+
+  label {
+    justify-self: center;
+    min-width: 250px;
+    width: 100%;
+    margin-bottom: 2rem;
   }
 `
 const Hint = styled.ul`
@@ -102,12 +133,14 @@ const Hint = styled.ul`
   align-items: center;
   list-style: none;
   padding: 0.5rem 0;
-  font-size: 0.8rem;
-  color: #555;
-  background-color: var(--primary-background-color);
+  font-size: 1rem;
+  color: var(--color-primary);
+  background-color: var(--color-opacity);
   width: 35ch;
   justify-self: center;
   line-height: 1.5;
+  border: 1px solid var(--color-primary);
+  border-radius: 2rem;
 `
 const Wrapper = styled.div`
   display: flex;
@@ -121,4 +154,10 @@ const Wrapper = styled.div`
     display: grid;
     width: 70%;
   }
+`
+
+const WrapperEndGame = styled.section`
+  display: grid;
+  justify-items: center;
+  gap: 2rem;
 `
