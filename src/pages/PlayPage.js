@@ -43,6 +43,7 @@ export default function PlayPage({
                   width="100"
                   height="100"
                   viewBox="0 0 102 102.194"
+                  aria-label="Play button"
                 >
                   <g transform="translate(1 1.101)">
                     <path
@@ -65,7 +66,7 @@ export default function PlayPage({
                 min="0"
                 max="100"
                 step="1"
-                onChange={onChange}
+                onMouseUp={onChange}
               />
             </label>
           </Wrapper>
