@@ -6,34 +6,41 @@ import { v4 as uuidv4 } from 'uuid'
 export default function useMqtt() {
   const [client, setClient] = useState(null)
   const [messages, setMessages] = useState([])
-
-  function connect() {
-    const clientId = uuidv4()
-    setClient(new Paho.Client('dagame.boschek.eu', 1883, clientId))
-  }
+  const [curRoom, setCurRoom] = useState(null)
 
   useEffect(() => {
     if (client) {
       client.connect({
-        onSuccess: onConnect,
+        onSuccess: console.log('Connected'),
         userName: process.env.REACT_APP_MQTT_USERNAME,
         password: process.env.REACT_APP_MQTT_PASSWORD,
       })
 
-      // set callback handlers
       client.onConnectionLost = onConnectionLost
       client.onMessageArrived = onMessageArrived
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [client])
 
-  function onConnect() {
-    // Once a connection has been made, make a subscription and send a message.
-    console.log('onConnect')
+  function connect() {
+    const clientId = uuidv4()
+    setClient(new Paho.Client('dagame.boschek.eu', 1883, clientId))
   }
 
   function subscribe(room) {
     client.subscribe(room)
+    console.log('Joined room: ' + room)
+    setCurRoom(room)
+  }
+
+  function unSubscribe() {
+    client.unsubscribe(curRoom)
+    setCurRoom(null)
+  }
+
+  function disconnect() {
+    client.disconnect()
+    console.log('Server disconnected')
   }
 
   function sendMessage(payload) {
@@ -42,17 +49,16 @@ export default function useMqtt() {
     message.destinationName = title
     client.send(message)
   }
-  // called when the client loses its connection
+
   function onConnectionLost(responseObject) {
     if (responseObject.errorCode !== 0) {
       console.log('onConnectionLost:' + responseObject.errorMessage)
     }
   }
 
-  // called when a message arrives
   function onMessageArrived(message) {
     setMessages([message.payloadString, ...messages])
   }
 
-  return { sendMessage, subscribe, connect, messages }
+  return { subscribe, unSubscribe, connect, disconnect, sendMessage, messages }
 }
