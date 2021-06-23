@@ -15,6 +15,8 @@ import calcPoints from './services/calcPoints'
 import defaultAnswers from './services/defaultAnswers'
 import GlobalFonts from './fonts/fonts'
 import bgImage from './assets/placeholder.jpg'
+import useMqtt from './hooks/useMqtt'
+import connectCredentials from './services/connectCredentials'
 
 function App() {
   const [localStorage, setLocalStorage] = useLocalStorage('history', [])
@@ -63,6 +65,43 @@ function App() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying])
+
+  const {
+    mqttConnect,
+    mqttDisconnect,
+    mqttPublish,
+    mqttSub,
+    mqttUnSub,
+    payload,
+    connectStatus,
+    isSubed,
+  } = useMqtt()
+
+  useEffect(() => {
+    mqttConnect(connectCredentials('Morten'))
+  }, [])
+
+  useEffect(() => {
+    const subscribe = { title: 'test123', qos: 0 }
+    const context = { title: 'test123', qos: 0, payload: 'test' }
+    if (connectStatus === 'Connected') {
+      mqttSub(subscribe)
+
+      mqttPublish(context)
+
+      console.log(connectStatus)
+      console.log(isSubed)
+      console.log(payload)
+    }
+  }, [connectStatus])
+
+  useEffect(() => {
+    const subscribe = { title: 'test123', qos: 0 }
+
+    console.log(payload)
+    mqttUnSub(subscribe)
+    mqttDisconnect()
+  }, [payload])
 
   return (
     <Container>
