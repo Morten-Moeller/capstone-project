@@ -60,5 +60,5 @@ export default function useMqtt() {
     setMessages([message.payloadString, ...messages])
   }
 
-  return { subscribe, unSubscribe, connect, disconnect, sendMessage, messages }
+  return { connect, disconnect, subscribe, unSubscribe, sendMessage, messages }
 }
