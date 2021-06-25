@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom/cjs/react-router-dom.min'
 import styled from 'styled-components/macro'
 import Button from '../components/Button'
 import Headline from '../components/Headline'
@@ -17,9 +18,11 @@ export default function StartPage({
   selectedPlaylist,
   onInputChange,
   playerData,
+  history,
 }) {
   return (
     <Container>
+      {history && <Link to="/history">history</Link>}
       <Headline>Juke Quest</Headline>
       <Label>
         name:
@@ -50,7 +53,11 @@ const Container = styled.main`
   display: grid;
   justify-items: center;
   gap: 1rem;
-  padding: 1rem;
+  padding: 0.5rem 1rem 1rem;
+
+  a {
+    justify-self: right;
+  }
 
   button {
     margin-top: 2rem;

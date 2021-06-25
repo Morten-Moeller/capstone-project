@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import HistoryPage from './HistoryPage'
+import { MemoryRouter } from 'react-router-dom'
 
 describe('HistoryPage', () => {
   it('has a list of HistryEntrys', () => {
@@ -21,7 +22,8 @@ describe('HistoryPage', () => {
             score: 1312,
           },
         ]}
-      />
+      />,
+      { wrapper: MemoryRouter }
     )
 
     const listItems = screen.getAllByRole('listitem')

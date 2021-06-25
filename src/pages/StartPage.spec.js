@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import StartPage from './StartPage'
 import playlists from '../data/playlists.json'
 import userEvent from '@testing-library/user-event'
+import { MemoryRouter } from 'react-router-dom/cjs/react-router-dom.min'
 
 const playerData = {
   playerName: 'John Doe',
@@ -29,7 +30,8 @@ describe('StartPage', () => {
         playerData={playerData}
         onGame={onClick}
         playlists={playlists}
-      />
+      />,
+      { wrapper: MemoryRouter }
     )
 
     const button = screen.getByRole('button', { text: 'Play' })
