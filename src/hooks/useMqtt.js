@@ -7,6 +7,7 @@ export default function useMqtt() {
   const [client, setClient] = useState(null)
   const [messages, setMessages] = useState([])
   const [curRoom, setCurRoom] = useState(null)
+  let clientId
 
   useEffect(() => {
     if (client) {
@@ -23,7 +24,7 @@ export default function useMqtt() {
   }, [client])
 
   function connect() {
-    const clientId = uuidv4()
+    clientId = uuidv4()
     setClient(new Paho.Client('dagame.boschek.eu', 1883, clientId))
   }
 
@@ -60,5 +61,13 @@ export default function useMqtt() {
     setMessages([message.payloadString, ...messages])
   }
 
-  return { connect, disconnect, subscribe, unSubscribe, sendMessage, messages }
+  return {
+    connect,
+    disconnect,
+    subscribe,
+    unSubscribe,
+    sendMessage,
+    messages,
+    clientId,
+  }
 }
