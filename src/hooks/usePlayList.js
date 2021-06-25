@@ -14,7 +14,7 @@ export default function usePlayList(initialPlaylist) {
   const [answers, setAnswers] = useState(null)
   const [counter, setCounter] = useState(null)
   const [wrongAnswers, setWrongAnswers] = useState(null)
-  const isLoaded = playlist && counter && answers
+  const isLoaded = Boolean(playlist && answers)
   let getNextUrl
 
   useEffect(() => {
@@ -64,7 +64,12 @@ export default function usePlayList(initialPlaylist) {
   }
 
   function initiateNextSong() {
-    setCounter(counter - 1)
+    if (counter > 0) {
+      setCounter(counter - 1)
+    } else {
+      setCounter(0)
+      setPlaylist(null)
+    }
   }
 
   function setNewPlaylist(newPlaylist) {
