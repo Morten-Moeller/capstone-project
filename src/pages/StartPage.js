@@ -53,7 +53,7 @@ const Container = styled.main`
   display: grid;
   justify-items: center;
   gap: 1rem;
-  padding: 0.5rem 1rem 1rem;
+  padding: 8px 16px 16px;
 
   a {
     justify-self: right;

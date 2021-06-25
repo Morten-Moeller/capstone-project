@@ -23,7 +23,7 @@ export default function HistoryPage({ history }) {
 
 const Container = styled.main`
   padding-top: 0.5rem;
-  padding: 0.5rem 1rem 0;
+  padding: 8px 16px 0;
   height: 100vh;
   overflow-y: auto;
 `
@@ -32,5 +32,5 @@ const List = styled.ul`
   display: grid;
   gap: 1.5rem;
   list-style: none;
-  padding: 0 1rem 1rem;
+  padding: 0 16px 16px;
 `

@@ -169,11 +169,11 @@ export default function SinglePlayPage({
 }
 
 const Container = styled.main`
-  height: calc(100vh - 2rem);
+  height: 100vh;
   display: grid;
   align-items: center;
   grid-template-rows: min-content 3fr 1fr 3fr;
-  padding: 0.5rem 1rem 1rem;
+  padding: 8px 16px 16px;
   span {
     font-size: 2rem;
   }
