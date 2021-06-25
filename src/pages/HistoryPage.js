@@ -22,7 +22,6 @@ export default function HistoryPage({ history }) {
 }
 
 const Container = styled.main`
-  padding-top: 0.5rem;
   padding: 8px 16px 0;
   height: 100vh;
   overflow-y: auto;
