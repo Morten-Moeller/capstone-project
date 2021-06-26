@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react'
 import { Route, Switch, useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { v4 as uuidv4 } from 'uuid'
-import bgImage from './assets/placeholder.jpg'
+import bgImage from './assets/jukequestfin.svg'
 import playlists from './data/playlists.json'
 import GlobalFonts from './fonts/fonts'
 import useLocalStorage from './hooks/useLocalStorage'
 import HistoryPage from './pages/HistoryPage'
+import MultiPlayPage from './pages/MultiPlayPage'
 import SinglePlayPage from './pages/SinglePlayPage'
 import StartPage from './pages/StartPage'
 
@@ -46,6 +47,14 @@ function App() {
             handlePlayerData={handlePlayerData}
           />
         </Route>
+        <Route path="/multiplaypage">
+          <MultiPlayPage
+            selectedPlaylist={selectedPlaylist}
+            playerData={playerData}
+            handlePlayerData={handlePlayerData}
+            roomName="test"
+          />
+        </Route>
         <Route path="/history">
           <HistoryPage history={historyEntrys} />
         </Route>
@@ -55,7 +64,7 @@ function App() {
 
   function handleGame() {
     if (selectedPlaylist) {
-      push('/singleplaypage')
+      push('/multiplaypage')
     }
   }
 

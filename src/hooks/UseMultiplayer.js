@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react'
 import { useState } from 'react'
-import useAudio from './useAudio'
 import useMqtt from './useMqtt'
 import usePlayList from './usePlayList'
 import defaultAnswers from '../services/defaultAnswers'
@@ -18,16 +17,6 @@ export default function UseMultiplayer() {
   } = usePlayList(null)
 
   const {
-    setSongUrl,
-    toggleAudio,
-    stopAudio,
-    isPlaying,
-    duration,
-    changeVolume,
-    getCurrentTime,
-  } = useAudio()
-
-  const {
     connect,
     disconnect,
     subscribe,
@@ -35,6 +24,8 @@ export default function UseMultiplayer() {
     sendMessage,
     messages,
     clientId,
+    isConnected,
+    lastMessage,
   } = useMqtt()
 
   const [isReady, setIsReady] = useState(false)
@@ -45,76 +36,99 @@ export default function UseMultiplayer() {
   const [newAnswers, setNewAnswers] = useState(defaultAnswers)
   const [userName, setUserName] = useState(null)
   const [player, setPlayer] = useState(null)
+  const [url, setUrl] = useState(null)
+  const isCounter = Boolean(counter)
 
   useEffect(() => {
-    setNewPlaylist(selectedPlaylist)
     connect()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
-    subscribe(room)
+    setNewPlaylist(selectedPlaylist)
+  }, [selectedPlaylist])
+
+  useEffect(() => {
+    if (isConnected) {
+      subscribe(room)
+      sendMessage({ title: room, body: 'Goliat online' })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connect])
+  }, [isConnected])
 
   // host ping
-  useEffect(() => {
-    let interval
-    if (isHost) {
-      const message = { title: room, body: 'HostIsTaken' }
-      sendMessage(message)
-    }
-    if (isHost === null) {
-      interval = setInterval(sendIsHost, 1000)
-    } else {
-      clearInterval(interval)
-    }
-    return clearInterval(interval)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHost])
+  // useEffect(() => {
+  //   let interval
+  //   if (isHost && isConnected) {
+  //     const message = { title: room, body: 'HostIsTaken' }
+  //     sendMessage(message)
+  //   }
+  //   if (isHost === null && isConnected) {
+  //     interval = setInterval(sendIsHost, 1000)
+  //   } else {
+  //     clearInterval(interval)
+  //   }
+  //   return clearInterval(interval)
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [isHost, isConnected])
 
   useEffect(() => {
-    sendUrl(getNextUrl)
+    console.log(newAnswers)
+  }, [newAnswers])
+
+  useEffect(() => {
+    initiateNextSong()
+  }, [isReady])
+
+  useEffect(() => {
+    if (isConnected) {
+      sendUrl(getNextUrl)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getNextUrl])
 
   useEffect(() => {
-    if (answers) {
+    console.log(answers)
+    if (answers && isConnected) {
       sendAnswers(answers)
     }
-  }, [answers])
-
-  useEffect(() => {
-    if (isRight) {
-      const message = { title: room, body: clientId + ',' + isRight }
-      sendMessage(message)
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isRight])
+  }, [answers, isConnected])
+
+  // useEffect(() => {
+  //   if (isRight) {
+  //     const message = { title: room, body: clientId + ',' + isRight }
+  //     sendMessage(message)
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [isRight])
 
   //message listener
   useEffect(() => {
-    switch (true) {
-      case /(http:|https:)+[^\s]+[\w]/.test(messages[0].body):
-        setSongUrl(messages[0].body.match(/(www|http:|https:)+[^\s]+[\w]/))
-        break
-      case /(answer)/.test(messages[0].body):
-        handleAnswers(messages[0].body)
-        break
-      case /(isReady)/.test(messages[0].body):
-        handleIsReady(messages[0].body)
-        break
-      case /(hostIsTaken)/.test(messages[0].body):
-        handleHost()
-        break
-      default:
-        break
+    if (messages[0] && isConnected) {
+      switch (true) {
+        case /(http:|https:)+[^\s]+[\w]/.test(messages[0]):
+          setUrl(messages[0])
+          break
+        case /(answer)/.test(messages[0]):
+          handleAnswers(messages[0])
+          break
+        // case /(isReady)/.test(messages[0]):
+        //   handleIsReady(messages[0])
+        //   break
+        // case /(hostIsTaken)/.test(messages[0]):
+        //   handleHost()
+        //   break
+        default:
+          break
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages])
 
-  function handleHost() {
-    if (!isHost) setIsHost(false)
-  }
+  // function handleHost() {
+  //   if (!isHost) setIsHost(false)
+  // }
 
   function handleAnswers(rawAnswers) {
     const reformAnswers = rawAnswers.split(/(answer )/)
@@ -122,19 +136,19 @@ export default function UseMultiplayer() {
     setNewAnswers(answers)
   }
 
-  function handleIsReady(rawMessage) {
-    const reformMessage = rawMessage.split(/(isAnswer)/)
-    const messageParts = reformMessage[2].split(',')
-    const playerName = messageParts[0]
-    const playerIsReady = messageParts[1]
-    console.log(playerName)
-    console.log(playerIsReady)
+  // function handleIsReady(rawMessage) {
+  //   const reformMessage = rawMessage.split(/(isAnswer)/)
+  //   const messageParts = reformMessage[2].split(',')
+  //   const playerName = messageParts[0]
+  //   const playerIsReady = messageParts[1]
+  //   console.log(playerName)
+  //   console.log(playerIsReady)
 
-    setPlayer([
-      ...player,
-      { playerName, playerIsReady: JSON.parse(playerIsReady) },
-    ])
-  }
+  //   setPlayer([
+  //     ...player,
+  //     { playerName, playerIsReady: JSON.parse(playerIsReady) },
+  //   ])
+  // }
 
   function sendAnswers(answers) {
     const answerJson = 'answer ' + JSON.stringify(answers)
@@ -147,20 +161,18 @@ export default function UseMultiplayer() {
     sendMessage(message)
   }
 
-  function sendIsHost() {
-    if (isHost === null) {
-      const message = { title: room, body: 'noHost' }
-      sendMessage(message)
-    }
+  // function sendIsHost() {
+  //   const message = { title: room, body: 'noHost' }
+  //   sendMessage(message)
+  // }
 
-    function sendIsReady() {
-      const message = {
-        title: room,
-        body: 'isReady' + userName + ',' + isReady,
-      }
-      sendMessage(message)
-    }
-  }
+  // function sendIsReady() {
+  //   const message = {
+  //     title: room,
+  //     body: 'isReady' + userName + ',' + isReady,
+  //   }
+  //   sendMessage(message)
+  // }
 
   return {
     setIsReady,
@@ -170,12 +182,10 @@ export default function UseMultiplayer() {
     setSelectedPlaylist,
     setRoom,
     newAnswers,
-    isPlaying,
-    duration,
     player,
-    toggleAudio,
-    stopAudio,
     isLoaded,
     initiateNextSong,
+    isCounter,
+    url,
   }
 }
