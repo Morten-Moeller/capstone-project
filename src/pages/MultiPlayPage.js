@@ -1,4 +1,3 @@
-//@ts-check
 import styled from 'styled-components/macro'
 import Button from '../components/Button'
 import PlayButton from '../components/PlayButton'
@@ -18,8 +17,9 @@ export default function MultiPlayPage({
   handlePlayerData,
 }) {
   const {
-    setIsReady,
-    setIsHost,
+    setReady,
+    allReady,
+    areAllReady,
     setIsRight,
     setUserName,
     setSelectedPlaylist,
@@ -46,15 +46,15 @@ export default function MultiPlayPage({
 
   useEffect(() => {
     setRoom(roomName)
-    setUserName(playerData.userName)
+    setUserName(playerData.playerName)
     setSelectedPlaylist(selectedPlaylist.songs)
   }, [])
 
   useEffect(() => {
-    if (url) {
+    if (url && areAllReady) {
       setSongUrl(url)
     }
-  }, [url])
+  }, [url, areAllReady])
 
   return (
     <Container>
@@ -64,7 +64,9 @@ export default function MultiPlayPage({
           <Wrapper>
             <span>{playerData.playerName}</span>
             score: {playerData.score}
-            {isPlaying ? (
+            {!areAllReady ? (
+              <Button onClick={setReady}>Ready?</Button>
+            ) : isPlaying ? (
               duration && <Timer duration={duration} />
             ) : (
               <PlayButton onClick={handlePlay}>
@@ -81,20 +83,31 @@ export default function MultiPlayPage({
                 onMouseUp={handleVolume}
               />
             </label>
+            <List>
+              {player.map(name => (
+                <ListItem
+                  isReady={allReady.some(({ user }) => user === name)}
+                  key={name}
+                >
+                  {name}
+                </ListItem>
+              ))}
+            </List>
           </Wrapper>
-
-          <nav tabIndex={1}>
-            {newAnswers?.map(answer => (
-              <Button
-                key={answer.id}
-                right={isAnswerVisible && answer.right}
-                wrong={isAnswerVisible && answer.wrong}
-                onClick={() => handleAnswer(answer.right)}
-              >
-                {answer.title}
-              </Button>
-            ))}
-          </nav>
+          {areAllReady && (
+            <nav tabIndex={1}>
+              {newAnswers?.map(answer => (
+                <Button
+                  key={answer.id}
+                  right={isAnswerVisible && answer.right}
+                  wrong={isAnswerVisible && answer.wrong}
+                  onClick={() => handleAnswer(answer.right)}
+                >
+                  {answer.title}
+                </Button>
+              ))}
+            </nav>
+          )}
         </>
       )}
     </Container>
@@ -158,10 +171,11 @@ const Container = styled.main`
 `
 
 const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: grid;
   justify-self: center;
+  justify-items: center;
   align-items: center;
+  width: 100%;
 
   label {
     margin-top: 0.5rem;
@@ -169,4 +183,38 @@ const Wrapper = styled.div`
     display: grid;
     width: 70%;
   }
+`
+const List = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem 1rem;
+  list-style: none;
+  padding: 0;
+  border: 1px solid var(--color-primary);
+  overflow-y: auto;
+  border-radius: 2rem;
+  padding: 0.75rem;
+  height: 7.5rem;
+  width: 100%;
+  background-color: var(--color-opacity);
+  box-shadow: var(--effect-neon-small);
+`
+
+const ListItem = styled.li`
+  display: flex;
+  align-items: center;
+  transition: var(--transition);
+  box-shadow: ${prop =>
+    prop.isReady
+      ? 'var(--effect-neon-small-active)'
+      : 'var(--effect-neon-small)'};
+  color: var(--color-primary);
+  height: 2rem;
+  border-radius: 1rem;
+  padding: 0.4rem 0.5rem 0.3rem;
+  margin: 0.3rem;
+  cursor: pointer;
+  background-color: transparent;
 `

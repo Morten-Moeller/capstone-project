@@ -1,6 +1,6 @@
 //@ts-check
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useState } from 'react'
 import useMqtt from './useMqtt'
 import usePlayList from './usePlayList'
@@ -23,26 +23,32 @@ export default function UseMultiplayer() {
     unSubscribe,
     sendMessage,
     messages,
-    clientId,
     isConnected,
-    lastMessage,
   } = useMqtt()
 
   const [isReady, setIsReady] = useState(false)
-  const [isHost, setIsHost] = useState(null)
+  const [isHost, setIsHost] = useState(false)
   const [isRight, setIsRight] = useState(false)
+  const [allReady, setAllReady] = useState([])
   const [selectedPlaylist, setSelectedPlaylist] = useState(null)
   const [room, setRoom] = useState(null)
   const [newAnswers, setNewAnswers] = useState(defaultAnswers)
   const [userName, setUserName] = useState(null)
-  const [player, setPlayer] = useState(null)
+  const [player, setPlayer] = useState([])
   const [url, setUrl] = useState(null)
   const isCounter = Boolean(counter)
+  const messagesRef = useRef(messages)
+  messagesRef.current = messages
+  const areAllReady = Boolean(
+    player.length === allReady.filter(el => el.isReady === true).length
+  )
 
   useEffect(() => {
     connect()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  console.log(allReady)
 
   useEffect(() => {
     setNewPlaylist(selectedPlaylist)
@@ -51,57 +57,35 @@ export default function UseMultiplayer() {
   useEffect(() => {
     if (isConnected) {
       subscribe(room)
-      sendMessage({ title: room, body: 'Goliat online' })
+      request()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected])
-
-  // host ping
-  // useEffect(() => {
-  //   let interval
-  //   if (isHost && isConnected) {
-  //     const message = { title: room, body: 'HostIsTaken' }
-  //     sendMessage(message)
-  //   }
-  //   if (isHost === null && isConnected) {
-  //     interval = setInterval(sendIsHost, 1000)
-  //   } else {
-  //     clearInterval(interval)
-  //   }
-  //   return clearInterval(interval)
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [isHost, isConnected])
 
   useEffect(() => {
     console.log(newAnswers)
   }, [newAnswers])
 
   useEffect(() => {
-    initiateNextSong()
-  }, [isReady])
+    if (isHost) {
+      initiateNextSong()
+      setAllReady([])
+    }
+  }, [areAllReady])
 
   useEffect(() => {
-    if (isConnected) {
+    if (isConnected && isHost) {
       sendUrl(getNextUrl)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getNextUrl])
 
   useEffect(() => {
-    console.log(answers)
-    if (answers && isConnected) {
+    if (answers && isConnected && isHost) {
       sendAnswers(answers)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [answers, isConnected])
-
-  // useEffect(() => {
-  //   if (isRight) {
-  //     const message = { title: room, body: clientId + ',' + isRight }
-  //     sendMessage(message)
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [isRight])
 
   //message listener
   useEffect(() => {
@@ -113,42 +97,72 @@ export default function UseMultiplayer() {
         case /(answer)/.test(messages[0]):
           handleAnswers(messages[0])
           break
-        // case /(isReady)/.test(messages[0]):
-        //   handleIsReady(messages[0])
-        //   break
-        // case /(hostIsTaken)/.test(messages[0]):
-        //   handleHost()
-        //   break
+        case /(anybody)/.test(messages[0]):
+          handleRequest()
+          break
+        case /(here)/.test(messages[0]):
+          handlePlayer(messages[0])
+          break
+        case /(isReady)/.test(messages[0]):
+          handleIsReady(messages[0])
+          break
         default:
+          checkHost()
           break
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages])
 
-  // function handleHost() {
-  //   if (!isHost) setIsHost(false)
-  // }
+  function handleIsReady(rawMessage) {
+    const messageArray = rawMessage.split(/(isReady)/)
+    const userName = messageArray[2]
+    setAllReady([...allReady, { user: userName, isReady: true }])
+  }
+
+  function handlePlayer(rawMessage) {
+    const messageArray = rawMessage.split(/(here)/)
+    const newPlayer = messageArray[2]
+    if (!player.includes(newPlayer)) {
+      setPlayer([...player, newPlayer])
+    }
+  }
+
+  function checkHost() {
+    setTimeout(() => {
+      console.log(messagesRef.current)
+      const isHostAssigned = messagesRef.current.includes('host')
+      if (!isHostAssigned) {
+        setIsHost(true)
+      }
+    }, 1000)
+  }
+
+  function request() {
+    const requestMessage = { title: room, body: 'anybody' }
+    sendMessage(requestMessage)
+  }
+
+  function handleRequest() {
+    const answer = { title: room, body: 'here' + userName }
+    sendMessage(answer)
+    if (isHost) {
+      const answerHost = { title: room, body: 'host' }
+      sendMessage(answerHost)
+    }
+  }
+
+  function setReady() {
+    const message = { title: room, body: 'isReady' + userName }
+    sendMessage(message)
+    setIsReady(true)
+  }
 
   function handleAnswers(rawAnswers) {
     const reformAnswers = rawAnswers.split(/(answer )/)
     const answers = JSON.parse(reformAnswers[2])
     setNewAnswers(answers)
   }
-
-  // function handleIsReady(rawMessage) {
-  //   const reformMessage = rawMessage.split(/(isAnswer)/)
-  //   const messageParts = reformMessage[2].split(',')
-  //   const playerName = messageParts[0]
-  //   const playerIsReady = messageParts[1]
-  //   console.log(playerName)
-  //   console.log(playerIsReady)
-
-  //   setPlayer([
-  //     ...player,
-  //     { playerName, playerIsReady: JSON.parse(playerIsReady) },
-  //   ])
-  // }
 
   function sendAnswers(answers) {
     const answerJson = 'answer ' + JSON.stringify(answers)
@@ -161,22 +175,10 @@ export default function UseMultiplayer() {
     sendMessage(message)
   }
 
-  // function sendIsHost() {
-  //   const message = { title: room, body: 'noHost' }
-  //   sendMessage(message)
-  // }
-
-  // function sendIsReady() {
-  //   const message = {
-  //     title: room,
-  //     body: 'isReady' + userName + ',' + isReady,
-  //   }
-  //   sendMessage(message)
-  // }
-
   return {
-    setIsReady,
-    setIsHost,
+    setReady,
+    allReady,
+    areAllReady,
     setIsRight,
     setUserName,
     setSelectedPlaylist,
@@ -187,5 +189,7 @@ export default function UseMultiplayer() {
     initiateNextSong,
     isCounter,
     url,
+    disconnect,
+    unSubscribe,
   }
 }

@@ -65,8 +65,8 @@ export default function useMqtt() {
   }
 
   function onMessageArrived(message) {
-    console.log(message.payloadString)
     setMessages(messages => [message.payloadString, ...messages])
+    console.log(message.payloadString)
   }
 
   return {
