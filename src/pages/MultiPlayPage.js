@@ -20,14 +20,14 @@ export default function MultiPlayPage({
     setReady,
     allReady,
     areAllReady,
-    setIsRight,
+    handleIsRight,
     setUserName,
     setSelectedPlaylist,
     setRoom,
     newAnswers,
     player,
     isLoaded,
-    initiateNextSong,
+    allAnswers,
     isCounter,
     url,
   } = UseMultiplayer()
@@ -44,6 +44,8 @@ export default function MultiPlayPage({
 
   const [isAnswerVisible, setIsAnswerVisible] = useState(false)
 
+  console.log(allAnswers)
+
   useEffect(() => {
     setRoom(roomName)
     setUserName(playerData.playerName)
@@ -51,10 +53,10 @@ export default function MultiPlayPage({
   }, [])
 
   useEffect(() => {
-    if (url && areAllReady) {
+    if (url) {
       setSongUrl(url)
     }
-  }, [url, areAllReady])
+  }, [url])
 
   return (
     <Container>
@@ -87,6 +89,12 @@ export default function MultiPlayPage({
               {player.map(name => (
                 <ListItem
                   isReady={allReady.some(({ user }) => user === name)}
+                  hasRightAnswer={allAnswers.some(
+                    ({ user, isRight }) => (user === name) & isRight
+                  )}
+                  hasWrongAnswer={allAnswers.some(
+                    ({ user, isRight }) => (user === name) & !isRight
+                  )}
                   key={name}
                 >
                   {name}
@@ -117,13 +125,14 @@ export default function MultiPlayPage({
     if (isRight && !isAnswerVisible && isPlaying) {
       const points = calcPoints(getCurrentTime())
       handlePlayerData({ ...playerData, score: playerData.score + points })
+      handleIsRight(true)
+    } else {
+      handleIsRight(false)
     }
     if (isPlaying) {
       stopAudio()
       setIsAnswerVisible(true)
-      initiateNextSong()
     }
-    return
   }
 
   function handlePlay() {
@@ -210,7 +219,12 @@ const ListItem = styled.li`
     prop.isReady
       ? 'var(--effect-neon-small-active)'
       : 'var(--effect-neon-small)'};
-  color: var(--color-primary);
+  color: ${prop =>
+    prop.hasRightAnswer
+      ? 'var(--color-right)'
+      : prop.hasWrongAnswer
+      ? 'var(--color-wrong)'
+      : 'var(--color-primary)'};
   height: 2rem;
   border-radius: 1rem;
   padding: 0.4rem 0.5rem 0.3rem;

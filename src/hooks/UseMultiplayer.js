@@ -29,6 +29,7 @@ export default function UseMultiplayer() {
   const [isReady, setIsReady] = useState(false)
   const [isHost, setIsHost] = useState(false)
   const [isRight, setIsRight] = useState(false)
+  const [allAnswers, setAllAnswers] = useState([])
   const [allReady, setAllReady] = useState([])
   const [selectedPlaylist, setSelectedPlaylist] = useState(null)
   const [room, setRoom] = useState(null)
@@ -48,8 +49,6 @@ export default function UseMultiplayer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  console.log(allReady)
-
   useEffect(() => {
     setNewPlaylist(selectedPlaylist)
   }, [selectedPlaylist])
@@ -63,29 +62,28 @@ export default function UseMultiplayer() {
   }, [isConnected])
 
   useEffect(() => {
-    console.log(newAnswers)
-  }, [newAnswers])
-
-  useEffect(() => {
     if (isHost) {
       initiateNextSong()
-      setAllReady([])
     }
-  }, [areAllReady])
+  }, [areAllReady === true])
 
   useEffect(() => {
     if (isConnected && isHost) {
       sendUrl(getNextUrl)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getNextUrl])
+  }, [isReady === true])
+
+  useEffect(() => {
+    checkHost()
+  }, [player])
 
   useEffect(() => {
     if (answers && isConnected && isHost) {
       sendAnswers(answers)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [answers, isConnected])
+  }, [areAllReady === true])
 
   //message listener
   useEffect(() => {
@@ -106,13 +104,31 @@ export default function UseMultiplayer() {
         case /(isReady)/.test(messages[0]):
           handleIsReady(messages[0])
           break
+        case /(isWrong)/.test(messages[0]):
+          handleWrong(messages[0])
+          break
+        case /(isRight)/.test(messages[0]):
+          handleRight(messages[0])
+          break
         default:
-          checkHost()
           break
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages])
+
+  function handleRight(rawMessage) {
+    const messageArray = rawMessage.split(/(isRight)/)
+    console.log(messageArray)
+    const userName = messageArray[2]
+    setAllAnswers([...allAnswers, { user: userName, isRight: true }])
+  }
+
+  function handleWrong(rawMessage) {
+    const messageArray = rawMessage.split(/(isWrong)/)
+    const userName = messageArray[2]
+    setAllAnswers([...allAnswers, { user: userName, isRight: false }])
+  }
 
   function handleIsReady(rawMessage) {
     const messageArray = rawMessage.split(/(isReady)/)
@@ -130,8 +146,8 @@ export default function UseMultiplayer() {
 
   function checkHost() {
     setTimeout(() => {
-      console.log(messagesRef.current)
       const isHostAssigned = messagesRef.current.includes('host')
+
       if (!isHostAssigned) {
         setIsHost(true)
       }
@@ -156,6 +172,7 @@ export default function UseMultiplayer() {
     const message = { title: room, body: 'isReady' + userName }
     sendMessage(message)
     setIsReady(true)
+    initiateNextSong()
   }
 
   function handleAnswers(rawAnswers) {
@@ -175,18 +192,30 @@ export default function UseMultiplayer() {
     sendMessage(message)
   }
 
+  function handleIsRight(bool) {
+    setIsRight(bool)
+    console.log(bool)
+    let message
+    if (bool) {
+      message = { title: room, body: 'isRight' + userName }
+    } else if (!bool) {
+      message = { title: room, body: 'isWrong' + userName }
+    }
+    sendMessage(message)
+  }
+
   return {
     setReady,
     allReady,
     areAllReady,
-    setIsRight,
+    allAnswers,
+    handleIsRight,
     setUserName,
     setSelectedPlaylist,
     setRoom,
     newAnswers,
     player,
     isLoaded,
-    initiateNextSong,
     isCounter,
     url,
     disconnect,
