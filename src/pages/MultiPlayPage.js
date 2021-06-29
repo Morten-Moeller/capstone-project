@@ -30,11 +30,11 @@ export default function MultiPlayPage({
     allAnswers,
     isCounter,
     url,
-    areAllAnswers,
-    sendNextSong,
     initiateNextSong,
-    sendNextAnswers,
     isReady,
+    isGameEnded,
+    handleEndGame,
+    endScore,
   } = UseMultiplayer()
 
   const {
@@ -49,6 +49,8 @@ export default function MultiPlayPage({
 
   const [isAnswerVisible, setIsAnswerVisible] = useState(false)
   const [answers, setAnswers] = useState([])
+
+  console.log(isGameEnded)
 
   useEffect(() => {
     setRoom(roomName)
@@ -66,7 +68,7 @@ export default function MultiPlayPage({
   return (
     <Container>
       <Link onClick={handleNavigate}>&lt;-- start new</Link>
-      {isLoaded && isCounter && (
+      {isLoaded && !isGameEnded && (
         <>
           <Wrapper>
             <span>{playerData.playerName}</span>
@@ -78,9 +80,11 @@ export default function MultiPlayPage({
             ) : isPlaying ? (
               duration && <Timer duration={duration} />
             ) : (
-              <PlayButton onClick={handlePlay}>
-                <PlayButtonSVG />
-              </PlayButton>
+              isCounter && (
+                <PlayButton onClick={handlePlay}>
+                  <PlayButtonSVG />
+                </PlayButton>
+              )
             )}
             <label>
               Volume:
@@ -124,6 +128,22 @@ export default function MultiPlayPage({
             </nav>
           )}
         </>
+      )}
+      {isGameEnded && !isCounter && (
+        <WrapperEndGame>
+          Game ended! You got {playerData.score} points.
+          <Button onClick={() => handleEndGame(playerData.score)}>
+            Submit score
+          </Button>
+          <ul>
+            {endScore.map(el => (
+              <li>
+                <span>{el.player}</span>
+                <span>{el.score}</span>
+              </li>
+            ))}
+          </ul>
+        </WrapperEndGame>
       )}
     </Container>
   )
@@ -246,4 +266,12 @@ const ListItem = styled.li`
   cursor: pointer;
   background-color: transparent;
 `
-const Link = styled.a``
+const Link = styled.a`
+  color: var(--color-secondary);
+`
+
+const WrapperEndGame = styled.section`
+  display: grid;
+  justify-items: center;
+  gap: 2rem;
+`

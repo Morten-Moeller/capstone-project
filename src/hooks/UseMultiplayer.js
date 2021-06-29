@@ -37,8 +37,10 @@ export default function UseMultiplayer() {
   const [userName, setUserName] = useState(null)
   const [player, setPlayer] = useState([])
   const [url, setUrl] = useState(null)
+  const [isGameEnded, setIsGameEnded] = useState(false)
   const isCounter = Boolean(counter)
   const messagesRef = useRef(messages)
+  const [endScore, setEndScore] = useState([])
   messagesRef.current = messages
   const areAllReady = Boolean(
     player.length === allReady.filter(el => el.isReady === true).length
@@ -79,6 +81,14 @@ export default function UseMultiplayer() {
     }
   }, [areAllReady === true, areAllAnswers === true])
 
+  useEffect(() => {
+    if (allReady && !isCounter && isReady) {
+      setTimeout(() => {
+        setIsGameEnded(true)
+      }, 3000)
+    }
+  }, [isCounter === false, areAllReady === true])
+
   //message listener
   useEffect(() => {
     if (messages[0] && isConnected) {
@@ -104,12 +114,26 @@ export default function UseMultiplayer() {
         case /(isRight)/.test(messages[0]):
           handleRight(messages[0])
           break
+        case /(gameEnded)/.test(messages[0]):
+          handleGameEnded(messages[0])
+          break
         default:
           break
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages])
+
+  function handleGameEnded(rawMessage) {
+    const messageArray = rawMessage.split(',')
+    setEndScore([
+      ...endScore,
+      {
+        player: messageArray[1],
+        score: messageArray[2],
+      },
+    ])
+  }
 
   function handleRight(rawMessage) {
     const messageArray = rawMessage.split(/(isRight)/)
@@ -167,7 +191,7 @@ export default function UseMultiplayer() {
       const message = { title: room, body: 'isReady' + userName }
       sendMessage(message)
       setIsReady(true)
-      initiateNextSong()
+      // initiateNextSong()
     }
   }
 
@@ -184,8 +208,10 @@ export default function UseMultiplayer() {
   }
 
   function sendUrl(url) {
-    const message = { title: room, body: url }
-    sendMessage(message)
+    if (isCounter) {
+      const message = { title: room, body: url }
+      sendMessage(message)
+    }
   }
 
   function handleIsRight(bool) {
@@ -215,6 +241,11 @@ export default function UseMultiplayer() {
     }
   }
 
+  function handleEndGame(score) {
+    const message = { title: room, body: 'gameEnded,' + userName + ',' + score }
+    sendMessage(message)
+  }
+
   return {
     setReady,
     allReady,
@@ -233,8 +264,9 @@ export default function UseMultiplayer() {
     url,
     disconnect,
     unSubscribe,
-    sendNextSong,
     initiateNextSong,
-    sendNextAnswers,
+    isGameEnded,
+    handleEndGame,
+    endScore,
   }
 }
