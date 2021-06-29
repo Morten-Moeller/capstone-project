@@ -44,6 +44,8 @@ export default function UseMultiplayer() {
     player.length === allReady.filter(el => el.isReady === true).length
   )
 
+  const areAllAnswers = Boolean(player.length === allAnswers.length)
+
   useEffect(() => {
     connect()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,28 +64,20 @@ export default function UseMultiplayer() {
   }, [isConnected])
 
   useEffect(() => {
-    if (isHost) {
-      initiateNextSong()
-    }
-  }, [areAllReady === true])
-
-  useEffect(() => {
-    if (isConnected && isHost) {
-      sendUrl(getNextUrl)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady === true])
-
-  useEffect(() => {
     checkHost()
   }, [player])
 
   useEffect(() => {
-    if (answers && isConnected && isHost) {
-      sendAnswers(answers)
+    if (isHost) {
+      if (isLoaded) {
+        console.log('test')
+        sendNextSong()
+        setAllAnswers([])
+      }
+
+      sendNextAnswers()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areAllReady === true])
+  }, [areAllReady === true, areAllAnswers === true])
 
   //message listener
   useEffect(() => {
@@ -169,10 +163,12 @@ export default function UseMultiplayer() {
   }
 
   function setReady() {
-    const message = { title: room, body: 'isReady' + userName }
-    sendMessage(message)
-    setIsReady(true)
-    initiateNextSong()
+    if (!isReady) {
+      const message = { title: room, body: 'isReady' + userName }
+      sendMessage(message)
+      setIsReady(true)
+      initiateNextSong()
+    }
   }
 
   function handleAnswers(rawAnswers) {
@@ -204,6 +200,21 @@ export default function UseMultiplayer() {
     sendMessage(message)
   }
 
+  function sendNextSong() {
+    if (isConnected && isHost) {
+      console.log('sendUrl')
+      const newUrl = getNextUrl()
+      sendUrl(newUrl)
+      setAllAnswers([])
+    }
+  }
+
+  function sendNextAnswers() {
+    if (answers) {
+      sendAnswers(answers)
+    }
+  }
+
   return {
     setReady,
     allReady,
@@ -217,8 +228,13 @@ export default function UseMultiplayer() {
     player,
     isLoaded,
     isCounter,
+    isHost,
+    isReady,
     url,
     disconnect,
     unSubscribe,
+    sendNextSong,
+    initiateNextSong,
+    sendNextAnswers,
   }
 }

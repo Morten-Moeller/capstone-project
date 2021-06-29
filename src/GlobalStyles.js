@@ -50,7 +50,7 @@ const GlobalStyle = createGlobalStyle`
                     0 0 0.75rem var(--color-secondary),
                     0 0 1rem var(--color-secondary);
 
-    --color-opacity: rgba(0, 0, 0, 0.4)
+    --color-opacity: rgba(0, 0, 0, 0.6)
 }
 
 body {

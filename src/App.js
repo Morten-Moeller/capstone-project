@@ -17,6 +17,7 @@ function App() {
   const [selectedPlaylist, setSelectedPlaylist] = useState(null)
   const [playerData, setPlayerData] = useState({ score: 0, playerName: '' })
   const [historyEntrys, setHistoryEntrys] = useState(localStorage)
+  const [play, setPlay] = useState(false)
 
   useEffect(() => {
     setLocalStorage(historyEntrys)
@@ -29,15 +30,26 @@ function App() {
       <GlobalFonts />
       <Switch>
         <Route exact path="/">
-          <StartPage
-            history={historyEntrys}
-            playlists={playlists}
-            onMark={handleMark}
-            onGame={handleGame}
-            selectedPlaylist={selectedPlaylist}
-            onInputChange={handleNameInput}
-            playerData={playerData}
-          />
+          {!play && (
+            <StartPage
+              history={historyEntrys}
+              playlists={playlists}
+              onMark={handleMark}
+              onGame={handleGame}
+              selectedPlaylist={selectedPlaylist}
+              onInputChange={handleNameInput}
+              playerData={playerData}
+            />
+          )}
+          {play && (
+            <MultiPlayPage
+              selectedPlaylist={selectedPlaylist}
+              playerData={playerData}
+              handlePlayerData={handlePlayerData}
+              roomName="test"
+              onNavigate={handleNavigate}
+            />
+          )}
         </Route>
         <Route path="/singleplaypage">
           <SinglePlayPage
@@ -47,14 +59,14 @@ function App() {
             handlePlayerData={handlePlayerData}
           />
         </Route>
-        <Route path="/multiplaypage">
+        {/* <Route path="/multiplaypage">
           <MultiPlayPage
             selectedPlaylist={selectedPlaylist}
             playerData={playerData}
             handlePlayerData={handlePlayerData}
             roomName="test"
           />
-        </Route>
+        </Route> */}
         <Route path="/history">
           <HistoryPage history={historyEntrys} />
         </Route>
@@ -64,7 +76,7 @@ function App() {
 
   function handleGame() {
     if (selectedPlaylist) {
-      push('/multiplaypage')
+      setPlay(true)
     }
   }
 
@@ -100,6 +112,10 @@ function App() {
 
   function handlePlayerData(data) {
     setPlayerData(data)
+  }
+
+  function handleNavigate() {
+    setPlay(false)
   }
 }
 

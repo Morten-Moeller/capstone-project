@@ -31,6 +31,13 @@ const Button = styled.button`
     opacity: 0.8;
     box-shadow: var(--effect-neon-small-wrong);
     `
+    } else if (props.active) {
+      return `
+    background-color: var(--color-opacity);
+    color: var(--color-secondary);
+    opacity: 0.8;
+    box-shadow: var(--effect-neon-small-active);
+    `
     } else {
       return `
       background-color: var(--color-opacity);

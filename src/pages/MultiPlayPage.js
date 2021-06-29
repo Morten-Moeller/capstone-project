@@ -3,7 +3,6 @@ import Button from '../components/Button'
 import PlayButton from '../components/PlayButton'
 import { ReactComponent as PlayButtonSVG } from '../assets/play.svg'
 import StyledSlider from '../components/StyledSlider'
-import { Link } from 'react-router-dom/cjs/react-router-dom.min'
 import UseMultiplayer from '../hooks/UseMultiplayer'
 import { useEffect, useState } from 'react'
 import Timer from '../components/Timer'
@@ -15,6 +14,7 @@ export default function MultiPlayPage({
   roomName,
   selectedPlaylist,
   handlePlayerData,
+  onNavigate,
 }) {
   const {
     setReady,
@@ -30,6 +30,11 @@ export default function MultiPlayPage({
     allAnswers,
     isCounter,
     url,
+    areAllAnswers,
+    sendNextSong,
+    initiateNextSong,
+    sendNextAnswers,
+    isReady,
   } = UseMultiplayer()
 
   const {
@@ -43,8 +48,7 @@ export default function MultiPlayPage({
   } = useAudio()
 
   const [isAnswerVisible, setIsAnswerVisible] = useState(false)
-
-  console.log(allAnswers)
+  const [answers, setAnswers] = useState([])
 
   useEffect(() => {
     setRoom(roomName)
@@ -53,6 +57,7 @@ export default function MultiPlayPage({
   }, [])
 
   useEffect(() => {
+    console.log('newUrlUseAudio')
     if (url) {
       setSongUrl(url)
     }
@@ -60,14 +65,16 @@ export default function MultiPlayPage({
 
   return (
     <Container>
-      <Link to="/">&lt;-- start new</Link>
+      <Link onClick={handleNavigate}>&lt;-- start new</Link>
       {isLoaded && isCounter && (
         <>
           <Wrapper>
             <span>{playerData.playerName}</span>
             score: {playerData.score}
             {!areAllReady ? (
-              <Button onClick={setReady}>Ready?</Button>
+              <Button active={isReady} onClick={setReady}>
+                Ready?
+              </Button>
             ) : isPlaying ? (
               duration && <Timer duration={duration} />
             ) : (
@@ -104,7 +111,7 @@ export default function MultiPlayPage({
           </Wrapper>
           {areAllReady && (
             <nav tabIndex={1}>
-              {newAnswers?.map(answer => (
+              {answers?.map(answer => (
                 <Button
                   key={answer.id}
                   right={isAnswerVisible && answer.right}
@@ -142,11 +149,18 @@ export default function MultiPlayPage({
     if (isAnswerVisible && !isPlaying) {
       setIsAnswerVisible(false)
     }
+    initiateNextSong()
+    setAnswers(newAnswers)
   }
 
   function handleVolume(event) {
     const volume = event.target.value
     changeVolume(volume)
+  }
+
+  function handleNavigate() {
+    onNavigate()
+    stopAudio()
   }
 }
 
@@ -232,3 +246,4 @@ const ListItem = styled.li`
   cursor: pointer;
   background-color: transparent;
 `
+const Link = styled.a``
