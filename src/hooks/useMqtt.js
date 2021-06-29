@@ -30,7 +30,7 @@ export default function useMqtt() {
 
   function connect() {
     clientId = uuidv4()
-    setClient(new Paho.Client('dagame.boschek.eu', 1883, clientId))
+    setClient(new Paho.Client('wss://dagame.boschek.eu:1883/mqtt', clientId))
   }
 
   function subscribe(room) {

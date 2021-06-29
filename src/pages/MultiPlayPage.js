@@ -132,7 +132,12 @@ export default function MultiPlayPage({
       {isGameEnded && !isCounter && (
         <WrapperEndGame>
           Game ended! You got {playerData.score} points.
-          <Button onClick={() => handleEndGame(playerData.score)}>
+          <Button
+            onClick={() => {
+              handleEndGame(playerData.score)
+              stopAudio()
+            }}
+          >
             Submit score
           </Button>
           <ul>
