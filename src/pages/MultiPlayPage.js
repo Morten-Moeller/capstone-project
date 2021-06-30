@@ -182,7 +182,6 @@ export default function MultiPlayPage({
               </ScoreListItem>
             ))}
           </ScoreList>
-          )
         </WrapperEndGame>
       )}
     </Container>
