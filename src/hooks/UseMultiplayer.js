@@ -4,7 +4,6 @@ import { useEffect, useRef } from 'react'
 import { useState } from 'react'
 import useMqtt from './useMqtt'
 import usePlayList from './usePlayList'
-import defaultAnswers from '../services/defaultAnswers'
 
 export default function UseMultiplayer() {
   const {
@@ -33,14 +32,15 @@ export default function UseMultiplayer() {
   const [allReady, setAllReady] = useState([])
   const [selectedPlaylist, setSelectedPlaylist] = useState(null)
   const [room, setRoom] = useState(null)
-  const [newAnswers, setNewAnswers] = useState(defaultAnswers)
+  const [newAnswers, setNewAnswers] = useState()
   const [userName, setUserName] = useState(null)
   const [player, setPlayer] = useState([])
   const [url, setUrl] = useState(null)
   const [isGameEnded, setIsGameEnded] = useState(false)
   const [endScore, setEndScore] = useState([])
   const [isGameRunning, setIsGameRunning] = useState(false)
-  const [lastSong, setLastSong] = useState(false)
+  const [isLastSong, setIsLastSong] = useState(false)
+  const [gameEnded, setGameEnded] = useState([])
 
   const messagesRef = useRef(messages)
   messagesRef.current = messages
@@ -86,19 +86,26 @@ export default function UseMultiplayer() {
   }, [player])
 
   useEffect(() => {
-    if (isHost) {
-      sendNextSong()
-      sendNextAnswers()
+    if (areAllAnswered) {
+      if (isHost) {
+        sendNextSong()
+        sendNextAnswers()
+        if (counter === 1) {
+          const message = { title: room, body: 'noMoreSongs' }
+          sendMessage(message)
+        }
+      }
+      setAllAnswered([])
+      setAllSongsStarted([])
     }
-    setAllAnswered([])
-    setAllSongsStarted([])
 
-    if (isHost && counter === 1) {
-      const message = { title: room, body: 'noMoreSongs' }
-      sendMessage(message)
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areAllAnswered === true])
+  }, [areAllAnswered])
+
+  useEffect(() => {
+    if (areAllSongsStarted) {
+    }
+  }, [areAllSongsStarted])
 
   useEffect(() => {
     //send first song
@@ -146,6 +153,9 @@ export default function UseMultiplayer() {
         case /(isRight)/.test(messages[0]):
           handleRight(messages[0])
           break
+        case /(endScore)/.test(messages[0]):
+          handleEndScore(messages[0])
+          break
         case /(gameEnded)/.test(messages[0]):
           handleGameEnded(messages[0])
           break
@@ -156,7 +166,7 @@ export default function UseMultiplayer() {
           setIsGameRunning(true)
           break
         case /(noMoreSong)/.test(messages[0]):
-          setLastSong(true)
+          setIsLastSong(true)
           break
         default:
           break
@@ -174,13 +184,25 @@ export default function UseMultiplayer() {
 
   function handleGameEnded(rawMessage) {
     const messageArray = rawMessage.split(',')
-    setEndScore([
-      ...endScore,
+    setGameEnded([
+      ...gameEnded,
       {
         player: messageArray[1],
-        score: messageArray[2],
       },
     ])
+  }
+
+  function handleEndScore(rawMessage) {
+    const messageArray = rawMessage.split(',')
+    if (!endScore.some(({ player }) => player === messageArray[1])) {
+      setEndScore([
+        ...endScore,
+        {
+          player: messageArray[1],
+          score: messageArray[2],
+        },
+      ])
+    }
   }
 
   function handleRight(rawMessage) {
@@ -293,13 +315,18 @@ export default function UseMultiplayer() {
     }
   }
 
-  function handleEndGame(score) {
-    const message = { title: room, body: 'gameEnded,' + userName + ',' + score }
+  function handleEndGame() {
+    const message = { title: room, body: 'gameEnded,' + userName }
     sendMessage(message)
   }
 
   function songStarted() {
     const message = { title: room, body: 'songStarted,' + userName }
+    sendMessage(message)
+  }
+
+  function sendScore(score) {
+    const message = { title: room, body: 'endScore,' + userName + ',' + score }
     sendMessage(message)
   }
 
@@ -312,6 +339,7 @@ export default function UseMultiplayer() {
     isGameRunning,
     isGameEnded,
     isLoaded,
+    isLastSong,
     areAllReady,
     areAllEnded,
     areAllAnswered,
@@ -325,6 +353,7 @@ export default function UseMultiplayer() {
     initiateNextSong,
     url,
     songStarted,
-    lastSong,
+    sendScore,
+    gameEnded,
   }
 }

@@ -25,6 +25,7 @@ export default function MultiPlayPage({
     isGameRunning,
     isGameEnded,
     isLoaded,
+    isLastSong,
     areAllReady,
     areAllEnded,
     areAllAnswered,
@@ -38,7 +39,8 @@ export default function MultiPlayPage({
     initiateNextSong,
     url,
     songStarted,
-    lastSong,
+    sendScore,
+    gameEnded,
   } = UseMultiplayer()
 
   const {
@@ -54,6 +56,13 @@ export default function MultiPlayPage({
   const [isAnswerVisible, setIsAnswerVisible] = useState(false)
   const [answers, setAnswers] = useState([])
   const [isSpectator, setIsSpectator] = useState(true)
+  const [isNextSong, setIsNextSong] = useState(false)
+
+  const thisGameEnded = gameEnded.some(
+    ({ player }) => player === playerData.playerName
+  )
+
+  console.log(areAllAnswered)
 
   useEffect(() => {
     setRoom(roomName)
@@ -63,24 +72,25 @@ export default function MultiPlayPage({
   }, [])
 
   useEffect(() => {
+    if (thisGameEnded) {
+      sendScore(playerData.score)
+    }
+  }, [gameEnded])
+
+  useEffect(() => {
     if (url) {
       setSongUrl(url)
+      setIsNextSong(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url])
-
-  useEffect(() => {
-    if (areAllAnswered) {
-      setIsAnswerVisible(false)
-    }
-  }, [areAllAnswered === true])
 
   return (
     <Container>
       <Link onClick={handleNavigate}>&lt;-- start new</Link>
       {isSpectator && isLoaded && (
         <WrapperStart>
-          {isGameRunning ? (
+          {!isGameEnded && isGameRunning ? (
             <span>Game is already running</span>
           ) : (
             <Button active={isReady} onClick={handleReady}>
@@ -112,7 +122,8 @@ export default function MultiPlayPage({
             score: {playerData.score}
             {isPlaying
               ? duration && <Timer duration={duration} />
-              : !isAnswerVisible && (
+              : ((!isAnswerVisible && areAllReady) ||
+                  (!thisGameEnded && isNextSong)) && (
                   <PlayButton onClick={handlePlay}>
                     <PlayButtonSVG />
                   </PlayButton>
@@ -163,18 +174,15 @@ export default function MultiPlayPage({
       {isGameEnded && (
         <WrapperEndGame>
           Game ended! You got {playerData.score} points.
-          {!areAllEnded ? (
-            'Please wait until allready'
-          ) : (
-            <ScoreList>
-              {endScore.map(el => (
-                <ScoreListItem key={el.player}>
-                  <span>{el.player}</span>
-                  <span>{el.score}</span>
-                </ScoreListItem>
-              ))}
-            </ScoreList>
-          )}
+          <ScoreList>
+            {endScore.map(el => (
+              <ScoreListItem key={el.player}>
+                <span>{el.player}</span>
+                <span>{el.score}</span>
+              </ScoreListItem>
+            ))}
+          </ScoreList>
+          )
         </WrapperEndGame>
       )}
     </Container>
@@ -193,11 +201,11 @@ export default function MultiPlayPage({
     } else {
       handleIsRight(false)
     }
-    if (lastSong) {
-      handleEndGame(playerData.score)
-    }
     stopAudio()
     setIsAnswerVisible(true)
+    if (isLastSong) {
+      handleEndGame()
+    }
   }
 
   function handlePlay() {
@@ -205,8 +213,10 @@ export default function MultiPlayPage({
       toggleAudio()
     }
     initiateNextSong()
-    setAnswers(newAnswers)
+    setIsAnswerVisible(false)
     songStarted()
+    setIsNextSong(false)
+    setAnswers(newAnswers)
   }
 
   function handleVolume(event) {

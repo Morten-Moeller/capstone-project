@@ -35,7 +35,7 @@ function App() {
               selectedPlaylist={selectedPlaylist}
               playerData={playerData}
               handlePlayerData={handlePlayerData}
-              roomName="test"
+              roomName="test2"
               onNavigate={handleNavigate}
             />
           )}
