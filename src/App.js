@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { Route, Switch, useHistory } from 'react-router-dom'
 import styled from 'styled-components'
-import bgImage from './assets/jukequestfin.svg'
+import bgImage from './assets/jukequestfin.jpg'
 import playlists from './data/playlists.json'
 import GlobalFonts from './fonts/fonts'
 import MultiPlayPage from './pages/MultiPlayPage'
