@@ -38,10 +38,12 @@ export default function UseMultiplayer() {
   const [player, setPlayer] = useState([])
   const [url, setUrl] = useState(null)
   const [isGameEnded, setIsGameEnded] = useState(false)
-  const isCounter = Boolean(counter)
-  const messagesRef = useRef(messages)
   const [endScore, setEndScore] = useState([])
+
+  const messagesRef = useRef(messages)
   messagesRef.current = messages
+
+  const isCounter = Boolean(counter)
   const areAllReady = Boolean(
     player.length > 0 &&
       player.length === allReady.filter(el => el.isReady === true).length
@@ -83,25 +85,34 @@ export default function UseMultiplayer() {
 
   useEffect(() => {
     if (isHost) {
-      if (isLoaded) {
-        sendNextSong()
-      }
-      setAllAnswered([])
+      sendNextSong()
       sendNextAnswers()
     }
-
+    setAllAnswered([])
+    setAllSongsStarted([])
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areAllReady === true, areAllAnswered === true])
+  }, [areAllAnswered === true])
 
   useEffect(() => {
-    setAllSongsStarted([])
-  }, [areAllAnswered === true])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areAllSongsStarted === true])
+
+  useEffect(() => {
+    //send first song
+    if (isHost) {
+      if (isLoaded) {
+        sendNextSong()
+        sendNextAnswers()
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areAllReady === true])
 
   useEffect(() => {
     if (allReady && !isCounter && isReady) {
       setTimeout(() => {
         setIsGameEnded(true)
-      }, 1500)
+      }, 2000)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCounter === false, areAllReady === true])
