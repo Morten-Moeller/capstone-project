@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom/cjs/react-router-dom.min'
 import styled from 'styled-components/macro'
 import Button from '../components/Button'
 import Headline from '../components/Headline'
@@ -18,11 +17,9 @@ export default function StartPage({
   selectedPlaylist,
   onInputChange,
   playerData,
-  history,
 }) {
   return (
     <Container>
-      {history && <StyledLink to="/history">history</StyledLink>}
       <Headline>Juke Quest</Headline>
       <Label>
         name:
@@ -116,9 +113,4 @@ const Label = styled.label`
       outline: none;
     }
   }
-`
-
-const StyledLink = styled(Link)`
-  color: var(--color-secondary);
-  text-shadow: var(--effect-neon-small-navigation);
 `

@@ -101,10 +101,6 @@ export default function UseMultiplayer() {
   }, [areAllAnswered === true])
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areAllSongsStarted === true])
-
-  useEffect(() => {
     //send first song
 
     if (isLoaded) {
@@ -309,31 +305,26 @@ export default function UseMultiplayer() {
 
   return {
     setReady,
-    allReady,
-    areAllReady,
-    areAllEnded,
-    allAnswered,
-    areAllAnswered,
-    handleIsRight,
     setUserName,
     setSelectedPlaylist,
     setRoom,
+    isReady,
+    isGameRunning,
+    isGameEnded,
+    isLoaded,
+    areAllReady,
+    areAllEnded,
+    areAllAnswered,
+    allReady,
+    allAnswered,
+    handleIsRight,
+    handleEndGame,
     newAnswers,
     player,
-    isLoaded,
-    isHost,
-    isReady,
-    url,
-    disconnect,
-    unSubscribe,
-    initiateNextSong,
-    isGameEnded,
-    handleEndGame,
     endScore,
-    setAllAnswered,
-    areAllSongsStarted,
+    initiateNextSong,
+    url,
     songStarted,
-    isGameRunning,
     lastSong,
   }
 }

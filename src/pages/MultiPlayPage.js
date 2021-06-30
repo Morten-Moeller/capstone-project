@@ -18,26 +18,26 @@ export default function MultiPlayPage({
 }) {
   const {
     setReady,
-    allReady,
-    areAllReady,
-    handleIsRight,
     setUserName,
     setSelectedPlaylist,
     setRoom,
-    newAnswers,
-    player,
-    isLoaded,
-    allAnswered,
-    url,
-    initiateNextSong,
     isReady,
     isGameRunning,
     isGameEnded,
-    handleEndGame,
-    endScore,
+    isLoaded,
+    areAllReady,
     areAllEnded,
+    areAllAnswered,
+    allReady,
+    allAnswered,
+    handleIsRight,
+    handleEndGame,
+    newAnswers,
+    player,
+    endScore,
+    initiateNextSong,
+    url,
     songStarted,
-    areAllSongsStarted,
     lastSong,
   } = UseMultiplayer()
 
@@ -68,6 +68,12 @@ export default function MultiPlayPage({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url])
+
+  useEffect(() => {
+    if (areAllAnswered) {
+      setIsAnswerVisible(false)
+    }
+  }, [areAllAnswered === true])
 
   return (
     <Container>
@@ -106,8 +112,7 @@ export default function MultiPlayPage({
             score: {playerData.score}
             {isPlaying
               ? duration && <Timer duration={duration} />
-              : (!isAnswerVisible ||
-                  (isAnswerVisible && !areAllSongsStarted)) && (
+              : !isAnswerVisible && (
                   <PlayButton onClick={handlePlay}>
                     <PlayButtonSVG />
                   </PlayButton>
@@ -198,9 +203,6 @@ export default function MultiPlayPage({
   function handlePlay() {
     if (!isPlaying) {
       toggleAudio()
-    }
-    if (isAnswerVisible && !isPlaying) {
-      setIsAnswerVisible(false)
     }
     initiateNextSong()
     setAnswers(newAnswers)
