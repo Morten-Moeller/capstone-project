@@ -93,7 +93,7 @@ export default function UseMultiplayer() {
     setAllAnswered([])
     setAllSongsStarted([])
 
-    if (isHost && counter <= 1) {
+    if (isHost && counter === 1) {
       const message = { title: room, body: 'noMoreSongs' }
       sendMessage(message)
     }

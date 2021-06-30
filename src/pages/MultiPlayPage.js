@@ -81,6 +81,22 @@ export default function MultiPlayPage({
               Ready?
             </Button>
           )}
+          <List>
+            {player.map(name => (
+              <ListItem
+                key={name}
+                isReady={allReady.some(({ user }) => user === name)}
+                hasRightAnswer={allAnswered.some(
+                  ({ user, isRight }) => (user === name) & isRight
+                )}
+                hasWrongAnswer={allAnswered.some(
+                  ({ user, isRight }) => (user === name) & !isRight
+                )}
+              >
+                {name}
+              </ListItem>
+            ))}
+          </List>
         </WrapperStart>
       )}
       {!isSpectator && !isGameEnded && (
@@ -305,4 +321,8 @@ const ScoreListItem = styled.li`
   justify-content: space-between;
   font-size: 1.25rem;
 `
-const WrapperStart = styled.div``
+const WrapperStart = styled.div`
+  display: grid;
+  gap: 1rem;
+  justify-items: center;
+`

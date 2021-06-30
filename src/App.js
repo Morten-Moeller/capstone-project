@@ -100,6 +100,7 @@ function App() {
 
   function handleNavigate() {
     setPlay(false)
+    setPlayerData({ ...playerData, score: 0 })
   }
 }
 
