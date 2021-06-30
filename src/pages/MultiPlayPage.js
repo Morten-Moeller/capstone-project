@@ -32,6 +32,7 @@ export default function MultiPlayPage({
     url,
     initiateNextSong,
     isReady,
+    isGameRunning,
     isGameEnded,
     handleEndGame,
     endScore,
@@ -52,6 +53,7 @@ export default function MultiPlayPage({
 
   const [isAnswerVisible, setIsAnswerVisible] = useState(false)
   const [answers, setAnswers] = useState([])
+  const [isSpectator, setIsSpectator] = useState(true)
 
   useEffect(() => {
     setRoom(roomName)
@@ -78,25 +80,30 @@ export default function MultiPlayPage({
   return (
     <Container>
       <Link onClick={handleNavigate}>&lt;-- start new</Link>
-      {isLoaded && !isGameEnded && (
+      {isSpectator && isLoaded && (
+        <WrapperStart>
+          {isGameRunning ? (
+            <span>Game is already running</span>
+          ) : (
+            <Button active={isReady} onClick={handleReady}>
+              Ready?
+            </Button>
+          )}
+        </WrapperStart>
+      )}
+      {!isSpectator && isLoaded && !isGameEnded && (
         <>
-          <Wrapper>
+          <WrapperGame>
             <span>{playerData.playerName}</span>
             score: {playerData.score}
-            {!areAllReady ? (
-              <Button active={isReady} onClick={setReady}>
-                Ready?
-              </Button>
-            ) : isPlaying ? (
-              duration && <Timer duration={duration} />
-            ) : (
-              (!isAnswerVisible ||
-                (isAnswerVisible && !areAllSongsStarted)) && (
-                <PlayButton onClick={handlePlay}>
-                  <PlayButtonSVG />
-                </PlayButton>
-              )
-            )}
+            {isPlaying
+              ? duration && <Timer duration={duration} />
+              : (!isAnswerVisible ||
+                  (isAnswerVisible && !areAllSongsStarted)) && (
+                  <PlayButton onClick={handlePlay}>
+                    <PlayButtonSVG />
+                  </PlayButton>
+                )}
             <label>
               Volume:
               <StyledSlider
@@ -123,7 +130,7 @@ export default function MultiPlayPage({
                 </ListItem>
               ))}
             </List>
-          </Wrapper>
+          </WrapperGame>
           {areAllReady && (
             <nav tabIndex={1}>
               {answers?.map(answer => (
@@ -159,6 +166,11 @@ export default function MultiPlayPage({
       )}
     </Container>
   )
+
+  function handleReady() {
+    setReady()
+    setIsSpectator(false)
+  }
 
   function handleAnswer(isRight) {
     if (isRight && !isAnswerVisible && isPlaying) {
@@ -224,7 +236,7 @@ const Container = styled.main`
   }
 `
 
-const Wrapper = styled.div`
+const WrapperGame = styled.div`
   display: grid;
   justify-self: center;
   justify-items: center;
@@ -299,3 +311,4 @@ const ScoreListItem = styled.li`
   justify-content: space-between;
   font-size: 1.25rem;
 `
+const WrapperStart = styled.div``

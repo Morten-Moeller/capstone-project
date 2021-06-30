@@ -39,6 +39,7 @@ export default function UseMultiplayer() {
   const [url, setUrl] = useState(null)
   const [isGameEnded, setIsGameEnded] = useState(false)
   const [endScore, setEndScore] = useState([])
+  const [isGameRunning, setIsGameRunning] = useState(false)
 
   const messagesRef = useRef(messages)
   messagesRef.current = messages
@@ -99,8 +100,9 @@ export default function UseMultiplayer() {
 
   useEffect(() => {
     //send first song
-    if (isHost) {
-      if (isLoaded) {
+
+    if (isLoaded) {
+      if (isHost) {
         sendNextSong()
         sendNextAnswers()
       }
@@ -147,6 +149,9 @@ export default function UseMultiplayer() {
           break
         case /(songStarted)/.test(messages[0]):
           handleSongStarted(messages[0])
+          break
+        case /(gameRunning)/.test(messages[0]):
+          setIsGameRunning(true)
           break
         default:
           break
@@ -224,6 +229,10 @@ export default function UseMultiplayer() {
     if (isHost) {
       const answerHost = { title: room, body: 'host' }
       sendMessage(answerHost)
+      if (areAllReady) {
+        const message = { title: room, body: 'gameRunning' }
+        sendMessage(message)
+      }
     }
   }
 
@@ -316,5 +325,6 @@ export default function UseMultiplayer() {
     setAllAnswered,
     areAllSongsStarted,
     songStarted,
+    isGameRunning,
   }
 }
