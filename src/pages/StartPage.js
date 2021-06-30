@@ -22,7 +22,7 @@ export default function StartPage({
 }) {
   return (
     <Container>
-      {history && <Link to="/history">history</Link>}
+      {history && <StyledLink to="/history">history</StyledLink>}
       <Headline>Juke Quest</Headline>
       <Label>
         name:
@@ -116,4 +116,9 @@ const Label = styled.label`
       outline: none;
     }
   }
+`
+
+const StyledLink = styled(Link)`
+  color: var(--color-secondary);
+  text-shadow: var(--effect-neon-small-navigation);
 `

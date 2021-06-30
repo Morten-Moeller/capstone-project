@@ -27,7 +27,7 @@ export default function MultiPlayPage({
     newAnswers,
     player,
     isLoaded,
-    allAnswers,
+    allAnswered,
     isCounter,
     url,
     initiateNextSong,
@@ -35,6 +35,9 @@ export default function MultiPlayPage({
     isGameEnded,
     handleEndGame,
     endScore,
+    areAllEnded,
+    songStarted,
+    areAllSongsStarted,
   } = UseMultiplayer()
 
   const {
@@ -50,12 +53,11 @@ export default function MultiPlayPage({
   const [isAnswerVisible, setIsAnswerVisible] = useState(false)
   const [answers, setAnswers] = useState([])
 
-  console.log(isGameEnded)
-
   useEffect(() => {
     setRoom(roomName)
     setUserName(playerData.playerName)
     setSelectedPlaylist(selectedPlaylist.songs)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -63,7 +65,15 @@ export default function MultiPlayPage({
     if (url) {
       setSongUrl(url)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url])
+
+  useEffect(() => {
+    if (isGameEnded) {
+      handleEndGame(playerData.score)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isGameEnded === true])
 
   return (
     <Container>
@@ -80,7 +90,8 @@ export default function MultiPlayPage({
             ) : isPlaying ? (
               duration && <Timer duration={duration} />
             ) : (
-              isCounter && (
+              (!isAnswerVisible ||
+                (isAnswerVisible && !areAllSongsStarted)) && (
                 <PlayButton onClick={handlePlay}>
                   <PlayButtonSVG />
                 </PlayButton>
@@ -99,14 +110,14 @@ export default function MultiPlayPage({
             <List>
               {player.map(name => (
                 <ListItem
+                  key={name}
                   isReady={allReady.some(({ user }) => user === name)}
-                  hasRightAnswer={allAnswers.some(
+                  hasRightAnswer={allAnswered.some(
                     ({ user, isRight }) => (user === name) & isRight
                   )}
-                  hasWrongAnswer={allAnswers.some(
+                  hasWrongAnswer={allAnswered.some(
                     ({ user, isRight }) => (user === name) & !isRight
                   )}
-                  key={name}
                 >
                   {name}
                 </ListItem>
@@ -132,22 +143,18 @@ export default function MultiPlayPage({
       {isGameEnded && !isCounter && (
         <WrapperEndGame>
           Game ended! You got {playerData.score} points.
-          <Button
-            onClick={() => {
-              handleEndGame(playerData.score)
-              stopAudio()
-            }}
-          >
-            Submit score
-          </Button>
-          <ul>
-            {endScore.map(el => (
-              <li>
-                <span>{el.player}</span>
-                <span>{el.score}</span>
-              </li>
-            ))}
-          </ul>
+          {!areAllEnded ? (
+            'Please wait until allready'
+          ) : (
+            <ScoreList>
+              {endScore.map(el => (
+                <ScoreListItem key={el.player}>
+                  <span>{el.player}</span>
+                  <span>{el.score}</span>
+                </ScoreListItem>
+              ))}
+            </ScoreList>
+          )}
         </WrapperEndGame>
       )}
     </Container>
@@ -161,10 +168,9 @@ export default function MultiPlayPage({
     } else {
       handleIsRight(false)
     }
-    if (isPlaying) {
-      stopAudio()
-      setIsAnswerVisible(true)
-    }
+
+    stopAudio()
+    setIsAnswerVisible(true)
   }
 
   function handlePlay() {
@@ -176,6 +182,7 @@ export default function MultiPlayPage({
     }
     initiateNextSong()
     setAnswers(newAnswers)
+    songStarted()
   }
 
   function handleVolume(event) {
@@ -213,8 +220,7 @@ const Container = styled.main`
   label {
     justify-self: center;
     min-width: 250px;
-    width: 100%;
-    margin-bottom: 2rem;
+    width: 80%;
   }
 `
 
@@ -224,12 +230,11 @@ const Wrapper = styled.div`
   justify-items: center;
   align-items: center;
   width: 100%;
+  gap: 0.5rem;
 
   label {
-    margin-top: 0.5rem;
     align-self: flex-start;
     display: grid;
-    width: 70%;
   }
 `
 const List = styled.ul`
@@ -273,10 +278,24 @@ const ListItem = styled.li`
 `
 const Link = styled.a`
   color: var(--color-secondary);
+  text-shadow: var(--effect-neon-small-navigation);
 `
 
 const WrapperEndGame = styled.section`
+  margin-top: 3rem;
   display: grid;
   justify-items: center;
   gap: 2rem;
+`
+const ScoreList = styled.ul`
+  padding: 0;
+  list-style: none;
+  padding: 1rem;
+  color: var(--color-secondary);
+  width: 80vw;
+`
+const ScoreListItem = styled.li`
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.25rem;
 `

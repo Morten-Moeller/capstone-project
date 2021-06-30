@@ -51,22 +51,6 @@ function App() {
             />
           )}
         </Route>
-        <Route path="/singleplaypage">
-          <SinglePlayPage
-            selectedPlaylist={selectedPlaylist}
-            playerData={playerData}
-            onEndGame={handleEndGame}
-            handlePlayerData={handlePlayerData}
-          />
-        </Route>
-        {/* <Route path="/multiplaypage">
-          <MultiPlayPage
-            selectedPlaylist={selectedPlaylist}
-            playerData={playerData}
-            handlePlayerData={handlePlayerData}
-            roomName="test"
-          />
-        </Route> */}
         <Route path="/history">
           <HistoryPage history={historyEntrys} />
         </Route>

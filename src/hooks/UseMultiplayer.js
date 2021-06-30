@@ -28,8 +28,8 @@ export default function UseMultiplayer() {
 
   const [isReady, setIsReady] = useState(false)
   const [isHost, setIsHost] = useState(false)
-  const [isRight, setIsRight] = useState(false)
-  const [allAnswers, setAllAnswers] = useState([])
+  const [allAnswered, setAllAnswered] = useState([])
+  const [allSongsStarted, setAllSongsStarted] = useState([])
   const [allReady, setAllReady] = useState([])
   const [selectedPlaylist, setSelectedPlaylist] = useState(null)
   const [room, setRoom] = useState(null)
@@ -43,10 +43,21 @@ export default function UseMultiplayer() {
   const [endScore, setEndScore] = useState([])
   messagesRef.current = messages
   const areAllReady = Boolean(
-    player.length === allReady.filter(el => el.isReady === true).length
+    player.length > 0 &&
+      player.length === allReady.filter(el => el.isReady === true).length
   )
 
-  const areAllAnswers = Boolean(player.length === allAnswers.length)
+  const areAllAnswered = Boolean(
+    player.length === allAnswered.length && allAnswered.length > 0
+  )
+
+  const areAllEnded = Boolean(
+    player.length === endScore.length && endScore.length > 0
+  )
+
+  const areAllSongsStarted = Boolean(
+    player.length === allSongsStarted.length && allSongsStarted.length > 0
+  )
 
   useEffect(() => {
     connect()
@@ -55,6 +66,7 @@ export default function UseMultiplayer() {
 
   useEffect(() => {
     setNewPlaylist(selectedPlaylist)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPlaylist])
 
   useEffect(() => {
@@ -72,21 +84,26 @@ export default function UseMultiplayer() {
   useEffect(() => {
     if (isHost) {
       if (isLoaded) {
-        console.log('test')
         sendNextSong()
-        setAllAnswers([])
       }
-
+      setAllAnswered([])
       sendNextAnswers()
     }
-  }, [areAllReady === true, areAllAnswers === true])
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areAllReady === true, areAllAnswered === true])
+
+  useEffect(() => {
+    setAllSongsStarted([])
+  }, [areAllAnswered === true])
 
   useEffect(() => {
     if (allReady && !isCounter && isReady) {
       setTimeout(() => {
         setIsGameEnded(true)
-      }, 3000)
+      }, 1500)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCounter === false, areAllReady === true])
 
   //message listener
@@ -117,12 +134,22 @@ export default function UseMultiplayer() {
         case /(gameEnded)/.test(messages[0]):
           handleGameEnded(messages[0])
           break
+        case /(songStarted)/.test(messages[0]):
+          handleSongStarted(messages[0])
+          break
         default:
           break
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages])
+
+  function handleSongStarted(rawMessage) {
+    const messageArray = rawMessage.split(',')
+    const user = messageArray[1]
+
+    setAllSongsStarted([...allSongsStarted, { user }])
+  }
 
   function handleGameEnded(rawMessage) {
     const messageArray = rawMessage.split(',')
@@ -139,13 +166,13 @@ export default function UseMultiplayer() {
     const messageArray = rawMessage.split(/(isRight)/)
     console.log(messageArray)
     const userName = messageArray[2]
-    setAllAnswers([...allAnswers, { user: userName, isRight: true }])
+    setAllAnswered([...allAnswered, { user: userName, isRight: true }])
   }
 
   function handleWrong(rawMessage) {
     const messageArray = rawMessage.split(/(isWrong)/)
     const userName = messageArray[2]
-    setAllAnswers([...allAnswers, { user: userName, isRight: false }])
+    setAllAnswered([...allAnswered, { user: userName, isRight: false }])
   }
 
   function handleIsReady(rawMessage) {
@@ -155,10 +182,13 @@ export default function UseMultiplayer() {
   }
 
   function handlePlayer(rawMessage) {
-    const messageArray = rawMessage.split(/(here)/)
-    const newPlayer = messageArray[2]
-    if (!player.includes(newPlayer)) {
-      setPlayer([...player, newPlayer])
+    console.log(areAllReady)
+    if (!areAllReady) {
+      const messageArray = rawMessage.split(/(here)/)
+      const newPlayer = messageArray[2]
+      if (!player.includes(newPlayer)) {
+        setPlayer([...player, newPlayer])
+      }
     }
   }
 
@@ -215,8 +245,6 @@ export default function UseMultiplayer() {
   }
 
   function handleIsRight(bool) {
-    setIsRight(bool)
-    console.log(bool)
     let message
     if (bool) {
       message = { title: room, body: 'isRight' + userName }
@@ -231,7 +259,6 @@ export default function UseMultiplayer() {
       console.log('sendUrl')
       const newUrl = getNextUrl()
       sendUrl(newUrl)
-      setAllAnswers([])
     }
   }
 
@@ -246,11 +273,18 @@ export default function UseMultiplayer() {
     sendMessage(message)
   }
 
+  function songStarted() {
+    const message = { title: room, body: 'songStarted,' + userName }
+    sendMessage(message)
+  }
+
   return {
     setReady,
     allReady,
     areAllReady,
-    allAnswers,
+    areAllEnded,
+    allAnswered,
+    areAllAnswered,
     handleIsRight,
     setUserName,
     setSelectedPlaylist,
@@ -268,5 +302,8 @@ export default function UseMultiplayer() {
     isGameEnded,
     handleEndGame,
     endScore,
+    setAllAnswered,
+    areAllSongsStarted,
+    songStarted,
   }
 }
