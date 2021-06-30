@@ -40,6 +40,7 @@ export default function UseMultiplayer() {
   const [isGameEnded, setIsGameEnded] = useState(false)
   const [endScore, setEndScore] = useState([])
   const [isGameRunning, setIsGameRunning] = useState(false)
+  const [lastSong, setLastSong] = useState(false)
 
   const messagesRef = useRef(messages)
   messagesRef.current = messages
@@ -91,6 +92,11 @@ export default function UseMultiplayer() {
     }
     setAllAnswered([])
     setAllSongsStarted([])
+
+    if (isHost && counter <= 1) {
+      const message = { title: room, body: 'noMoreSongs' }
+      sendMessage(message)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [areAllAnswered === true])
 
@@ -111,13 +117,13 @@ export default function UseMultiplayer() {
   }, [areAllReady === true])
 
   useEffect(() => {
-    if (allReady && !isCounter && isReady) {
+    if (areAllEnded) {
       setTimeout(() => {
         setIsGameEnded(true)
       }, 2000)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isCounter === false, areAllReady === true])
+  }, [endScore])
 
   //message listener
   useEffect(() => {
@@ -152,6 +158,9 @@ export default function UseMultiplayer() {
           break
         case /(gameRunning)/.test(messages[0]):
           setIsGameRunning(true)
+          break
+        case /(noMoreSong)/.test(messages[0]):
+          setLastSong(true)
           break
         default:
           break
@@ -312,7 +321,6 @@ export default function UseMultiplayer() {
     newAnswers,
     player,
     isLoaded,
-    isCounter,
     isHost,
     isReady,
     url,
@@ -326,5 +334,6 @@ export default function UseMultiplayer() {
     areAllSongsStarted,
     songStarted,
     isGameRunning,
+    lastSong,
   }
 }

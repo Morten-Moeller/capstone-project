@@ -28,7 +28,6 @@ export default function MultiPlayPage({
     player,
     isLoaded,
     allAnswered,
-    isCounter,
     url,
     initiateNextSong,
     isReady,
@@ -39,6 +38,7 @@ export default function MultiPlayPage({
     areAllEnded,
     songStarted,
     areAllSongsStarted,
+    lastSong,
   } = UseMultiplayer()
 
   const {
@@ -63,19 +63,11 @@ export default function MultiPlayPage({
   }, [])
 
   useEffect(() => {
-    console.log('newUrlUseAudio')
     if (url) {
       setSongUrl(url)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url])
-
-  useEffect(() => {
-    if (isGameEnded) {
-      handleEndGame(playerData.score)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isGameEnded === true])
 
   return (
     <Container>
@@ -91,7 +83,7 @@ export default function MultiPlayPage({
           )}
         </WrapperStart>
       )}
-      {!isSpectator && isLoaded && !isGameEnded && (
+      {!isSpectator && !isGameEnded && (
         <>
           <WrapperGame>
             <span>{playerData.playerName}</span>
@@ -147,7 +139,7 @@ export default function MultiPlayPage({
           )}
         </>
       )}
-      {isGameEnded && !isCounter && (
+      {isGameEnded && (
         <WrapperEndGame>
           Game ended! You got {playerData.score} points.
           {!areAllEnded ? (
@@ -180,7 +172,9 @@ export default function MultiPlayPage({
     } else {
       handleIsRight(false)
     }
-
+    if (lastSong) {
+      handleEndGame(playerData.score)
+    }
     stopAudio()
     setIsAnswerVisible(true)
   }
