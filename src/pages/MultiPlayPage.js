@@ -64,6 +64,10 @@ export default function MultiPlayPage({
     ({ player }) => player === playerData.playerName
   )
 
+  if (endScore) {
+    endScore?.sort((a, b) => a.score - b.score)
+  }
+
   useEffect(() => {
     setRoom(playerData.room)
     setUserName(playerData.playerName)

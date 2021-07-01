@@ -98,6 +98,7 @@ const ListItem = styled.li`
 `
 const Label = styled.label`
   display: grid;
+  height: 5rem;
   input {
     font-family: 'Iceland';
     border: none;
