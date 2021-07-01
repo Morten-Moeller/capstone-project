@@ -377,7 +377,7 @@ export default function UseMultiplayer() {
     songStarted,
     sendScore,
     gameEnded,
-    disconnect,
+    unSubscribe,
     playlistName,
     setPlaylistName,
   }

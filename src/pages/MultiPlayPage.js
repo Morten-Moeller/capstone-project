@@ -40,7 +40,7 @@ export default function MultiPlayPage({
     songStarted,
     sendScore,
     gameEnded,
-    disconnect,
+    unSubscribe,
     playlistName,
     setPlaylistName,
   } = UseMultiplayer()
@@ -232,9 +232,9 @@ export default function MultiPlayPage({
   }
 
   function handleNavigate() {
-    onNavigate()
     stopAudio()
-    disconnect()
+    unSubscribe()
+    onNavigate()
   }
 }
 
