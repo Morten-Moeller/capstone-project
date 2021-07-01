@@ -102,41 +102,43 @@ export default function MultiPlayPage({
 
   return (
     <Container>
-      <Link onClick={handleNavigate}>&lt;-- start new</Link>
       {isSpectator && isLoaded && !isGameEnded && (
-        <WrapperStart>
-          <List>
-            <p>
-              Selected playlist: {playlistName}
-              <br />
-              Selected room: {playerData.room}
-              <br />
-              Player already joined:
-            </p>
+        <>
+          <Link onClick={handleNavigate}>&lt;-- start new</Link>
+          <WrapperStart>
+            <List>
+              <p>
+                Selected playlist: {playlistName}
+                <br />
+                Selected room: {playerData.room}
+                <br />
+                Player already joined:
+              </p>
 
-            {player.map(name => (
-              <ListItem
-                key={name}
-                isReady={allReady.some(({ user }) => user === name)}
-                hasRightAnswer={allAnswered.some(
-                  ({ user, isRight }) => (user === name) & isRight
-                )}
-                hasWrongAnswer={allAnswered.some(
-                  ({ user, isRight }) => (user === name) & !isRight
-                )}
-              >
-                {name}
-              </ListItem>
-            ))}
-          </List>
-          {!isGameEnded && isGameRunning ? (
-            <span>Game is already running</span>
-          ) : (
-            <Button active={isReady} onClick={handleReady}>
-              Ready?
-            </Button>
-          )}
-        </WrapperStart>
+              {player.map(name => (
+                <ListItem
+                  key={name}
+                  isReady={allReady.some(({ user }) => user === name)}
+                  hasRightAnswer={allAnswered.some(
+                    ({ user, isRight }) => (user === name) & isRight
+                  )}
+                  hasWrongAnswer={allAnswered.some(
+                    ({ user, isRight }) => (user === name) & !isRight
+                  )}
+                >
+                  {name}
+                </ListItem>
+              ))}
+            </List>
+            {!isGameEnded && isGameRunning ? (
+              <span>Game is already running</span>
+            ) : (
+              <Button active={isReady} onClick={handleReady}>
+                Ready?
+              </Button>
+            )}
+          </WrapperStart>
+        </>
       )}
       {!isSpectator && !isGameEnded && (
         <>
@@ -262,9 +264,11 @@ export default function MultiPlayPage({
 }
 
 const Container = styled.main`
-  height: 100vh;
+  width: 100%;
+  max-width: 500px;
+  max-height: 900px;
   display: grid;
-  align-items: center;
+  align-items: start;
   grid-template-rows: min-content 3fr 1fr 3fr;
   padding: 8px 16px 16px;
   span {
@@ -297,7 +301,6 @@ const WrapperGame = styled.div`
   display: grid;
   justify-self: center;
   justify-items: center;
-  align-items: center;
   width: 100%;
   gap: 0.5rem;
 
@@ -315,7 +318,7 @@ const List = styled.ul`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
+  align-items: start;
   gap: 0.25rem 1rem;
   list-style: none;
   padding: 0;
@@ -328,6 +331,13 @@ const List = styled.ul`
   width: 100%;
   background-color: var(--color-opacity);
   box-shadow: var(--effect-neon-small);
+
+  p {
+    width: 100%;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    padding: 1rem;
+  }
 `
 
 const ListItem = styled.li`
@@ -349,12 +359,6 @@ const ListItem = styled.li`
   padding: 0.4rem 0.5rem 0.3rem;
   margin: 0.3rem;
   background-color: transparent;
-
-  p {
-    font-size: 1.25rem;
-    line-height: 1.5;
-    padding: 1rem;
-  }
 `
 const Link = styled.a`
   color: var(--color-secondary);
@@ -373,7 +377,7 @@ const ScoreList = styled.ul`
   list-style: none;
   padding: 1rem;
   color: var(--color-secondary);
-  width: 80vw;
+  width: 80%;
 `
 const ScoreListItem = styled.li`
   display: flex;
@@ -381,11 +385,9 @@ const ScoreListItem = styled.li`
   font-size: 1.25rem;
 `
 const WrapperStart = styled.div`
-  height: 100vh;
   display: grid;
   gap: 1rem;
   justify-items: center;
-  align-items: center;
 `
 const PlayButtonWrapper = styled.div`
   height: 6rem;

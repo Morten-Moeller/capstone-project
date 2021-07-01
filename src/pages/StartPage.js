@@ -78,6 +78,8 @@ export default function StartPage({
 
 const Container = styled.main`
   display: grid;
+  max-width: 500px;
+  max-height: 900px;
   justify-items: center;
   gap: 1rem;
   padding: 8px 16px 16px;
