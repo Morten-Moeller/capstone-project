@@ -237,7 +237,7 @@ export default function MultiPlayPage({
   }
 
   function handleNavigate() {
-    stopAudio()
+    toggleAudio()
     sendQuit()
     unSubscribe()
     onNavigate()
@@ -287,6 +287,11 @@ const WrapperGame = styled.div`
   label {
     align-self: flex-start;
     display: grid;
+  }
+
+  ul {
+    min-height: 7.5rem;
+    max-height: 7.5rem;
   }
 `
 const List = styled.ul`
