@@ -22,38 +22,58 @@ export default function StartPage({
   return (
     <Container>
       <Headline>Juke Quest</Headline>
-      <Label>
-        name:
-        <input
-          type="text"
-          maxLength="12"
-          onChange={onInputChange}
-          value={playerData.playerName}
-        />
-      </Label>
-      <Label>
-        room:
-        <input
-          type="text"
-          maxLength="12"
-          onChange={onInputChangeRoom}
-          value={playerData.room}
-        />
-      </Label>
-      <List>
-        {playlists.map(({ id, title, playlistName }) => (
-          <ListItem
-            isSelected={selectedPlaylist?.playlistName === playlistName}
-            key={id}
-            onClick={() => onMark({ playlistName })}
-          >
-            {title}
-          </ListItem>
-        ))}
-      </List>
-      <Button onClick={onGame}>start game</Button>
+      <Form onSubmit={handleSubmit}>
+        <Label>
+          name:
+          <input
+            type="text"
+            name="playerName"
+            maxLength="12"
+            onChange={onInputChange}
+            value={playerData.playerName}
+          />
+        </Label>
+        <Label>
+          room:
+          <input
+            type="text"
+            name="roomName"
+            maxLength="12"
+            onChange={onInputChangeRoom}
+            value={playerData.room}
+          />
+        </Label>
+
+        <List>
+          {playlists.map(({ id, title, playlistName }) => (
+            <ListItem
+              isSelected={selectedPlaylist?.playlistName === playlistName}
+              key={id}
+              onClick={() => onMark({ playlistName })}
+            >
+              {title}
+            </ListItem>
+          ))}
+        </List>
+        <Button>start game</Button>
+      </Form>
     </Container>
   )
+
+  function handleSubmit(event) {
+    event.preventDefault()
+    const { roomName, playerName } = event.target.elements
+    if (!playerName.value || !roomName.value) {
+      if (!playerName.value) {
+        playerName.placeholder = 'please enter a name'
+      }
+      if (!roomName.value) {
+        roomName.placeholder = 'please enter a room'
+      }
+    } else {
+      onGame()
+    }
+  }
 }
 
 const Container = styled.main`
@@ -62,9 +82,6 @@ const Container = styled.main`
   gap: 1rem;
   padding: 8px 16px 16px;
   margin-bottom: 16px;
-  a {
-    justify-self: right;
-  }
 `
 const List = styled.ul`
   display: flex;
@@ -114,4 +131,9 @@ const Label = styled.label`
       outline: none;
     }
   }
+`
+const Form = styled.form`
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
 `
