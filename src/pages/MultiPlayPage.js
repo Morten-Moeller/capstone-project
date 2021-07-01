@@ -94,19 +94,15 @@ export default function MultiPlayPage({
       <Link onClick={handleNavigate}>&lt;-- start new</Link>
       {isSpectator && isLoaded && !isGameEnded && (
         <WrapperStart>
-          {!isGameEnded && isGameRunning ? (
-            <span>Game is already running</span>
-          ) : (
-            <Button active={isReady} onClick={handleReady}>
-              Ready?
-            </Button>
-          )}
           <List>
-            <ListItem>Selected playlist: {playlistName}</ListItem>
-            <ListItem>Selected room: {playerData.room}</ListItem>
-          </List>
+            <p>
+              Selected playlist: {playlistName}
+              <br />
+              Selected room: {playerData.room}
+              <br />
+              Player already joined:
+            </p>
 
-          <List>
             {player.map(name => (
               <ListItem
                 key={name}
@@ -122,6 +118,13 @@ export default function MultiPlayPage({
               </ListItem>
             ))}
           </List>
+          {!isGameEnded && isGameRunning ? (
+            <span>Game is already running</span>
+          ) : (
+            <Button active={isReady} onClick={handleReady}>
+              Ready?
+            </Button>
+          )}
         </WrapperStart>
       )}
       {!isSpectator && !isGameEnded && (
@@ -298,7 +301,8 @@ const List = styled.ul`
   overflow-y: auto;
   border-radius: 2rem;
   padding: 0.75rem;
-  height: 7.5rem;
+  min-height: 30vh;
+  max-height: 60vh;
   width: 100%;
   background-color: var(--color-opacity);
   box-shadow: var(--effect-neon-small);
@@ -318,11 +322,17 @@ const ListItem = styled.li`
       : prop.hasWrongAnswer
       ? 'var(--color-wrong)'
       : 'var(--color-primary)'};
-  height: 2rem;
+  min-height: 2rem;
   border-radius: 1rem;
   padding: 0.4rem 0.5rem 0.3rem;
   margin: 0.3rem;
   background-color: transparent;
+
+  p {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    padding: 1rem;
+  }
 `
 const Link = styled.a`
   color: var(--color-secondary);
