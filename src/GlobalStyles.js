@@ -61,8 +61,8 @@ const GlobalStyle = createGlobalStyle`
     --color-opacity: rgba(0, 0, 0, 0.6);
 
     --color-button-background: rgba(0, 0, 0, 0.6);
-    --color-button: #eef534;
-    --color-button-neon: #e9eba6;
+    --color-button: #ffcc00;
+    --color-button-neon: #ffedbd;
 
 
 

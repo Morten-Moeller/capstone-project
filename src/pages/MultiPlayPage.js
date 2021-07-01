@@ -70,6 +70,7 @@ export default function MultiPlayPage({
     setUserName(playerData.playerName)
     setSelectedPlaylist(selectedPlaylist.songs)
     setPlaylistName(selectedPlaylist.title)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

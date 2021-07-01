@@ -67,8 +67,20 @@ export default function UseMultiplayer() {
     if (!isConnected) {
       connect()
     }
+
+    //remove player before unload
+    window.addEventListener('beforeunload', handlePageQuit)
+    return () => {
+      window.removeEventListener('beforeunload', handlePageQuit)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // useEffect(() => {
+  //   if (window.performance.navigation.type === 1) {
+  //     sendQuit()
+  //   }
+  // }, [window.performance])
 
   useEffect(() => {
     setNewPlaylist(selectedPlaylist)
@@ -182,6 +194,10 @@ export default function UseMultiplayer() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages])
+
+  function handlePageQuit(event) {
+    event.preventDefault()
+  }
 
   function handleQuit(rawMessage) {
     const messageArray = rawMessage.split(',')
