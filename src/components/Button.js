@@ -21,28 +21,24 @@ const Button = styled.button`
       return `
     background-color: var(--color-right);
     color: var(--color-primary-background);
-    opacity: 0.8;
     box-shadow: var(--effect-neon-small-right);
     `
     } else if (props.red) {
       return `
     background-color: var(--color-wrong);
     color: var(--color-primary-background);
-    opacity: 0.8;
     box-shadow: var(--effect-neon-small-wrong);
     `
     } else if (props.active) {
       return `
     background-color: var(--color-opacity);
     color: var(--color-secondary);
-    opacity: 0.8;
     box-shadow: var(--effect-neon-small-active);
     `
     } else if (props.question) {
       return `
       background-color: var(--color-primary-background);
     color: var(--color-primary);
-    opacity: 0.8;
     box-shadow: var(--effect-neon-small);
     `
     } else {

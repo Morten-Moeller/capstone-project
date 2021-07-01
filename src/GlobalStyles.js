@@ -13,9 +13,9 @@ const GlobalStyle = createGlobalStyle`
     --color-primary-neon: #FFE8F7;
     --color-secondary: #0EEEED;
     --color-secondary-neon: #e8fcff;
-    --color-wrong: #F4193B;
+    --color-wrong: #F4193BBB;
     --color-wrong-neon: #ffe8ef;
-    --color-right: #04EBAD;
+    --color-right: #04EBADBB;
     --color-right-neon: #e8fff7;
 
     --transition: cubic-bezier(0, 2.5, 0, -0.5) 1s;

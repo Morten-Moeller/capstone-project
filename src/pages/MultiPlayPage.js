@@ -93,6 +93,13 @@ export default function MultiPlayPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url])
 
+  useEffect(() => {
+    if (areAllReady && !isPlaying && !isAnswerVisible) {
+      handleIsRight(false)
+      setIsAnswerVisible(true)
+    }
+  }, [isPlaying])
+
   return (
     <Container>
       <Link onClick={handleNavigate}>&lt;-- start new</Link>
@@ -183,7 +190,7 @@ export default function MultiPlayPage({
                   key={answer.id}
                   green={isAnswerVisible && answer.state === 'right'}
                   red={isAnswerVisible && answer.state === 'wrong'}
-                  onClick={() => handleAnswer(answer.state)}
+                  onClick={event => handleAnswer(event, answer.state)}
                 >
                   {answer.title}
                 </Button>
@@ -213,7 +220,9 @@ export default function MultiPlayPage({
     setIsSpectator(false)
   }
 
-  function handleAnswer(answer) {
+  function handleAnswer(event, answer) {
+    const clickedButton = event.target
+    clickedButton.style.opacity = 1
     if (answer === 'right' && !isAnswerVisible && isPlaying) {
       const points = calcPoints(getCurrentTime())
       handlePlayerData({ ...playerData, score: playerData.score + points })
@@ -264,7 +273,7 @@ const Container = styled.main`
 
   nav {
     display: grid;
-    gap: 1.5rem;
+    gap: 2rem;
     justify-items: center;
   }
 
