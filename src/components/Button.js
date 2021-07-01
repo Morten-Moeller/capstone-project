@@ -17,14 +17,14 @@ const Button = styled.button`
   transition: 0.5s;
 
   ${props => {
-    if (props.right) {
+    if (props.green) {
       return `
     background-color: var(--color-right);
     color: var(--color-primary-background);
     opacity: 0.8;
     box-shadow: var(--effect-neon-small-right);
     `
-    } else if (props.wrong) {
+    } else if (props.red) {
       return `
     background-color: var(--color-wrong);
     color: var(--color-primary-background);

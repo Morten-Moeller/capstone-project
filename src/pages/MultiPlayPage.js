@@ -181,9 +181,9 @@ export default function MultiPlayPage({
                 <Button
                   question={true}
                   key={answer.id}
-                  right={isAnswerVisible && answer.right}
-                  wrong={isAnswerVisible && answer.wrong}
-                  onClick={() => handleAnswer(answer.right)}
+                  green={isAnswerVisible && answer.state === 'right'}
+                  red={isAnswerVisible && answer.state === 'wrong'}
+                  onClick={() => handleAnswer(answer.state)}
                 >
                   {answer.title}
                 </Button>
@@ -213,8 +213,8 @@ export default function MultiPlayPage({
     setIsSpectator(false)
   }
 
-  function handleAnswer(isRight, event) {
-    if (isRight && !isAnswerVisible && isPlaying) {
+  function handleAnswer(answer) {
+    if (answer === 'right' && !isAnswerVisible && isPlaying) {
       const points = calcPoints(getCurrentTime())
       handlePlayerData({ ...playerData, score: playerData.score + points })
       handleIsRight(true)

@@ -49,9 +49,9 @@ export default function usePlayList(initialPlaylist) {
       wrongAnswers.filter(answer => answer !== rightAnswer)
     )
     const allAnswers = [
-      { title: rightAnswer, right: true, id: 1 },
-      { title: shuffledWrongAnswers[0], wrong: true, id: 2 },
-      { title: shuffledWrongAnswers[1], wrong: true, id: 3 },
+      { title: rightAnswer, state: 'right', id: 1 },
+      { title: shuffledWrongAnswers[0], state: 'wrong', id: 2 },
+      { title: shuffledWrongAnswers[1], state: 'wrong', id: 3 },
     ]
 
     setAnswers(shuffle(allAnswers))
