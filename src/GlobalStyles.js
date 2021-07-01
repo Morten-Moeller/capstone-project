@@ -71,7 +71,7 @@ const GlobalStyle = createGlobalStyle`
 body {
     font-family: Iceland , sans-serif;
     letter-spacing: 0.02rem;
-    font-size: 125%;
+    font-size: 150%;
     margin: 0;
     color: var(--color-primary);
     background-color: var(--color-primary-background);

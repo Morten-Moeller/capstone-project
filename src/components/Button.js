@@ -11,6 +11,7 @@ const Button = styled.button`
   text-overflow: clip ellipsis;
   text-overflow: '…';
   border-radius: 2rem;
+  min-width: 300px;
   width: 80%;
   padding: 0.25rem;
   font-size: 1.75rem;
@@ -37,7 +38,7 @@ const Button = styled.button`
     `
     } else if (props.question) {
       return `
-      background-color: var(--color-primary-background);
+      background-color: var(--color-button-background);
     color: var(--color-primary);
     box-shadow: var(--effect-neon-small);
     `

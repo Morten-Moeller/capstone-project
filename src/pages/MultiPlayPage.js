@@ -8,6 +8,7 @@ import Timer from '../components/Timer'
 import useAudio from '../hooks/useAudio'
 import UseMultiplayer from '../hooks/UseMultiplayer'
 import calcPoints from '../services/calcPoints'
+import defaultAnswers from '../services/defaultAnswers'
 
 export default function MultiPlayPage({
   playerData,
@@ -56,7 +57,7 @@ export default function MultiPlayPage({
   } = useAudio()
 
   const [isAnswerVisible, setIsAnswerVisible] = useState(false)
-  const [answers, setAnswers] = useState([])
+  const [answers, setAnswers] = useState(defaultAnswers)
   const [isSpectator, setIsSpectator] = useState(true)
   const [isNextSong, setIsNextSong] = useState(false)
 
@@ -142,17 +143,19 @@ export default function MultiPlayPage({
       {!isSpectator && !isGameEnded && (
         <>
           <WrapperGame>
-            <span>{playerData.playerName}</span>
+            <PlayerName>{playerData.playerName}</PlayerName>
             score: {playerData.score}
             {isPlaying ? (
               duration && <Timer duration={duration} />
             ) : (
               <PlayButtonWrapper>
-                {((!isAnswerVisible && areAllReady) ||
-                  (!thisGameEnded && isNextSong)) && (
+                {(!isAnswerVisible && areAllReady) ||
+                (!thisGameEnded && isNextSong) ? (
                   <PlayButton onClick={handlePlay}>
                     <PlayButtonSVG />
                   </PlayButton>
+                ) : (
+                  <GlowContainer2>Please wait</GlowContainer2>
                 )}
               </PlayButtonWrapper>
             )}
@@ -182,36 +185,45 @@ export default function MultiPlayPage({
                 </ListItem>
               ))}
             </List>
+            {
+              <nav tabIndex={1}>
+                {answers?.map(answer => (
+                  <Button
+                    question={true}
+                    key={answer.id}
+                    green={isAnswerVisible && answer.state === 'right'}
+                    red={isAnswerVisible && answer.state === 'wrong'}
+                    onClick={event => handleAnswer(event, answer.state)}
+                  >
+                    {answer.title}
+                  </Button>
+                ))}
+              </nav>
+            }
           </WrapperGame>
-          {areAllReady && (
-            <nav tabIndex={1}>
-              {answers?.map(answer => (
-                <Button
-                  question={true}
-                  key={answer.id}
-                  green={isAnswerVisible && answer.state === 'right'}
-                  red={isAnswerVisible && answer.state === 'wrong'}
-                  onClick={event => handleAnswer(event, answer.state)}
-                >
-                  {answer.title}
-                </Button>
-              ))}
-            </nav>
-          )}
         </>
       )}
       {isGameEnded && (
         <WrapperEndGame>
-          Game ended! You got {playerData.score} points.
-          <ScoreList>
-            {endScore.map(el => (
-              <ScoreListItem key={el.player}>
-                <span>{el.player}</span>
-                <span>{el.score}</span>
-              </ScoreListItem>
-            ))}
-          </ScoreList>
+          <GlowContainer>
+            Game ended! You got {playerData.score} points.
+            <ScoreList>
+              {endScore.map(el => (
+                <ScoreListItem key={el.player}>
+                  <span>{el.player}</span>
+                  <span>{el.score}</span>
+                </ScoreListItem>
+              ))}
+            </ScoreList>
+          </GlowContainer>
         </WrapperEndGame>
+      )}
+      {!isLoaded && (
+        <>
+          <WrapperLoading>
+            <GlowContainer>Please wait hile loading</GlowContainer>
+          </WrapperLoading>
+        </>
       )}
     </Container>
   )
@@ -264,14 +276,44 @@ export default function MultiPlayPage({
 
 const Container = styled.main`
   width: 100%;
-  height: 100vh;
-  width: 100vw;
+  min-width: 374px;
+  min-height: 666px;
+  max-width: 500px;
+  max-height: 900px;
   display: grid;
-  align-items: start;
-  grid-template-rows: 2rem min-content 3fr 1fr 3fr;
-  padding: 8px 16px 16px;
-  span {
-    font-size: 2rem;
+  padding: 8px 32px 32px;
+  grid-template-rows: min-content auto;
+  align-items: center;
+`
+
+const WrapperStart = styled.div`
+  display: grid;
+  height: 100%;
+  width: 100%;
+
+  gap: 1rem;
+  justify-items: center;
+  button {
+    align-self: end;
+  }
+`
+
+const WrapperGame = styled.div`
+  height: 100%;
+  width: 100%;
+  display: grid;
+  justify-self: center;
+  justify-items: center;
+  /* gap: 0.5rem; */
+
+  label {
+    align-self: flex-start;
+    display: grid;
+  }
+
+  ul {
+    min-height: 7.5rem;
+    max-height: 7.5rem;
   }
 
   nav {
@@ -284,53 +326,29 @@ const Container = styled.main`
     height: 5rem;
     width: 5rem;
   }
-
-  label {
-    justify-self: center;
-    min-width: 250px;
-    width: 80%;
-  }
-
-  button {
-    cursor: pointer;
-  }
-`
-
-const WrapperStart = styled.div`
-  display: grid;
-  height: 80vh;
-  width: 100%;
-  gap: 1rem;
-  justify-items: center;
-  button {
-    align-self: end;
-  }
-`
-
-const WrapperGame = styled.div`
-  display: grid;
-  justify-self: center;
-  justify-items: center;
-  width: 100%;
-  /* gap: 0.5rem; */
-
-  label {
-    align-self: flex-start;
-    display: grid;
-  }
-
-  ul {
-    min-height: 7.5rem;
-    max-height: 7.5rem;
-  }
 `
 
 const WrapperEndGame = styled.section`
-  margin-top: 3rem;
-  display: grid;
+  height: 100%;
   width: 100%;
-  justify-items: center;
+  margin-top: 3rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
   gap: 2rem;
+`
+
+const WrapperLoading = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+const PlayerName = styled.span`
+  font-size: 2.5rem;
 `
 
 const List = styled.ul`
@@ -383,7 +401,29 @@ const Link = styled.a`
   color: var(--color-secondary);
   text-shadow: var(--effect-neon-small-navigation);
   cursor: pointer;
-  text-align: left;
+  position: left;
+`
+
+const GlowContainer = styled.div`
+  width: 100%;
+  min-height: 7.5rem;
+  box-shadow: var(--effect-neon-small);
+  background-color: var(--color-opacity);
+  box-shadow: var(--effect-neon-small);
+  border-radius: 2rem;
+  padding: 0.75rem;
+  text-align: center;
+`
+
+const GlowContainer2 = styled.div`
+  width: 100%;
+  box-shadow: var(--effect-neon-small);
+  background-color: var(--color-opacity);
+  box-shadow: var(--effect-neon-small);
+  border-radius: 2rem;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  text-align: center;
 `
 
 const ScoreList = styled.ul`
@@ -391,7 +431,8 @@ const ScoreList = styled.ul`
   list-style: none;
   padding: 1rem;
   color: var(--color-secondary);
-  width: 80%;
+  width: 100%;
+  align-self: flex-start;
 `
 const ScoreListItem = styled.li`
   display: flex;
@@ -400,5 +441,5 @@ const ScoreListItem = styled.li`
 `
 
 const PlayButtonWrapper = styled.div`
-  height: 6rem;
+  height: 5rem;
 `

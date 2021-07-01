@@ -31,6 +31,7 @@ export default function StartPage({
             maxLength="12"
             onChange={onInputChange}
             value={playerData.playerName}
+            autocomplete="off"
           />
         </Label>
         <Label>
@@ -41,6 +42,7 @@ export default function StartPage({
             maxLength="12"
             onChange={onInputChangeRoom}
             value={playerData.room}
+            autocomplete="off"
           />
         </Label>
 
