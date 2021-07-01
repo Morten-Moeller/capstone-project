@@ -81,7 +81,7 @@ function App() {
 
 const Container = styled.main`
   height: 100vh;
-  display: flex;
+  display: grid;
   justify-content: center;
   align-items: center;
   background: center / cover no-repeat url(${bgImage});
