@@ -1,6 +1,6 @@
 // @ts-check
 import { useState } from 'react'
-import { Route, Switch, useHistory } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import bgImage from './assets/jukequestfin.jpg'
 import playlists from './data/playlists.json'
@@ -16,8 +16,6 @@ function App() {
     room: '',
   })
   const [play, setPlay] = useState(false)
-
-  const { push } = useHistory()
 
   return (
     <Container>

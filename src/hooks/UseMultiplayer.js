@@ -1,7 +1,6 @@
 //@ts-check
 
-import { useEffect, useRef } from 'react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import useMqtt from './useMqtt'
 import usePlayList from './usePlayList'
 
@@ -17,7 +16,6 @@ export default function UseMultiplayer() {
 
   const {
     connect,
-    disconnect,
     subscribe,
     unSubscribe,
     sendMessage,
@@ -75,12 +73,6 @@ export default function UseMultiplayer() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  // useEffect(() => {
-  //   if (window.performance.navigation.type === 1) {
-  //     sendQuit()
-  //   }
-  // }, [window.performance])
 
   useEffect(() => {
     setNewPlaylist(selectedPlaylist)

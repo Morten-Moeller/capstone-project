@@ -1,13 +1,13 @@
+import { useEffect, useState } from 'react'
 import styled from 'styled-components/macro'
+import { ReactComponent as PlayButtonSVG } from '../assets/play.svg'
 import Button from '../components/Button'
 import PlayButton from '../components/PlayButton'
-import { ReactComponent as PlayButtonSVG } from '../assets/play.svg'
 import StyledSlider from '../components/StyledSlider'
-import UseMultiplayer from '../hooks/UseMultiplayer'
-import { useEffect, useState } from 'react'
 import Timer from '../components/Timer'
-import calcPoints from '../services/calcPoints'
 import useAudio from '../hooks/useAudio'
+import UseMultiplayer from '../hooks/UseMultiplayer'
+import calcPoints from '../services/calcPoints'
 
 export default function MultiPlayPage({
   playerData,
@@ -26,8 +26,7 @@ export default function MultiPlayPage({
     isLoaded,
     isLastSong,
     areAllReady,
-    areAllEnded,
-    areAllAnswered,
+
     allReady,
     allAnswered,
     handleIsRight,
@@ -78,6 +77,7 @@ export default function MultiPlayPage({
     if (thisGameEnded) {
       sendScore(playerData.score)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameEnded])
 
   useEffect(() => {
