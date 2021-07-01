@@ -213,7 +213,7 @@ export default function MultiPlayPage({
     setIsSpectator(false)
   }
 
-  function handleAnswer(isRight) {
+  function handleAnswer(isRight, event) {
     if (isRight && !isAnswerVisible && isPlaying) {
       const points = calcPoints(getCurrentTime())
       handlePlayerData({ ...playerData, score: playerData.score + points })
