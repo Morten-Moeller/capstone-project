@@ -41,7 +41,7 @@ export default function UseMultiplayer() {
   const [isGameRunning, setIsGameRunning] = useState(false)
   const [isLastSong, setIsLastSong] = useState(false)
   const [gameEnded, setGameEnded] = useState([])
-
+  const [playlistName, setPlaylistName] = useState('Loaded')
   const messagesRef = useRef(messages)
   messagesRef.current = messages
 
@@ -64,7 +64,9 @@ export default function UseMultiplayer() {
   )
 
   useEffect(() => {
-    connect()
+    if (!isConnected) {
+      connect()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -168,12 +170,23 @@ export default function UseMultiplayer() {
         case /(noMoreSong)/.test(messages[0]):
           setIsLastSong(true)
           break
+        case /(Playlist)/.test(messages[0]):
+          handlePlaylistName(messages[0])
+          break
+
         default:
           break
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages])
+
+  function handlePlaylistName(rawMessage) {
+    const messageArray = rawMessage.split(',')
+    if (!isHost) {
+      setPlaylistName(messageArray[1])
+    }
+  }
 
   function handleSongStarted(rawMessage) {
     const messageArray = rawMessage.split(',')
@@ -253,7 +266,9 @@ export default function UseMultiplayer() {
   function handleRequest() {
     const answer = { title: room, body: 'here' + userName }
     sendMessage(answer)
+
     if (isHost) {
+      sendPlaylistName(playlistName)
       const answerHost = { title: room, body: 'host' }
       sendMessage(answerHost)
       if (areAllReady) {
@@ -330,6 +345,13 @@ export default function UseMultiplayer() {
     sendMessage(message)
   }
 
+  function sendPlaylistName(playlistName) {
+    if (isHost) {
+      const message = { title: room, body: 'Playlist,' + playlistName }
+      sendMessage(message)
+    }
+  }
+
   return {
     setReady,
     setUserName,
@@ -355,5 +377,8 @@ export default function UseMultiplayer() {
     songStarted,
     sendScore,
     gameEnded,
+    disconnect,
+    playlistName,
+    setPlaylistName,
   }
 }

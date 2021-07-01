@@ -16,6 +16,7 @@ export default function StartPage({
   onMark,
   selectedPlaylist,
   onInputChange,
+  onInputChangeRoom,
   playerData,
 }) {
   return (
@@ -28,6 +29,15 @@ export default function StartPage({
           maxLength="12"
           onChange={onInputChange}
           value={playerData.playerName}
+        />
+      </Label>
+      <Label>
+        room:
+        <input
+          type="text"
+          maxLength="12"
+          onChange={onInputChangeRoom}
+          value={playerData.room}
         />
       </Label>
       <List>
@@ -51,19 +61,9 @@ const Container = styled.main`
   justify-items: center;
   gap: 1rem;
   padding: 8px 16px 16px;
-
+  margin-bottom: 16px;
   a {
     justify-self: right;
-  }
-
-  button {
-    margin-top: 2rem;
-    background-color: var(--color-opacity);
-  }
-  button:hover {
-    background-color: var(--color-primary);
-    opacity: 0.6;
-    color: var(--color-primary-background);
   }
 `
 const List = styled.ul`
@@ -78,7 +78,7 @@ const List = styled.ul`
   overflow-y: auto;
   border-radius: 2rem;
   padding: 1rem;
-  height: 40vh;
+  height: 33vh;
   background-color: var(--color-opacity);
   box-shadow: var(--effect-neon-small);
 `

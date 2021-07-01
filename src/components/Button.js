@@ -12,8 +12,8 @@ const Button = styled.button`
   text-overflow: '…';
   border-radius: 2rem;
   width: 80%;
-  padding: 0.5rem;
-  font-size: 1.25rem;
+  padding: 0.25rem;
+  font-size: 1.75rem;
   transition: 0.5s;
 
   ${props => {
@@ -38,12 +38,19 @@ const Button = styled.button`
     opacity: 0.8;
     box-shadow: var(--effect-neon-small-active);
     `
-    } else {
+    } else if (props.question) {
       return `
-      background-color: var(--color-opacity);
+      background-color: var(--color-primary-background);
     color: var(--color-primary);
     opacity: 0.8;
     box-shadow: var(--effect-neon-small);
+    `
+    } else {
+      return `
+      background-color: var(--color-button-background);
+    color: var(--color-button);
+    opacity: 0.8;
+    box-shadow: var(--effect-neon-small-button);
     `
     }
   }}

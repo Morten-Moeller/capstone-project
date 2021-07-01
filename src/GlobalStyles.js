@@ -50,7 +50,18 @@ const GlobalStyle = createGlobalStyle`
                     0 0 0.75rem var(--color-secondary),
                     0 0 1rem var(--color-secondary);
 
-    --color-opacity: rgba(0, 0, 0, 0.6)
+    --color-opacity: rgba(0, 0, 0, 0.6);
+
+    --color-button-background: rgba(0, 0, 0, 0.6);
+    --color-button: #eef534;
+    --color-button-neon: #e9eba6;
+
+    --effect-neon-small-button:  0 0 0.1rem var(--color-button-neon),
+                    0 0 0.15rem var(--color-button-neon),
+                    0 0 0.5rem var(--color-button),
+                    0 0 0.75rem var(--color-button),
+                    0 0 1rem var(--color-button);
+
 }
 
 body {

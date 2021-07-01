@@ -11,7 +11,6 @@ import useAudio from '../hooks/useAudio'
 
 export default function MultiPlayPage({
   playerData,
-  roomName,
   selectedPlaylist,
   handlePlayerData,
   onNavigate,
@@ -41,6 +40,9 @@ export default function MultiPlayPage({
     songStarted,
     sendScore,
     gameEnded,
+    disconnect,
+    playlistName,
+    setPlaylistName,
   } = UseMultiplayer()
 
   const {
@@ -62,12 +64,11 @@ export default function MultiPlayPage({
     ({ player }) => player === playerData.playerName
   )
 
-  console.log(areAllAnswered)
-
   useEffect(() => {
-    setRoom(roomName)
+    setRoom(playerData.room)
     setUserName(playerData.playerName)
     setSelectedPlaylist(selectedPlaylist.songs)
+    setPlaylistName(selectedPlaylist.title)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -82,6 +83,7 @@ export default function MultiPlayPage({
       setSongUrl(url)
       setIsNextSong(true)
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url])
 
@@ -97,6 +99,11 @@ export default function MultiPlayPage({
               Ready?
             </Button>
           )}
+          <List>
+            <ListItem>Selected playlist: {playlistName}</ListItem>
+            <ListItem>Selected room: {playerData.room}</ListItem>
+          </List>
+
           <List>
             {player.map(name => (
               <ListItem
@@ -159,6 +166,7 @@ export default function MultiPlayPage({
             <nav tabIndex={1}>
               {answers?.map(answer => (
                 <Button
+                  question={true}
                   key={answer.id}
                   right={isAnswerVisible && answer.right}
                   wrong={isAnswerVisible && answer.wrong}
@@ -226,6 +234,7 @@ export default function MultiPlayPage({
   function handleNavigate() {
     onNavigate()
     stopAudio()
+    disconnect()
   }
 }
 
@@ -254,6 +263,10 @@ const Container = styled.main`
     justify-self: center;
     min-width: 250px;
     width: 80%;
+  }
+
+  button {
+    cursor: pointer;
   }
 `
 
@@ -306,7 +319,6 @@ const ListItem = styled.li`
   border-radius: 1rem;
   padding: 0.4rem 0.5rem 0.3rem;
   margin: 0.3rem;
-  cursor: pointer;
   background-color: transparent;
 `
 const Link = styled.a`
@@ -333,7 +345,9 @@ const ScoreListItem = styled.li`
   font-size: 1.25rem;
 `
 const WrapperStart = styled.div`
+  height: 100vh;
   display: grid;
   gap: 1rem;
   justify-items: center;
+  align-items: center;
 `

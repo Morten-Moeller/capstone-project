@@ -10,7 +10,11 @@ import StartPage from './pages/StartPage'
 
 function App() {
   const [selectedPlaylist, setSelectedPlaylist] = useState(null)
-  const [playerData, setPlayerData] = useState({ score: 0, playerName: '' })
+  const [playerData, setPlayerData] = useState({
+    score: 0,
+    playerName: '',
+    room: '',
+  })
   const [play, setPlay] = useState(false)
 
   const { push } = useHistory()
@@ -28,6 +32,7 @@ function App() {
               selectedPlaylist={selectedPlaylist}
               onInputChange={handleNameInput}
               playerData={playerData}
+              onInputChangeRoom={handleRoomInput}
             />
           )}
           {play && (
@@ -35,7 +40,6 @@ function App() {
               selectedPlaylist={selectedPlaylist}
               playerData={playerData}
               handlePlayerData={handlePlayerData}
-              roomName="test2"
               onNavigate={handleNavigate}
             />
           )}
@@ -48,6 +52,11 @@ function App() {
     if (selectedPlaylist) {
       setPlay(true)
     }
+  }
+
+  function handleRoomInput(event) {
+    const input = event.target
+    setPlayerData({ ...playerData, room: input.value })
   }
 
   function handleNameInput(event) {
