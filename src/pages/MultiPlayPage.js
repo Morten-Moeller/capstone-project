@@ -136,14 +136,18 @@ export default function MultiPlayPage({
           <WrapperGame>
             <span>{playerData.playerName}</span>
             score: {playerData.score}
-            {isPlaying
-              ? duration && <Timer duration={duration} />
-              : ((!isAnswerVisible && areAllReady) ||
+            {isPlaying ? (
+              duration && <Timer duration={duration} />
+            ) : (
+              <PlayButtonWrapper>
+                {((!isAnswerVisible && areAllReady) ||
                   (!thisGameEnded && isNextSong)) && (
                   <PlayButton onClick={handlePlay}>
                     <PlayButtonSVG />
                   </PlayButton>
                 )}
+              </PlayButtonWrapper>
+            )}
             <label>
               Volume:
               <StyledSlider
@@ -346,6 +350,7 @@ const ListItem = styled.li`
 const Link = styled.a`
   color: var(--color-secondary);
   text-shadow: var(--effect-neon-small-navigation);
+  cursor: pointer;
 `
 
 const WrapperEndGame = styled.section`
@@ -372,4 +377,7 @@ const WrapperStart = styled.div`
   gap: 1rem;
   justify-items: center;
   align-items: center;
+`
+const PlayButtonWrapper = styled.div`
+  height: 6rem;
 `
