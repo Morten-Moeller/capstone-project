@@ -9,7 +9,7 @@ import MultiPlayPage from './pages/MultiPlayPage'
 import StartPage from './pages/StartPage'
 
 function App() {
-  const [selectedPlaylist, setSelectedPlaylist] = useState(null)
+  const [selectedPlaylist, setSelectedPlaylist] = useState(playlists[0])
   const [playerData, setPlayerData] = useState({
     score: 0,
     playerName: '',

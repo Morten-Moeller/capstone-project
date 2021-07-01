@@ -43,6 +43,7 @@ export default function MultiPlayPage({
     unSubscribe,
     playlistName,
     setPlaylistName,
+    sendQuit,
   } = UseMultiplayer()
 
   const {
@@ -90,7 +91,7 @@ export default function MultiPlayPage({
   return (
     <Container>
       <Link onClick={handleNavigate}>&lt;-- start new</Link>
-      {isSpectator && isLoaded && (
+      {isSpectator && isLoaded && !isGameEnded && (
         <WrapperStart>
           {!isGameEnded && isGameRunning ? (
             <span>Game is already running</span>
@@ -233,6 +234,7 @@ export default function MultiPlayPage({
 
   function handleNavigate() {
     stopAudio()
+    sendQuit()
     unSubscribe()
     onNavigate()
   }

@@ -173,13 +173,26 @@ export default function UseMultiplayer() {
         case /(Playlist)/.test(messages[0]):
           handlePlaylistName(messages[0])
           break
-
+        case /(quit)/.test(messages[0]):
+          handleQuit(messages[0])
+          break
         default:
           break
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages])
+
+  function handleQuit(rawMessage) {
+    const messageArray = rawMessage.split(',')
+    const userToRemove = messageArray[1]
+    if (messageArray[2] === 'host') {
+      setIsGameEnded(true)
+    }
+    setPlayer(player.filter(el => el !== userToRemove))
+    setAllReady(allReady.filter(({ user }) => user !== userToRemove))
+    setAllSongsStarted(allReady.filter(({ user }) => user !== userToRemove))
+  }
 
   function handlePlaylistName(rawMessage) {
     const messageArray = rawMessage.split(',')
@@ -352,6 +365,15 @@ export default function UseMultiplayer() {
     }
   }
 
+  function sendQuit() {
+    const message = { title: room, body: 'quit,' + userName }
+    sendMessage(message)
+    if (isHost) {
+      const message = { title: room, body: 'quit,' + userName + ',host' }
+      sendMessage(message)
+    }
+  }
+
   return {
     setReady,
     setUserName,
@@ -380,5 +402,6 @@ export default function UseMultiplayer() {
     unSubscribe,
     playlistName,
     setPlaylistName,
+    sendQuit,
   }
 }
