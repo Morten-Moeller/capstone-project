@@ -132,9 +132,7 @@ export default function UseMultiplayer() {
   }, [endScore])
 
   useEffect(() => {
-    if (playerCheck.length > 0) {
-      setTimeout(handleKick, 5000)
-    }
+    setTimeout(handleKick, 5000)
   }, [playerCheck])
 
   // ----------- message listener -----------
@@ -196,25 +194,27 @@ export default function UseMultiplayer() {
   function handleKick() {
     console.log(playerCheckRef.current)
     console.log(player)
-    const userToRemove = player.filter(user => {
-      if (playerCheckRef.current.some(checkUser => user === checkUser)) {
-        console.log(false)
-        return ''
-      } else {
-        console.log(true)
-        return user
-      }
-    })
-
-    if (userToRemove !== undefined) {
-      userToRemove.forEach(userRemove => {
-        setPlayer(player.filter(el => el !== userRemove))
-        setAllReady(allReady.filter(({ user }) => user !== userRemove))
-        setAllSongsStarted(allReady.filter(({ user }) => user !== userRemove))
+    if (playerCheckRef.current.length > 0) {
+      const userToRemove = player.filter(user => {
+        if (playerCheckRef.current.some(checkUser => user === checkUser)) {
+          console.log(false)
+          return ''
+        } else {
+          console.log(true)
+          return user
+        }
       })
-    }
 
-    setPlayerCheck([])
+      if (userToRemove !== undefined) {
+        userToRemove.forEach(userRemove => {
+          setPlayer(player.filter(el => el !== userRemove))
+          setAllReady(allReady.filter(({ user }) => user !== userRemove))
+          setAllSongsStarted(allReady.filter(({ user }) => user !== userRemove))
+        })
+      }
+
+      setPlayerCheck([])
+    }
   }
 
   // ---------- handler functions for server messages ---------
