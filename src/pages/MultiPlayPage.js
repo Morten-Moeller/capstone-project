@@ -79,11 +79,11 @@ export default function MultiPlayPage({
   }, [])
 
   useEffect(() => {
-    if (thisGameEnded) {
+    if (thisGameEnded || isGameEnded) {
       sendScore(playerData.score)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameEnded])
+  }, [gameEnded, isGameEnded])
 
   useEffect(() => {
     if (url) {
