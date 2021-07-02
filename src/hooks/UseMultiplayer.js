@@ -118,7 +118,6 @@ export default function UseMultiplayer() {
     if (areAllReady) {
       setIsGameRunning(true)
     }
-    console.log('areAllReady')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [areAllReady === true])
 
@@ -144,6 +143,7 @@ export default function UseMultiplayer() {
         }, 2000)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isGameRunning])
 
   // ----------- message listener -----------
@@ -206,8 +206,6 @@ export default function UseMultiplayer() {
   }, [messages])
 
   function handleKick() {
-    console.log(playerCheckRef.current)
-    console.log(playerRef.current)
     if (playerCheckRef.current.length > 0) {
       const userToRemove = playerRef.current.filter(user => {
         if (playerCheckRef.current.some(checkUser => user === checkUser)) {
@@ -297,7 +295,6 @@ export default function UseMultiplayer() {
 
   function handleRight(rawMessage) {
     const messageArray = rawMessage.split(/(isRight)/)
-    console.log(messageArray)
     const userName = messageArray[2]
     setAllAnswered([...allAnswered, { user: userName, isRight: true }])
   }
@@ -315,7 +312,6 @@ export default function UseMultiplayer() {
   }
 
   function handlePlayer(rawMessage) {
-    console.log(areAllReady)
     if (!areAllReady) {
       const messageArray = rawMessage.split(/(here)/)
       const newPlayer = messageArray[2]
