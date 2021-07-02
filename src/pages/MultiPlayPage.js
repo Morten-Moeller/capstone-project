@@ -22,6 +22,7 @@ export default function MultiPlayPage({
     areAllReady,
     endScore,
     gameEnded,
+    sendPlayerCheck,
     initiateNextSong,
     isGameEnded,
     isGameRunning,
@@ -65,7 +66,7 @@ export default function MultiPlayPage({
   )
 
   if (endScore) {
-    endScore?.sort((a, b) => a.score - b.score)
+    endScore?.sort((a, b) => a.score - b.score).reverse()
   }
 
   useEffect(() => {
@@ -100,6 +101,15 @@ export default function MultiPlayPage({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying])
+
+  useEffect(() => {
+    let checkTimer
+    if (areAllReady) {
+      checkTimer = setInterval(sendPlayerCheck, 10000)
+    }
+    return () => clearInterval(checkTimer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [areAllReady])
 
   return (
     <Container>

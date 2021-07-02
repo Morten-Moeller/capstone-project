@@ -38,10 +38,13 @@ export default function UseMultiplayer() {
   const [isReady, setIsReady] = useState(false)
   const [newAnswers, setNewAnswers] = useState()
   const [player, setPlayer] = useState([])
+  const [playerCheck, setPlayerCheck] = useState([])
   const [playlistName, setPlaylistName] = useState('Loaded')
   const [selectedPlaylist, setSelectedPlaylist] = useState(null)
   const [url, setUrl] = useState(null)
   const [userName, setUserName] = useState(null)
+  const playerCheckRef = useRef(playerCheck)
+  playerCheckRef.current = playerCheck
   const messagesRef = useRef(messages)
   messagesRef.current = messages
 
@@ -128,6 +131,12 @@ export default function UseMultiplayer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [endScore])
 
+  useEffect(() => {
+    if (playerCheck.length > 0) {
+      setTimeout(handleKick, 5000)
+    }
+  }, [playerCheck])
+
   // ----------- message listener -----------
   useEffect(() => {
     if (messages[0] && isConnected) {
@@ -174,6 +183,9 @@ export default function UseMultiplayer() {
         case /(quit)/.test(messages[0]):
           handleQuit(messages[0])
           break
+        case /(check)/.test(messages[0]):
+          handleCheck(messages[0])
+          break
         default:
           break
       }
@@ -181,7 +193,35 @@ export default function UseMultiplayer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages])
 
+  function handleKick() {
+    console.log(playerCheckRef.current)
+    console.log(player)
+    const userToRemove = player.filter(user => {
+      if (playerCheckRef.current.some(checkUser => user === checkUser)) {
+        console.log(false)
+        return ''
+      } else {
+        console.log(true)
+        return user
+      }
+    })
+
+    if (userToRemove !== undefined) {
+      setPlayer(player.filter(el => el !== userToRemove[0]))
+      setAllReady(allReady.filter(({ user }) => user !== userToRemove[0]))
+      setAllSongsStarted(
+        allReady.filter(({ user }) => user !== userToRemove[0])
+      )
+    }
+    setPlayerCheck([])
+  }
+
   // ---------- handler functions for server messages ---------
+
+  function handleCheck(rawMessage) {
+    const messageArray = rawMessage.split(',')
+    setPlayerCheck([...playerCheck, messageArray[1]])
+  }
 
   function handlePageQuit(event) {
     event.preventDefault()
@@ -362,6 +402,10 @@ export default function UseMultiplayer() {
     }
   }
 
+  function sendPlayerCheck() {
+    sendMessageString('check,' + userName)
+  }
+
   return {
     allAnswered,
     allReady,
@@ -370,6 +414,7 @@ export default function UseMultiplayer() {
     areAllReady,
     endScore,
     gameEnded,
+    sendPlayerCheck,
     initiateNextSong,
     isGameEnded,
     isGameRunning,
