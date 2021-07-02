@@ -17,43 +17,42 @@ export default function MultiPlayPage({
   onNavigate,
 }) {
   const {
-    setReady,
-    setUserName,
-    setSelectedPlaylist,
-    setRoom,
-    isReady,
-    isGameRunning,
-    isGameEnded,
-    isLoaded,
-    isLastSong,
-    areAllReady,
-
-    allReady,
     allAnswered,
-    handleIsRight,
-    handleEndGame,
+    allReady,
+    areAllReady,
+    endScore,
+    gameEnded,
+    initiateNextSong,
+    isGameEnded,
+    isGameRunning,
+    isLastSong,
+    isLoaded,
+    isReady,
     newAnswers,
     player,
-    endScore,
-    initiateNextSong,
-    url,
-    songStarted,
-    sendScore,
-    gameEnded,
-    unSubscribe,
     playlistName,
-    setPlaylistName,
+    sendEndGame,
+    sendIsRight,
     sendQuit,
+    sendReady,
+    sendScore,
+    sendSongStarted,
+    setCurRoom,
+    setPlaylistName,
+    setSelectedPlaylist,
+    setUserName,
+    unSubscribe,
+    url,
   } = UseMultiplayer()
 
   const {
-    setSongUrl,
-    toggleAudio,
-    stopAudio,
-    isPlaying,
-    duration,
     changeVolume,
+    duration,
     getCurrentTime,
+    isPlaying,
+    setSongUrl,
+    stopAudio,
+    toggleAudio,
   } = useAudio()
 
   const [isAnswerVisible, setIsAnswerVisible] = useState(false)
@@ -70,7 +69,7 @@ export default function MultiPlayPage({
   }
 
   useEffect(() => {
-    setRoom(playerData.room)
+    setCurRoom(playerData.room)
     setUserName(playerData.playerName)
     setSelectedPlaylist(selectedPlaylist.songs)
     setPlaylistName(selectedPlaylist.title)
@@ -96,7 +95,7 @@ export default function MultiPlayPage({
 
   useEffect(() => {
     if (areAllReady && !isPlaying && !isAnswerVisible) {
-      handleIsRight(false)
+      sendIsRight(false)
       setIsAnswerVisible(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -221,7 +220,7 @@ export default function MultiPlayPage({
       {!isLoaded && (
         <>
           <WrapperLoading>
-            <GlowContainer>Please wait hile loading</GlowContainer>
+            <GlowContainer>Please wait while loading</GlowContainer>
           </WrapperLoading>
         </>
       )}
@@ -229,7 +228,7 @@ export default function MultiPlayPage({
   )
 
   function handleReady() {
-    setReady()
+    sendReady()
     setIsSpectator(false)
   }
 
@@ -239,14 +238,14 @@ export default function MultiPlayPage({
     if (answer === 'right' && !isAnswerVisible && isPlaying) {
       const points = calcPoints(getCurrentTime())
       handlePlayerData({ ...playerData, score: playerData.score + points })
-      handleIsRight(true)
+      sendIsRight(true)
     } else {
-      handleIsRight(false)
+      sendIsRight(false)
     }
     stopAudio()
     setIsAnswerVisible(true)
     if (isLastSong) {
-      handleEndGame()
+      sendEndGame()
     }
   }
 
@@ -256,7 +255,7 @@ export default function MultiPlayPage({
     }
     initiateNextSong()
     setIsAnswerVisible(false)
-    songStarted()
+    sendSongStarted()
     setIsNextSong(false)
     setAnswers(newAnswers)
   }

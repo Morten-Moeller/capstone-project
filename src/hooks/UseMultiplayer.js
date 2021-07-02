@@ -6,44 +6,47 @@ import usePlayList from './usePlayList'
 
 export default function UseMultiplayer() {
   const {
-    getNextUrl,
     answers,
-    initiateNextSong,
-    setNewPlaylist,
-    isLoaded,
     counter,
+    getNextUrl,
+    initiateNextSong,
+    isLoaded,
+    setNewPlaylist,
   } = usePlayList(null)
 
   const {
     connect,
+    curRoom,
+    isConnected,
+    messages,
+    sendMessage,
+    sendMessageString,
+    setCurRoom,
     subscribe,
     unSubscribe,
-    sendMessage,
-    messages,
-    isConnected,
   } = useMqtt()
 
-  const [isReady, setIsReady] = useState(false)
-  const [isHost, setIsHost] = useState(false)
   const [allAnswered, setAllAnswered] = useState([])
-  const [allSongsStarted, setAllSongsStarted] = useState([])
   const [allReady, setAllReady] = useState([])
-  const [selectedPlaylist, setSelectedPlaylist] = useState(null)
-  const [room, setRoom] = useState(null)
-  const [newAnswers, setNewAnswers] = useState()
-  const [userName, setUserName] = useState(null)
-  const [player, setPlayer] = useState([])
-  const [url, setUrl] = useState(null)
-  const [isGameEnded, setIsGameEnded] = useState(false)
+  const [allSongsStarted, setAllSongsStarted] = useState([])
   const [endScore, setEndScore] = useState([])
-  const [isGameRunning, setIsGameRunning] = useState(false)
-  const [isLastSong, setIsLastSong] = useState(false)
   const [gameEnded, setGameEnded] = useState([])
+  const [isGameEnded, setIsGameEnded] = useState(false)
+  const [isGameRunning, setIsGameRunning] = useState(false)
+  const [isHost, setIsHost] = useState(false)
+  const [isLastSong, setIsLastSong] = useState(false)
+  const [isReady, setIsReady] = useState(false)
+  const [newAnswers, setNewAnswers] = useState()
+  const [player, setPlayer] = useState([])
   const [playlistName, setPlaylistName] = useState('Loaded')
+  const [selectedPlaylist, setSelectedPlaylist] = useState(null)
+  const [url, setUrl] = useState(null)
+  const [userName, setUserName] = useState(null)
   const messagesRef = useRef(messages)
   messagesRef.current = messages
 
   const isCounter = Boolean(counter)
+
   const areAllReady = Boolean(
     player.length > 0 &&
       player.length === allReady.filter(el => el.isReady === true).length
@@ -57,16 +60,12 @@ export default function UseMultiplayer() {
     player.length === endScore.length && endScore.length > 0
   )
 
-  const areAllSongsStarted = Boolean(
-    player.length === allSongsStarted.length && allSongsStarted.length > 0
-  )
-
   useEffect(() => {
     if (!isConnected) {
       connect()
     }
 
-    //remove player before unload
+    //warn player bevor reload
     window.addEventListener('beforeunload', handlePageQuit)
     return () => {
       window.removeEventListener('beforeunload', handlePageQuit)
@@ -81,14 +80,14 @@ export default function UseMultiplayer() {
 
   useEffect(() => {
     if (isConnected) {
-      subscribe(room)
-      request()
+      subscribe(curRoom)
+      sendMessageString('anybody')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected])
 
   useEffect(() => {
-    checkHost()
+    handleHost()
   }, [player])
 
   useEffect(() => {
@@ -97,7 +96,7 @@ export default function UseMultiplayer() {
         sendNextSong()
         sendNextAnswers()
         if (counter === 1) {
-          const message = { title: room, body: 'noMoreSongs' }
+          const message = { title: curRoom, body: 'noMoreSongs' }
           sendMessage(message)
         }
       }
@@ -107,11 +106,6 @@ export default function UseMultiplayer() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [areAllAnswered])
-
-  useEffect(() => {
-    if (areAllSongsStarted) {
-    }
-  }, [areAllSongsStarted])
 
   useEffect(() => {
     //send first song
@@ -134,7 +128,7 @@ export default function UseMultiplayer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [endScore])
 
-  //message listener
+  // ----------- message listener -----------
   useEffect(() => {
     if (messages[0] && isConnected) {
       switch (true) {
@@ -186,6 +180,8 @@ export default function UseMultiplayer() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages])
+
+  // ---------- handler functions for server messages ---------
 
   function handlePageQuit(event) {
     event.preventDefault()
@@ -269,7 +265,7 @@ export default function UseMultiplayer() {
     }
   }
 
-  function checkHost() {
+  function handleHost() {
     setTimeout(() => {
       const isHostAssigned = messagesRef.current.includes('host')
 
@@ -279,67 +275,57 @@ export default function UseMultiplayer() {
     }, 1000)
   }
 
-  function request() {
-    const requestMessage = { title: room, body: 'anybody' }
-    sendMessage(requestMessage)
-  }
-
   function handleRequest() {
-    const answer = { title: room, body: 'here' + userName }
-    sendMessage(answer)
+    sendMessageString('here' + userName)
 
     if (isHost) {
       sendPlaylistName(playlistName)
-      const answerHost = { title: room, body: 'host' }
-      sendMessage(answerHost)
+      sendMessageString('host')
       if (areAllReady) {
-        const message = { title: room, body: 'gameRunning' }
-        sendMessage(message)
+        sendMessageString('gameRunning')
       }
     }
   }
 
-  function setReady() {
-    if (!isReady) {
-      const message = { title: room, body: 'isReady' + userName }
-      sendMessage(message)
-      setIsReady(true)
-      // initiateNextSong()
-    }
-  }
-
   function handleAnswers(rawAnswers) {
-    const reformAnswers = rawAnswers.split(/(answer )/)
-    const answers = JSON.parse(reformAnswers[2])
+    const answerArray = rawAnswers.split(';')
+
+    const answers = JSON.parse(answerArray[1])
     setNewAnswers(answers)
   }
 
+  // --------- send functions to submit messages -----------
+
+  function sendReady() {
+    if (!isReady) {
+      sendMessageString('isReady' + userName)
+      setIsReady(true)
+    }
+  }
+
   function sendAnswers(answers) {
-    const answerJson = 'answer ' + JSON.stringify(answers)
-    const message = { title: room, body: answerJson }
-    sendMessage(message)
+    const answerJson = 'answer;' + JSON.stringify(answers)
+    sendMessageString(answerJson)
   }
 
   function sendUrl(url) {
     if (isCounter) {
-      const message = { title: room, body: url }
-      sendMessage(message)
+      sendMessageString(url)
     }
   }
 
-  function handleIsRight(bool) {
+  function sendIsRight(bool) {
     let message
     if (bool) {
-      message = { title: room, body: 'isRight' + userName }
+      message = { title: curRoom, body: 'isRight' + userName }
     } else if (!bool) {
-      message = { title: room, body: 'isWrong' + userName }
+      message = { title: curRoom, body: 'isWrong' + userName }
     }
     sendMessage(message)
   }
 
   function sendNextSong() {
     if (isConnected && isHost) {
-      console.log('sendUrl')
       const newUrl = getNextUrl()
       sendUrl(newUrl)
     }
@@ -351,65 +337,59 @@ export default function UseMultiplayer() {
     }
   }
 
-  function handleEndGame() {
-    const message = { title: room, body: 'gameEnded,' + userName }
-    sendMessage(message)
+  function sendEndGame() {
+    sendMessageString('gameEnded,' + userName)
   }
 
-  function songStarted() {
-    const message = { title: room, body: 'songStarted,' + userName }
-    sendMessage(message)
+  function sendSongStarted() {
+    sendMessageString('songStarted,' + userName)
   }
 
   function sendScore(score) {
-    const message = { title: room, body: 'endScore,' + userName + ',' + score }
-    sendMessage(message)
+    sendMessageString('endScore,' + userName + ',' + score)
   }
 
   function sendPlaylistName(playlistName) {
     if (isHost) {
-      const message = { title: room, body: 'Playlist,' + playlistName }
-      sendMessage(message)
+      sendMessageString('Playlist,' + playlistName)
     }
   }
 
   function sendQuit() {
-    const message = { title: room, body: 'quit,' + userName }
-    sendMessage(message)
+    sendMessageString('quit,' + userName)
     if (isHost) {
-      const message = { title: room, body: 'quit,' + userName + ',host' }
-      sendMessage(message)
+      sendMessageString('quit,' + userName + ',host')
     }
   }
 
   return {
-    setReady,
-    setUserName,
-    setSelectedPlaylist,
-    setRoom,
-    isReady,
-    isGameRunning,
-    isGameEnded,
-    isLoaded,
-    isLastSong,
-    areAllReady,
-    areAllEnded,
-    areAllAnswered,
-    allReady,
     allAnswered,
-    handleIsRight,
-    handleEndGame,
+    allReady,
+    areAllAnswered,
+    areAllEnded,
+    areAllReady,
+    endScore,
+    gameEnded,
+    initiateNextSong,
+    isGameEnded,
+    isGameRunning,
+    isLastSong,
+    isLoaded,
+    isReady,
     newAnswers,
     player,
-    endScore,
-    initiateNextSong,
-    url,
-    songStarted,
-    sendScore,
-    gameEnded,
-    unSubscribe,
     playlistName,
-    setPlaylistName,
+    sendEndGame,
+    sendIsRight,
     sendQuit,
+    sendReady,
+    sendScore,
+    sendSongStarted,
+    setCurRoom,
+    setPlaylistName,
+    setSelectedPlaylist,
+    setUserName,
+    unSubscribe,
+    url,
   }
 }

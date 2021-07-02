@@ -66,6 +66,12 @@ export default function useMqtt() {
     client.send(message)
   }
 
+  function sendMessageString(string) {
+    const message = new Paho.Message(string)
+    message.destinationName = curRoom
+    client.send(message)
+  }
+
   function onConnectionLost(responseObject) {
     setIsConnected(false)
     if (responseObject.errorCode !== 0) {
@@ -87,5 +93,8 @@ export default function useMqtt() {
     messages,
     clientId,
     isConnected,
+    curRoom,
+    setCurRoom,
+    sendMessageString,
   }
 }
