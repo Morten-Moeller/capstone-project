@@ -44,6 +44,8 @@ export default function UseMultiplayer() {
   const [selectedPlaylist, setSelectedPlaylist] = useState(null)
   const [url, setUrl] = useState(null)
   const [userName, setUserName] = useState(null)
+  const playerRef = useRef(player)
+  playerRef.current = player
   const playerCheckRef = useRef(playerCheck)
   playerCheckRef.current = playerCheck
   const messagesRef = useRef(messages)
@@ -113,14 +115,10 @@ export default function UseMultiplayer() {
 
   useEffect(() => {
     //send first song
-
-    if (isLoaded) {
-      if (isHost) {
-        sendNextSong()
-        sendNextAnswers()
-        sendMessageString('iAmSparta,' + userName)
-      }
+    if (areAllReady) {
+      setIsGameRunning(true)
     }
+    console.log('areAllReady')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [areAllReady === true])
 
@@ -134,8 +132,19 @@ export default function UseMultiplayer() {
   }, [endScore])
 
   useEffect(() => {
-    setTimeout(handleKick, 5000)
-  }, [playerCheck])
+    if (isGameRunning) {
+      if (isHost) {
+        sendNextSong()
+        sendNextAnswers()
+        sendMessageString('iAmSparta,' + userName)
+      }
+      if (areAllReady) {
+        setTimeout(() => {
+          setInterval(handleKick, 10000)
+        }, 2000)
+      }
+    }
+  }, [isGameRunning])
 
   // ----------- message listener -----------
   useEffect(() => {
@@ -198,14 +207,12 @@ export default function UseMultiplayer() {
 
   function handleKick() {
     console.log(playerCheckRef.current)
-    console.log(player)
+    console.log(playerRef.current)
     if (playerCheckRef.current.length > 0) {
-      const userToRemove = player.filter(user => {
+      const userToRemove = playerRef.current.filter(user => {
         if (playerCheckRef.current.some(checkUser => user === checkUser)) {
-          console.log(false)
           return ''
         } else {
-          console.log(true)
           return user
         }
       })
@@ -215,7 +222,7 @@ export default function UseMultiplayer() {
       }
 
       userToRemove.forEach(userRemove => {
-        setPlayer(player.filter(el => el !== userRemove))
+        setPlayer(playerRef.current.filter(el => el !== userRemove))
         setAllReady(allReady.filter(({ user }) => user !== userRemove))
         setAllSongsStarted(allReady.filter(({ user }) => user !== userRemove))
       })
