@@ -131,6 +131,7 @@ export default function UseMultiplayer() {
   }, [endScore])
 
   useEffect(() => {
+    let kickTimer
     if (isGameRunning) {
       if (isHost) {
         sendNextSong()
@@ -139,9 +140,12 @@ export default function UseMultiplayer() {
       }
       if (areAllReady) {
         setTimeout(() => {
-          setInterval(handleKick, 10000)
+          kickTimer = setInterval(handleKick, 10000)
         }, 2000)
       }
+    }
+    return () => {
+      clearInterval(kickTimer)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isGameRunning])
