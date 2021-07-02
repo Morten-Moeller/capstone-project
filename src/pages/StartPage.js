@@ -45,18 +45,19 @@ export default function StartPage({
             autoComplete="off"
           />
         </Label>
-
-        <List>
-          {playlists.map(({ id, title, playlistName }) => (
-            <ListItem
-              isSelected={selectedPlaylist?.playlistName === playlistName}
-              key={id}
-              onClick={() => onMark({ playlistName })}
-            >
-              {title}
-            </ListItem>
-          ))}
-        </List>
+        <ListWrapper>
+          <List>
+            {playlists.map(({ id, title, playlistName }) => (
+              <ListItem
+                isSelected={selectedPlaylist?.playlistName === playlistName}
+                key={id}
+                onClick={() => onMark({ playlistName })}
+              >
+                {title}
+              </ListItem>
+            ))}
+          </List>
+        </ListWrapper>
         <Button>start game</Button>
       </Form>
     </Container>
@@ -87,21 +88,23 @@ const Container = styled.main`
   padding: 8px 16px 16px;
   margin-bottom: 16px;
 `
+
+const ListWrapper = styled.div`
+  background-color: var(--color-opacity);
+  box-shadow: var(--effect-neon-small);
+  border-radius: 2rem;
+`
 const List = styled.ul`
+  margin: 0.5rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   gap: 1rem;
   list-style: none;
-  padding: 0;
-  border: 1px solid var(--color-primary);
   overflow-y: auto;
-  border-radius: 2rem;
-  padding: 1rem;
+  padding: 0.25rem;
   height: 33vh;
-  background-color: var(--color-opacity);
-  box-shadow: var(--effect-neon-small);
 `
 
 const ListItem = styled.li`

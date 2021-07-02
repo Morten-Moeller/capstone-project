@@ -207,12 +207,13 @@ export default function UseMultiplayer() {
     })
 
     if (userToRemove !== undefined) {
-      setPlayer(player.filter(el => el !== userToRemove[0]))
-      setAllReady(allReady.filter(({ user }) => user !== userToRemove[0]))
-      setAllSongsStarted(
-        allReady.filter(({ user }) => user !== userToRemove[0])
-      )
+      userToRemove.forEach(userRemove => {
+        setPlayer(player.filter(el => el !== userRemove))
+        setAllReady(allReady.filter(({ user }) => user !== userRemove))
+        setAllSongsStarted(allReady.filter(({ user }) => user !== userRemove))
+      })
     }
+
     setPlayerCheck([])
   }
 
