@@ -34,6 +34,7 @@ export default function UseMultiplayer() {
   const [isGameEnded, setIsGameEnded] = useState(false)
   const [isGameRunning, setIsGameRunning] = useState(false)
   const [isHost, setIsHost] = useState(false)
+  const [hostName, setHostName] = useState(null)
   const [isLastSong, setIsLastSong] = useState(false)
   const [isReady, setIsReady] = useState(false)
   const [newAnswers, setNewAnswers] = useState()
@@ -117,6 +118,7 @@ export default function UseMultiplayer() {
       if (isHost) {
         sendNextSong()
         sendNextAnswers()
+        sendMessageString('iAmSparta,' + userName)
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -184,6 +186,9 @@ export default function UseMultiplayer() {
         case /(check)/.test(messages[0]):
           handleCheck(messages[0])
           break
+        case /(iAmSparta)/.test(messages[0]):
+          handleHostName(messages[0])
+          break
         default:
           break
       }
@@ -205,19 +210,26 @@ export default function UseMultiplayer() {
         }
       })
 
-      if (userToRemove !== undefined) {
-        userToRemove.forEach(userRemove => {
-          setPlayer(player.filter(el => el !== userRemove))
-          setAllReady(allReady.filter(({ user }) => user !== userRemove))
-          setAllSongsStarted(allReady.filter(({ user }) => user !== userRemove))
-        })
+      if (userToRemove.some(user => user === hostName)) {
+        setIsGameEnded(true)
       }
+
+      userToRemove.forEach(userRemove => {
+        setPlayer(player.filter(el => el !== userRemove))
+        setAllReady(allReady.filter(({ user }) => user !== userRemove))
+        setAllSongsStarted(allReady.filter(({ user }) => user !== userRemove))
+      })
 
       setPlayerCheck([])
     }
   }
 
   // ---------- handler functions for server messages ---------
+
+  function handleHostName(rawMessage) {
+    const messageArray = rawMessage.split(',')
+    setHostName(messageArray[1])
+  }
 
   function handleCheck(rawMessage) {
     const messageArray = rawMessage.split(',')
