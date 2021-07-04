@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components/macro'
-import { ReactComponent as PlayButtonSVG } from '../assets/play.svg'
+import play from '../assets/play.png'
 import Button from '../components/Button'
 import PlayButton from '../components/PlayButton'
 import StyledSlider from '../components/StyledSlider'
@@ -154,20 +154,18 @@ export default function MultiPlayPage({
           <WrapperGame>
             <PlayerName>{playerData.playerName}</PlayerName>
             score: {playerData.score}
-            {isPlaying ? (
-              duration && <Timer duration={duration} />
-            ) : (
-              <PlayButtonWrapper>
-                {(!isAnswerVisible && areAllReady) ||
+            <PlayButtonWrapper>
+              {isPlaying ? (
+                duration && <Timer duration={duration} />
+              ) : (!isAnswerVisible && areAllReady) ||
                 (!thisGameEnded && isNextSong) ? (
-                  <PlayButton onClick={handlePlay}>
-                    <PlayButtonSVG />
-                  </PlayButton>
-                ) : (
-                  <GlowContainer2>Please wait</GlowContainer2>
-                )}
-              </PlayButtonWrapper>
-            )}
+                <PlayButton onClick={handlePlay}>
+                  <img src={play} alt="Play" height="100" width="100" />
+                </PlayButton>
+              ) : (
+                <GlowContainer2>Please wait</GlowContainer2>
+              )}
+            </PlayButtonWrapper>
             <label>
               Volume:
               <StyledSlider
@@ -287,6 +285,7 @@ export default function MultiPlayPage({
 
 const Container = styled.main`
   width: 100%;
+  height: 100%;
   min-width: 374px;
   min-height: 666px;
   max-width: 500px;
@@ -306,6 +305,10 @@ const WrapperStart = styled.div`
   justify-items: center;
   button {
     align-self: end;
+  }
+
+  ul {
+    margin-top: 3rem;
   }
 `
 
@@ -331,11 +334,10 @@ const WrapperGame = styled.div`
     display: grid;
     gap: 2rem;
     justify-items: center;
-  }
 
-  svg {
-    height: 5rem;
-    width: 5rem;
+    button {
+      font-size: 1.5rem;
+    }
   }
 `
 
@@ -363,6 +365,7 @@ const PlayerName = styled.span`
 `
 
 const List = styled.ul`
+  margin: 0 0 1rem 0;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -452,5 +455,16 @@ const ScoreListItem = styled.li`
 `
 
 const PlayButtonWrapper = styled.div`
-  height: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 5.5rem;
+  button {
+    height: 100%;
+    opacity: 1;
+  }
+  img {
+    width: auto;
+    height: 100%;
+  }
 `
