@@ -15,7 +15,6 @@ const Button = styled.button`
   width: 80%;
   padding: 0.25rem;
   font-size: 1.75rem;
-  transition: 0.5s;
 
   ${props => {
     if (props.green) {

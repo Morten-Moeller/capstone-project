@@ -105,6 +105,7 @@ const List = styled.ul`
   overflow-y: auto;
   padding: 0.25rem;
   height: 33vh;
+  box-shadow: var(--effect-neon-small);
 `
 
 const ListItem = styled.li`

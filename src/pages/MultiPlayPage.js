@@ -202,7 +202,9 @@ export default function MultiPlayPage({
                     key={answer.id}
                     green={isAnswerVisible && answer.state === 'right'}
                     red={isAnswerVisible && answer.state === 'wrong'}
-                    onClick={event => handleAnswer(event, answer.state)}
+                    onClick={event =>
+                      !isAnswerVisible && handleAnswer(event, answer.state)
+                    }
                   >
                     {answer.title}
                   </Button>
@@ -227,7 +229,7 @@ export default function MultiPlayPage({
           </GlowContainer>
         </WrapperEndGame>
       )}
-      {!isLoaded && (
+      {!isLoaded && !areAllReady && (
         <>
           <WrapperLoading>
             <GlowContainer>Please wait while loading</GlowContainer>
