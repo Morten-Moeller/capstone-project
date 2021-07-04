@@ -277,8 +277,10 @@ export default function MultiPlayPage({
 
   function handleNavigate() {
     toggleAudio()
-    sendQuit()
-    unSubscribe()
+    if (isReady) {
+      sendQuit()
+      unSubscribe()
+    }
     onNavigate()
   }
 }
@@ -286,13 +288,12 @@ export default function MultiPlayPage({
 const Container = styled.main`
   width: 100%;
   height: 100%;
-  min-width: 374px;
-  min-height: 666px;
   max-width: 500px;
   max-height: 900px;
   display: grid;
-  padding: 8px 32px 32px;
-  grid-template-rows: min-content auto;
+  grid-template-rows: 3rem auto;
+  padding: 8px 32px 16px;
+  margin-bottom: 24px;
   align-items: center;
 `
 
@@ -300,11 +301,15 @@ const WrapperStart = styled.div`
   display: grid;
   height: 100%;
   width: 100%;
+  min-width: 325px;
 
   gap: 1rem;
   justify-items: center;
   button {
     align-self: end;
+    padding: 0.25rem;
+    font-size: 1.75rem;
+    height: 45px;
   }
 
   ul {
@@ -315,6 +320,7 @@ const WrapperStart = styled.div`
 const WrapperGame = styled.div`
   height: 100%;
   width: 100%;
+  min-width: 325px;
   display: grid;
   justify-self: center;
   justify-items: center;
@@ -344,6 +350,7 @@ const WrapperGame = styled.div`
 const WrapperEndGame = styled.section`
   height: 100%;
   width: 100%;
+  min-width: 325px;
   margin-top: 3rem;
   display: flex;
   flex-wrap: wrap;
@@ -355,6 +362,7 @@ const WrapperEndGame = styled.section`
 const WrapperLoading = styled.div`
   height: 100%;
   width: 100%;
+  min-width: 325px;
   display: flex;
   align-items: center;
   justify-content: center;

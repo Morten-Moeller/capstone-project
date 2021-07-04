@@ -81,18 +81,25 @@ export default function StartPage({
 
 const Container = styled.main`
   display: grid;
+  height: 100%;
+  width: 100%;
   max-width: 500px;
   max-height: 900px;
   justify-items: center;
   gap: 1rem;
   padding: 8px 16px 16px;
   margin-bottom: 16px;
+
+  button {
+    height: 45px;
+  }
 `
 
 const ListWrapper = styled.div`
   background-color: var(--color-opacity);
   box-shadow: var(--effect-neon-small);
   border-radius: 2rem;
+  margin-bottom: 2rem;
 `
 const List = styled.ul`
   margin: 0.5rem;
