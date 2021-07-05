@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom/cjs/react-router-dom.min'
 import styled from 'styled-components/macro'
 import Button from '../components/Button'
 import Headline from '../components/Headline'
@@ -17,73 +16,102 @@ export default function StartPage({
   onMark,
   selectedPlaylist,
   onInputChange,
+  onInputChangeRoom,
   playerData,
-  history,
 }) {
   return (
     <Container>
-      {history && <Link to="/history">history</Link>}
       <Headline>Juke Quest</Headline>
-      <Label>
-        name:
-        <input
-          type="text"
-          maxLength="12"
-          onChange={onInputChange}
-          value={playerData.playerName}
-        />
-      </Label>
-      <List>
-        {playlists.map(({ id, title, playlistName }) => (
-          <ListItem
-            isSelected={selectedPlaylist?.playlistName === playlistName}
-            key={id}
-            onClick={() => onMark({ playlistName })}
-          >
-            {title}
-          </ListItem>
-        ))}
-      </List>
-      <Button onClick={onGame}>start game</Button>
+      <Form onSubmit={handleSubmit}>
+        <Label>
+          name:
+          <input
+            type="text"
+            name="playerName"
+            maxLength="12"
+            onChange={onInputChange}
+            value={playerData.playerName}
+            autoComplete="off"
+          />
+        </Label>
+        <Label>
+          room:
+          <input
+            type="text"
+            name="roomName"
+            maxLength="12"
+            onChange={onInputChangeRoom}
+            value={playerData.room}
+            autoComplete="off"
+          />
+        </Label>
+        <ListWrapper>
+          <List>
+            {playlists.map(({ id, title, playlistName }) => (
+              <ListItem
+                isSelected={selectedPlaylist?.playlistName === playlistName}
+                key={id}
+                onClick={() => onMark({ playlistName })}
+              >
+                {title}
+              </ListItem>
+            ))}
+          </List>
+        </ListWrapper>
+        <Button>start game</Button>
+      </Form>
     </Container>
   )
+
+  function handleSubmit(event) {
+    event.preventDefault()
+    const { roomName, playerName } = event.target.elements
+    if (!playerName.value || !roomName.value) {
+      if (!playerName.value) {
+        playerName.placeholder = 'please enter a name'
+      }
+      if (!roomName.value) {
+        roomName.placeholder = 'please enter a room'
+      }
+    } else {
+      onGame()
+    }
+  }
 }
 
 const Container = styled.main`
   display: grid;
+  height: 100%;
+  width: 100%;
+  max-width: 500px;
+  max-height: 900px;
   justify-items: center;
   gap: 1rem;
   padding: 8px 16px 16px;
-
-  a {
-    justify-self: right;
-  }
+  margin-bottom: 16px;
 
   button {
-    margin-top: 2rem;
-    background-color: var(--color-opacity);
-  }
-  button:hover {
-    background-color: var(--color-primary);
-    opacity: 0.6;
-    color: var(--color-primary-background);
+    height: 45px;
   }
 `
+
+const ListWrapper = styled.div`
+  background-color: var(--color-opacity);
+  box-shadow: var(--effect-neon-small);
+  border-radius: 2rem;
+  margin-bottom: 2rem;
+`
 const List = styled.ul`
+  margin: 0.5rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   gap: 1rem;
   list-style: none;
-  padding: 0;
-  border: 1px solid var(--color-primary);
   overflow-y: auto;
-  border-radius: 2rem;
-  padding: 1rem;
-  height: 40vh;
-  background-color: var(--color-opacity);
-  box-shadow: var(--effect-neon-small);
+  padding: 0.25rem;
+  height: 33vh;
 `
 
 const ListItem = styled.li`
@@ -101,6 +129,7 @@ const ListItem = styled.li`
 `
 const Label = styled.label`
   display: grid;
+  height: 5rem;
   input {
     font-family: 'Iceland';
     border: none;
@@ -116,4 +145,9 @@ const Label = styled.label`
       outline: none;
     }
   }
+`
+const Form = styled.form`
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
 `

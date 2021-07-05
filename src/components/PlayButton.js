@@ -2,11 +2,6 @@ import styled from 'styled-components/macro'
 import Button from './Button'
 
 const PlayButton = styled(Button)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 5.5rem;
-  height: 6rem;
   border: none;
   border-radius: none;
   box-shadow: none;

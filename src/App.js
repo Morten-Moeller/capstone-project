@@ -1,53 +1,46 @@
 // @ts-check
-import { useEffect, useState } from 'react'
-import { Route, Switch, useHistory } from 'react-router-dom'
+import { useState } from 'react'
+import { Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
-import { v4 as uuidv4 } from 'uuid'
-import bgImage from './assets/placeholder.jpg'
+import bgImage from './assets/jukequestfin.jpg'
 import playlists from './data/playlists.json'
 import GlobalFonts from './fonts/fonts'
-import useLocalStorage from './hooks/useLocalStorage'
-import HistoryPage from './pages/HistoryPage'
-import SinglePlayPage from './pages/SinglePlayPage'
+import MultiPlayPage from './pages/MultiPlayPage'
 import StartPage from './pages/StartPage'
 
 function App() {
-  const [localStorage, setLocalStorage] = useLocalStorage('history', [])
-  const [selectedPlaylist, setSelectedPlaylist] = useState(null)
-  const [playerData, setPlayerData] = useState({ score: 0, playerName: '' })
-  const [historyEntrys, setHistoryEntrys] = useState(localStorage)
-
-  useEffect(() => {
-    setLocalStorage(historyEntrys)
-  }, [historyEntrys, setLocalStorage])
-
-  const { push } = useHistory()
+  const [selectedPlaylist, setSelectedPlaylist] = useState(playlists[0])
+  const [playerData, setPlayerData] = useState({
+    score: 0,
+    playerName: '',
+    room: '',
+  })
+  const [play, setPlay] = useState(false)
 
   return (
     <Container>
       <GlobalFonts />
       <Switch>
         <Route exact path="/">
-          <StartPage
-            history={historyEntrys}
-            playlists={playlists}
-            onMark={handleMark}
-            onGame={handleGame}
-            selectedPlaylist={selectedPlaylist}
-            onInputChange={handleNameInput}
-            playerData={playerData}
-          />
-        </Route>
-        <Route path="/singleplaypage">
-          <SinglePlayPage
-            selectedPlaylist={selectedPlaylist}
-            playerData={playerData}
-            onEndGame={handleEndGame}
-            handlePlayerData={handlePlayerData}
-          />
-        </Route>
-        <Route path="/history">
-          <HistoryPage history={historyEntrys} />
+          {!play && (
+            <StartPage
+              playlists={playlists}
+              onMark={handleMark}
+              onGame={handleGame}
+              selectedPlaylist={selectedPlaylist}
+              onInputChange={handleNameInput}
+              playerData={playerData}
+              onInputChangeRoom={handleRoomInput}
+            />
+          )}
+          {play && (
+            <MultiPlayPage
+              selectedPlaylist={selectedPlaylist}
+              playerData={playerData}
+              handlePlayerData={handlePlayerData}
+              onNavigate={handleNavigate}
+            />
+          )}
         </Route>
       </Switch>
     </Container>
@@ -55,26 +48,13 @@ function App() {
 
   function handleGame() {
     if (selectedPlaylist) {
-      push('/singleplaypage')
+      setPlay(true)
     }
   }
 
-  function handleEndGame() {
-    const date = Date.now()
-    const dateFormat = new Intl.DateTimeFormat('de-DE', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    })
-    const newHistoryEntry = {
-      id: uuidv4(),
-      playerName: playerData.playerName,
-      date: dateFormat.format(date),
-      playlistName: selectedPlaylist.title,
-      score: playerData.score,
-    }
-    setHistoryEntrys([...historyEntrys, newHistoryEntry])
-    push('/history')
+  function handleRoomInput(event) {
+    const input = event.target
+    setPlayerData({ ...playerData, room: input.value })
   }
 
   function handleNameInput(event) {
@@ -92,11 +72,18 @@ function App() {
   function handlePlayerData(data) {
     setPlayerData(data)
   }
+
+  function handleNavigate() {
+    setPlay(false)
+    setPlayerData({ ...playerData, score: 0 })
+  }
 }
 
-const Container = styled.main`
+const Container = styled.div`
   height: 100vh;
   display: grid;
+  justify-content: center;
+  align-items: center;
   background: center / cover no-repeat url(${bgImage});
 `
 

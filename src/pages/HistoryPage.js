@@ -5,7 +5,7 @@ import HistoryElement from '../components/HistoryElement'
 export default function HistoryPage({ history }) {
   return (
     <Container>
-      <Link to="/">&lt;-- start new</Link>
+      <StyledLink to="/">&lt;-- start new</StyledLink>
       <List>
         {history.map(({ playlistName, playerName, date, score, id }) => (
           <HistoryElement
@@ -32,4 +32,8 @@ const List = styled.ul`
   gap: 1.5rem;
   list-style: none;
   padding: 0 16px 16px;
+`
+const StyledLink = styled(Link)`
+  color: var(--color-secondary);
+  text-shadow: var(--effect-neon-small-navigation);
 `

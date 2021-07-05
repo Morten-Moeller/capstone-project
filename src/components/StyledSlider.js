@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 
 const StyledSlider = styled.input`
-  margin-top: 1.25rem;
+  margin: 1.15rem 0;
   -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
   width: 100%; /* Specific width is required for Firefox. */
   background: transparent; /* Otherwise white in Chrome */
@@ -27,8 +27,8 @@ const StyledSlider = styled.input`
   &::-moz-range-thumb {
     -webkit-appearance: none;
     border: 0.01rem solid var(--effect-neon-small-active);
-    height: 2.5rem;
-    width: 1rem;
+    height: 2rem;
+    width: 0.75rem;
     border-radius: 0.1rem;
     background: var(--color-secondary);
     cursor: pointer;
@@ -41,8 +41,8 @@ const StyledSlider = styled.input`
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
     border: 0.01rem solid var(--effect-neon-small-active);
-    height: 2.5rem;
-    width: 1rem;
+    height: 2rem;
+    width: 0.75rem;
     border-radius: 0.1rem;
     background: var(--color-secondary);
     cursor: pointer;
@@ -53,8 +53,8 @@ const StyledSlider = styled.input`
   &::-ms-thumb {
     box-shadow: var(--effect-neon-small-active);
     border: 0.01rem solid var(--effect-neon-small-active);
-    height: 2.5rem;
-    width: 1rem;
+    height: 2rem;
+    width: 0.75rem;
     border-radius: 0.2rem;
     background: var(--color-secondary);
     cursor: pointer;
@@ -62,7 +62,7 @@ const StyledSlider = styled.input`
 
   &::-webkit-slider-runnable-track {
     width: 100%;
-    height: 0.25rem;
+    height: 0.15rem;
     cursor: pointer;
     box-shadow: var(--effect-neon-small);
     background: var(--color-primary);
@@ -76,7 +76,7 @@ const StyledSlider = styled.input`
 
   &::-moz-range-track {
     width: 100%;
-    height: 0.25rem;
+    height: 0.15rem;
     cursor: pointer;
     box-shadow: var(--effect-neon-small);
     background: var(--color-primary);
@@ -86,7 +86,7 @@ const StyledSlider = styled.input`
 
   &::-ms-track {
     width: 100%;
-    height: 0.25rem;
+    height: 0.15rem;
     cursor: pointer;
     background: transparent;
     border-color: transparent;
@@ -96,7 +96,7 @@ const StyledSlider = styled.input`
   &::-ms-fill-lower {
     background: var(--color-primary);
     border: 0.01rem solid var(--effect-neon-small);
-    border-radius: 0.25rem;
+    border-radius: 0.15rem;
     box-shadow: var(--effect-neon-small);
   }
   &:focus::-ms-fill-lower {
@@ -105,7 +105,7 @@ const StyledSlider = styled.input`
   &::-ms-fill-upper {
     background: var(--color-primary);
     border: 0.01rem solid var(--effect-neon-small);
-    border-radius: 0.25rem;
+    border-radius: 0.15rem;
     box-shadow: var(--effect-neon-small);
   }
   &:focus::-ms-fill-upper {

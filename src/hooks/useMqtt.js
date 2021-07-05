@@ -7,11 +7,13 @@ export default function useMqtt() {
   const [client, setClient] = useState(null)
   const [messages, setMessages] = useState([])
   const [curRoom, setCurRoom] = useState(null)
+  const [isConnected, setIsConnected] = useState(false)
+  let clientId
 
   useEffect(() => {
     if (client) {
       client.connect({
-        onSuccess: console.log('Connected'),
+        onSuccess: handleSuccess,
         userName: process.env.REACT_APP_MQTT_USERNAME,
         password: process.env.REACT_APP_MQTT_PASSWORD,
       })
@@ -22,14 +24,27 @@ export default function useMqtt() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [client])
 
+  function handleSuccess() {
+    setIsConnected(true)
+  }
+
   function connect() {
-    const clientId = uuidv4()
-    setClient(new Paho.Client('dagame.boschek.eu', 1883, clientId))
+    clientId = uuidv4()
+    setClient(
+      new Paho.Client(
+        `wss://${
+          process.env.REACT_APP_MQTT_USERNAME +
+          ':' +
+          process.env.REACT_APP_MQTT_PASSWORD
+        }@dagame.boschek.eu:1883/mqtt`,
+        clientId
+      )
+    )
   }
 
   function subscribe(room) {
     client.subscribe(room)
-    console.log('Joined room: ' + room)
+
     setCurRoom(room)
   }
 
@@ -40,7 +55,7 @@ export default function useMqtt() {
 
   function disconnect() {
     client.disconnect()
-    console.log('Server disconnected')
+    setIsConnected(false)
   }
 
   function sendMessage(payload) {
@@ -50,15 +65,33 @@ export default function useMqtt() {
     client.send(message)
   }
 
+  function sendMessageString(string) {
+    const message = new Paho.Message(string)
+    message.destinationName = curRoom
+    client.send(message)
+  }
+
   function onConnectionLost(responseObject) {
+    setIsConnected(false)
     if (responseObject.errorCode !== 0) {
-      console.log('onConnectionLost:' + responseObject.errorMessage)
     }
   }
 
   function onMessageArrived(message) {
-    setMessages([message.payloadString, ...messages])
+    setMessages(messages => [message.payloadString, ...messages])
   }
 
-  return { connect, disconnect, subscribe, unSubscribe, sendMessage, messages }
+  return {
+    connect,
+    disconnect,
+    subscribe,
+    unSubscribe,
+    sendMessage,
+    messages,
+    clientId,
+    isConnected,
+    curRoom,
+    setCurRoom,
+    sendMessageString,
+  }
 }
