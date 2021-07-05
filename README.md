@@ -12,5 +12,5 @@ HTML, CSS, JavaScript ES21, React 16.8+, Vercel
 
 ## Images
 
-![Mokup](src/assets/readme_mokup.gif)
-![game design](src/assets/readme_game.png)
+![Mokup](src/assets/readme_mokup.png)
+![game design](src/assets/readme_game.gif)
