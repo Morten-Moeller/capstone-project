@@ -44,7 +44,7 @@ export default function useMqtt() {
 
   function subscribe(room) {
     client.subscribe(room)
-    console.log('Joined room: ' + room)
+
     setCurRoom(room)
   }
 
@@ -56,7 +56,6 @@ export default function useMqtt() {
   function disconnect() {
     client.disconnect()
     setIsConnected(false)
-    console.log('Server disconnected')
   }
 
   function sendMessage(payload) {
@@ -75,13 +74,11 @@ export default function useMqtt() {
   function onConnectionLost(responseObject) {
     setIsConnected(false)
     if (responseObject.errorCode !== 0) {
-      console.log('onConnectionLost:' + responseObject.errorMessage)
     }
   }
 
   function onMessageArrived(message) {
     setMessages(messages => [message.payloadString, ...messages])
-    console.log(message.payloadString)
   }
 
   return {

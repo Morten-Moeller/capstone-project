@@ -60,7 +60,6 @@ export default function usePlayList(initialPlaylist) {
   //set new song url
   function getNextUrl() {
     if (playlistData && counter) {
-      console.log(playlistData[counter - 1]?.previewUrl)
       return playlistData[counter - 1]?.previewUrl
     }
   }
@@ -68,7 +67,6 @@ export default function usePlayList(initialPlaylist) {
   function initiateNextSong() {
     if (counter > 0) {
       setCounter(counter => counter - 1)
-      console.log('counter -1')
     } else {
       setCounter(0)
       setPlaylist(null)
