@@ -151,6 +151,7 @@ export default function UseMultiplayer() {
   }, [isGameRunning])
 
   // ----------- message listener -----------
+
   useEffect(() => {
     if (messages[0] && isConnected) {
       switch (true) {
@@ -434,7 +435,6 @@ export default function UseMultiplayer() {
     areAllReady,
     endScore,
     gameEnded,
-    sendPlayerCheck,
     initiateNextSong,
     isGameEnded,
     isGameRunning,
@@ -446,6 +446,7 @@ export default function UseMultiplayer() {
     playlistName,
     sendEndGame,
     sendIsRight,
+    sendPlayerCheck,
     sendQuit,
     sendReady,
     sendScore,

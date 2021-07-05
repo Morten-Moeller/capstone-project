@@ -22,7 +22,6 @@ export default function MultiPlayPage({
     areAllReady,
     endScore,
     gameEnded,
-    sendPlayerCheck,
     initiateNextSong,
     isGameEnded,
     isGameRunning,
@@ -34,6 +33,7 @@ export default function MultiPlayPage({
     playlistName,
     sendEndGame,
     sendIsRight,
+    sendPlayerCheck,
     sendQuit,
     sendReady,
     sendScore,
@@ -81,6 +81,7 @@ export default function MultiPlayPage({
   useEffect(() => {
     if (thisGameEnded || isGameEnded) {
       sendScore(playerData.score)
+      setTimeout(unSubscribe, 5000)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameEnded, isGameEnded])
@@ -276,8 +277,8 @@ export default function MultiPlayPage({
   }
 
   function handleNavigate() {
-    toggleAudio()
-    if (isReady) {
+    stopAudio()
+    if (isReady && !isGameEnded) {
       sendQuit()
       unSubscribe()
     }
