@@ -131,6 +131,7 @@ const Label = styled.label`
   display: grid;
   height: 5rem;
   input {
+    -webkit-appearance: none;
     font-family: 'Iceland';
     border: none;
     box-shadow: var(--effect-neon-small);
