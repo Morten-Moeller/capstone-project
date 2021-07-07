@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components/macro'
 import Button from '../components/Button'
 import Headline from '../components/Headline'
+import shuffleArray from '../utils/shuffleArray'
 
 StartPage.propTypes = {
   playlist: PropTypes.array,
@@ -19,6 +20,7 @@ export default function StartPage({
   onInputChangeRoom,
   playerData,
 }) {
+  const randomPlaylists = shuffleArray(playlists)
   return (
     <Container>
       <Headline>Juke Quest</Headline>
@@ -47,7 +49,7 @@ export default function StartPage({
         </Label>
         <ListWrapper>
           <List>
-            {playlists.map(({ id, title, playlistName }) => (
+            {randomPlaylists.map(({ id, title, playlistName }) => (
               <ListItem
                 isSelected={selectedPlaylist?.playlistName === playlistName}
                 key={id}
